@@ -41,24 +41,36 @@ export default function CameraView() {
     }
   }
 
+  function retake() {
+    setCapturedImage(null);
+  }
+
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type} ref={cameraRef}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={takePhoto}>
-            <MaterialCommunityIcons
-              name="camera-iris"
-              size={75}
-              color="white"
-            />
-          </TouchableOpacity>
+      {capturedImage ? (
+        <View style={styles.capturedImageContainer}>
+          <Image
+            source={{ uri: capturedImage.uri }}
+            style={styles.capturedImage}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={retake}>
+              <Text style={styles.buttonText}>Retake</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </Camera>
-      {capturedImage && (
-        <Image
-          source={{ uri: capturedImage.uri }}
-          style={styles.capturedImage}
-        />
+      ) : (
+        <Camera style={styles.camera} type={type} ref={cameraRef}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={takePhoto}>
+              <MaterialCommunityIcons
+                name="camera-iris"
+                size={75}
+                color="white"
+              />
+            </TouchableOpacity>
+          </View>
+        </Camera>
       )}
     </View>
   );
@@ -98,5 +110,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+  },
+  buttonText: {
+    color: "white",
   },
 });
