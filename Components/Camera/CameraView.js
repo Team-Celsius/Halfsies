@@ -1,6 +1,13 @@
 import { Camera, CameraType } from "expo-camera";
 import { useEffect, useState, useRef } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function CameraView() {
@@ -28,7 +35,7 @@ export default function CameraView() {
 
   async function takePhoto() {
     if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
+      const options = { quality: 1, base64: true };
       const data = await cameraRef.current.takePictureAsync(options);
       setCapturedImage(data);
     }
@@ -47,6 +54,12 @@ export default function CameraView() {
           </TouchableOpacity>
         </View>
       </Camera>
+      {capturedImage && (
+        <Image
+          source={{ uri: capturedImage.uri }}
+          style={styles.capturedImage}
+        />
+      )}
     </View>
   );
 }
@@ -71,9 +84,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+  capturedImageContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  capturedImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
 });
