@@ -1,11 +1,13 @@
 import { Camera, CameraType } from "expo-camera";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function CameraView() {
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState(null);
+  const cameraRef = useRef(null);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -24,18 +26,24 @@ export default function CameraView() {
     );
   }
 
-  function toggleCameraType() {
-    setType((current) =>
-      current === CameraType.back ? CameraType.front : CameraType.back
-    );
+  async function takePhoto() {
+    if (cameraRef.current) {
+      const options = { quality: 0.5, base64: true };
+      const data = await cameraRef.current.takePictureAsync(options);
+      setCapturedImage(data);
+    }
   }
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
+      <Camera style={styles.camera} type={type} ref={cameraRef}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-            <Text style={styles.text}>Flip Camera</Text>
+          <TouchableOpacity style={styles.button} onPress={takePhoto}>
+            <MaterialCommunityIcons
+              name="camera-iris"
+              size={75}
+              color="white"
+            />
           </TouchableOpacity>
         </View>
       </Camera>
@@ -52,10 +60,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
+    bottom: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: 100,
+    position: "absolute",
   },
   button: {
     flex: 1,

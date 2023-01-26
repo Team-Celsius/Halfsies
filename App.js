@@ -8,10 +8,7 @@ import CameraView from "./Components/Camera/CameraView.js";
 export default function App() {
   return (
     <NativeBaseProvider>
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <CameraView />
-      </View>
+      <CameraView />
     </NativeBaseProvider>
   );
 }
