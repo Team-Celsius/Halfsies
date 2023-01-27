@@ -1,26 +1,14 @@
-import { NativeBaseProvider, VStack, Spacer } from 'native-base';
-import { StyleSheet, Text, View } from 'react-native';
+import { NativeBaseProvider, VStack, Spacer, Flex } from 'native-base';
 import NavBar from './Components/NavBar';
+import Participants from './Components/Participants';
 
 export default function App() {
   return (
     <NativeBaseProvider>
-      <VStack>
-      <View>
-        <NavBar />
-        <Spacer />
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
-      </VStack>
+          <VStack flex={1} space="4">
+            <NavBar />
+            <Participants />
+          </VStack>
     </NativeBaseProvider>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
