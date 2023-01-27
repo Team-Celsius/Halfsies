@@ -6,15 +6,15 @@ export default function Participants() {
   return (<>
     <VStack space="4">
       {/* Add via Name/Payment/QR/NFC/ handle section */}
-
+      <Spacer />
       <Input alignSelf="center" textAlign="center" size="2xl" w="85%" borderWidth="3" borderColor="violet.800" variant="rounded">Name or @paymentHandle</Input>
 
-      <HStack pl="8" pr="8">
+      <HStack pl="8" pr="8">    
         <MaterialIcons name="qr-code-scanner" size={40} color="black" />
-        <Text>Add via QR Code</Text>
+        <VStack><Spacer /><Text pl="3">Add via QR Code</Text><Spacer /></VStack>
         <Spacer />
         <MaterialCommunityIcons name="cellphone-nfc" size={40} color="black" />
-        <Text>Add via NFC</Text>
+        <VStack><Spacer /><Text pl="1">Add via NFC</Text><Spacer /></VStack>
       </HStack>
 
       <HStack>

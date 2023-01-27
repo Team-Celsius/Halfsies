@@ -5,7 +5,7 @@ import Participants from './Components/Participants';
 export default function App() {
   return (
     <NativeBaseProvider>
-          <VStack flex={1} space="4">
+          <VStack flex={1}>
             <NavBar />
             <Participants />
           </VStack>
