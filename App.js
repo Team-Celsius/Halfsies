@@ -3,6 +3,7 @@ import { NativeBaseProvider, VStack, Spacer, Flex } from 'native-base';
 import NavBar from './Components/NavBar';
 import Participants from './Components/Participants';
 import AssignItems from './Components/AssignItems';
+import CameraView from "./Components/Camera/CameraView";
 
 export default function App() {
   return (
@@ -16,13 +17,4 @@ export default function App() {
     </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
