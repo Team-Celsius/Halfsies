@@ -1,14 +1,18 @@
-import { StatusBar } from "expo-status-bar";
-import { NativeBaseProvider } from "native-base";
-import { StyleSheet, Text, View } from "react-native";
-import Avatars from "./Components/Avatar";
-import Example from "./Components/NavBar";
-import CameraView from "./Components/Camera/CameraView.js";
+
+import { NativeBaseProvider, VStack, Spacer, Flex } from 'native-base';
+import NavBar from './Components/NavBar';
+import Participants from './Components/Participants';
+import AssignItems from './Components/AssignItems';
 
 export default function App() {
   return (
     <NativeBaseProvider>
-      <CameraView />
+          <CameraView />
+          <VStack flex={1}>
+            <NavBar />
+            {/* <Participants /> */}
+            <AssignItems />
+          </VStack>
     </NativeBaseProvider>
   );
 }
@@ -21,3 +25,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+

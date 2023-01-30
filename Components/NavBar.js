@@ -1,119 +1,18 @@
-import { Flex, Box, Spacer, ScrollView, VStack, Heading, Center, Divider } from "native-base";
+import { Box, HStack, StatusBar, Icon, IconButton, Text, HamburgerIcon, CloseIcon } from "native-base";
+import { SimpleLineIcons } from '@expo/vector-icons';
 
-export default function Example() {
-  return <Box flex="1" safeAreaTop>
-      <ScrollView>
-        <VStack space={2.5} w="100%" px="3">
-          {
-          /* flexDirection -> row */
-        }
-          <Heading size="md">row</Heading>
-          <Flex direction="row" mb="2.5" mt="1.5">
-            <Center size="16" bg="primary.100" _text={{
-            color: "coolGray.800"
-          }}>
-              100
-            </Center>
-            <Center size="16" bg="primary.200" _text={{
-            color: "coolGray.800"
-          }}>
-              200
-            </Center>
-            <Center bg="primary.300" size="16" _text={{
-            color: "coolGray.800"
-          }}>
-              300
-            </Center>
-            <Center size="16" bg="primary.400" _text={{
-            color: "coolGray.800"
-          }}>
-              400
-            </Center>
-          </Flex>
-          <Divider />
-          {
-          /* flexDirection -> column */
-        }
-          <Heading size="md">column</Heading>
-
-          <Flex direction="column" mb="2.5" mt="1.5">
-            <Center size="16" bg="primary.100" _text={{
-            color: "coolGray.800"
-          }}>
-              100
-            </Center>
-            <Center size="16" bg="primary.200" _text={{
-            color: "coolGray.800"
-          }}>
-              200
-            </Center>
-            <Center bg="primary.300" size="16" _text={{
-            color: "coolGray.800"
-          }}>
-              300
-            </Center>
-            <Center size="16" bg="primary.400" _text={{
-            color: "coolGray.800"
-          }}>
-              400
-            </Center>
-          </Flex>
-          <Divider />
-          {
-          /* flexDirection -> row-reverse */
-        }
-          <Heading size="md">row-reverse</Heading>
-          <Flex direction="row-reverse" mb="2.5" mt="1.5">
-            <Center size="16" bg="primary.100" _text={{
-            color: "coolGray.800"
-          }}>
-              100
-            </Center>
-            <Center size="16" bg="primary.200" _text={{
-            color: "coolGray.800"
-          }}>
-              200
-            </Center>
-            <Center bg="primary.300" size="16" _text={{
-            color: "coolGray.800"
-          }}>
-              300
-            </Center>
-            <Center size="16" bg="primary.400" _text={{
-            color: "coolGray.800"
-          }}>
-              400
-            </Center>
-          </Flex>
-          <Divider />
-          {
-          /* flexDirection -> column-reverse */
-        }
-          <Heading size="md">column-reverse</Heading>
-          <Flex direction="column-reverse" mb="2.5" mt="1.5">
-            <Center size="16" bg="primary.100" _text={{
-            color: "coolGray.800"
-          }}>
-              100
-            </Center>
-            <Center size="16" bg="primary.200" _text={{
-            color: "coolGray.800"
-          }}>
-              200
-            </Center>
-            <Center bg="primary.300" size="16" _text={{
-            color: "coolGray.800"
-          }}>
-              300
-            </Center>
-            <Center size="16" bg="primary.400" _text={{
-            color: "coolGray.800"
-          }}>
-              400
-            </Center>
-          </Flex>
-          <Divider />
-        </VStack>
-      </ScrollView>
-    </Box>;
+export default function NavBar() {
+  return <>
+      <StatusBar bg="#3700B3" barStyle="light-content" />
+      <Box safeAreaTop bg="violet.800" />
+      <HStack bg="violet.800" py="1" justifyContent="space-between" alignItems="center" w="100%">
+        <HStack alignItems="center">
+          <IconButton icon={<HamburgerIcon name="search" size="md" color="white" />} />
+        </HStack>
+        <HStack>
+          <IconButton icon={<SimpleLineIcons name="camera" size={25} color="white" />} />
+          <IconButton icon={<CloseIcon size="md" color="white" />} />
+        </HStack>
+      </HStack>
+    </>;
 }
