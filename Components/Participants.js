@@ -1,10 +1,12 @@
 import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import NavBar from "./NavBar";
 
 export default function Participants() {
 
   return (<>
-    <VStack space="4">
+    <VStack space="3">
+      <NavBar />
       {/* Add via Name/Payment/QR/NFC/ handle section */}
       <Spacer />
       <Input alignSelf="center" textAlign="center" size="2xl" w="85%" borderWidth="3" borderColor="violet.800" variant="rounded">Name or @paymentHandle</Input>
