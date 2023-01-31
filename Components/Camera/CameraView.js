@@ -1,16 +1,18 @@
-import { Camera, CameraType } from "expo-camera";
+import { Camera } from "expo-camera";
 import { useState, useRef } from "react";
-import { Button, Text, TouchableOpacity, View, Image } from "react-native";
+import {TouchableOpacity, View, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { Spacer, IconButton, Factory, HStack, Button, Alert, Text } from "native-base";
 
 export default function CameraView() {
-  const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState(null);
   const cameraRef = useRef(null);
+  const ExpoCamera = Factory(Camera);
+
 
   if (!permission) {
     // Camera permissions are still loading
@@ -113,71 +115,17 @@ export default function CameraView() {
           </View>
         </View>
       ) : (
-        <Camera style={{ flex: 1 }} type={type} ref={cameraRef} flashMode="on">
-          <View style={{ flex: 1, alignItems: "center", top: 65 }}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: "white",
-                textAlign: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                width: "100%",
-              }}
-            >
-              Hold your device directly above the receipt. For optimal image
-              processing, flash will be used.
-            </Text>
-          </View>
-
-          <View
-            style={{
-              bottom: 70,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              width: "100%",
-              height: 90,
-            }}
-          >
-            <TouchableOpacity
-              style={{ flex: 1, alignItems: "center" }}
-              onPress={takePhoto}
-            >
-              <MaterialCommunityIcons
-                name="camera-iris"
-                size={75}
-                color="white"
-              />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              bottom: 0,
-              right: -200,
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
-              flex: 1,
-              position: "relative",
-              width: "50%",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                bottom: 90,
-                right: 20,
-                width: "50%",
-              }}
-              onPress={pickImage}
-            >
-              <View style={{ alignItems: "center" }}>
-                <Feather name="upload" size={24} color="white" />
-                <Text style={{ color: "white" }}>Upload</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Camera>
+      <ExpoCamera h="100%" w="100%" ref={cameraRef} flashMode="on">
+        <Spacer />
+        <Spacer />
+        <HStack alignSelf="center" mb="10">
+          <Spacer /><Spacer /><Spacer />
+          <IconButton onPress={takePhoto} icon={<MaterialCommunityIcons name="camera-iris" size={75} color="white" />} />
+          <IconButton onPress={pickImage} icon={<Feather name="upload" size={24} color="white" />} />
+          <Spacer /><Spacer />
+        </HStack>
+        <Alert bgColor="violet.800" ><Text color="white">Hold your device level above the receipt.</Text><Text color="white">For optimal image processing, camera flash is used.</Text></Alert>
+      </ExpoCamera>
       )}
     </View>
-  );
-}
+)}
