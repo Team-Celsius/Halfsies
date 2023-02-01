@@ -6,8 +6,7 @@ export default function LoginPage() {
   return (
           <ZStack >
             <><Image source={require('../assets/loginPage.jpg')} alt="test" style={{width: '100%', height: '100%'}} /></>
-            
-            <VStack display="flex" w="100%" h="100%" p="5">
+            <VStack w="100%" h="100%" p="5">
               <Spacer />
               <Text alignSelf="center" fontFamily="Copperplate" fontSize="65" fontWeight="bold" color="violet.800">Halfsies</Text>
               <Spacer />
