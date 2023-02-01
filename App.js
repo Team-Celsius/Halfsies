@@ -10,7 +10,7 @@ export default function App() {
     <NativeBaseProvider>
       <Flex>
         {/* <LoginPage /> */}
-        <CameraView />
+        {/* <CameraView /> */}
         {/* <Participants /> */}
         {/* <AssignItems /> */}
       </Flex>
