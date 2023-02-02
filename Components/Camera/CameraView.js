@@ -61,7 +61,7 @@ export default function CameraView() {
     (<>
     <ZStack>
       <><Image source={{ uri: capturedImage.uri }} style={{ height: "100%", width: "100%", }} alt="Image captured" /></>
-      <VStack w="100%" h="100%" >
+      <VStack w="100%" h="100%">
         <NavBar />
         <Spacer />
         <HStack alignSelf="center" mb="10">
