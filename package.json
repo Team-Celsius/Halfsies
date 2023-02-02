@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/webpack-config": "^0.17.4",
+    "@expo/webpack-config": "^0.17.2",
     "expo": "^47.0.13",
     "expo-camera": "~13.1.0",
     "expo-image-picker": "~14.0.2",

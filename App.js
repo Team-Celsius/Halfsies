@@ -7,13 +7,11 @@ import CameraView from "./Components/Camera/CameraView";
 
 export default function App() {
   return (
-    <NativeBaseProvider>
-      <Flex>
+    <NativeBaseProvider flex={1} h="100%">
         {/* <LoginPage /> */}
         {/* <CameraView /> */}
-        {/* <Participants /> */}
+        <Participants />
         {/* <AssignItems /> */}
-      </Flex>
     </NativeBaseProvider>
   );
 }

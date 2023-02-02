@@ -4,11 +4,72 @@ import NavBar from "./NavBar";
 
 export default function Participants() {
 
+  const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  const friends = [
+    {
+      initials: "SK",
+      paymentHandle: "@therealsteven",
+      name: "Steven King"
+    },
+    {
+      initials: "JW",
+      paymentHandle: "@justinw",
+      name: "Justin Wooley"
+    },
+    {
+      initials: "JP",
+      paymentHandle: "@jasonp",
+      name: "Jason Potvin"
+    },
+    {
+      initials: "MT",
+      paymentHandle: "@michaeltheboss",
+      name: "Michael Timo"
+    }
+  ]
+
+  function AlphabeticalFriendsSection(props) {
+    let alphabet = props.alphabet
+    let friends = props.friends
+    return(<>
+      {alphabet.map(letter => {
+        return (<>
+          <Text fontSize="11" key={letter}> {letter} </Text>
+          {friends.map(friend => {
+            if(friend.name[0] === letter) {
+              return (<>
+                <HStack space="3" m="1"> 
+                  <Avatar bg="green.500">{friend.initials}</Avatar>
+                  <VStack> 
+                    <Text>{friend.paymentHandle}</Text>
+                    <Text pl="3">{friend.name}</Text>
+                  </VStack>
+                </HStack>
+              </>)
+            }
+          })}
+          <Divider w="100%" alignSelf="center"/>
+        </>)})}
+    </>)
+  }
+
+  function AlphabeticalSideBar(props) {
+    let alphabet = props.alphabet
+    return (<>
+      {alphabet.map(letter => {
+        return (<>
+          <Text fontSize="11" key={letter}> {letter} </Text>
+        </>)
+      })}
+    </>)
+  }
+
   return (<>
-    <VStack space="3">
+    <VStack flex={1} space="3">
+
       <NavBar />
+
       {/* Add via Name/Payment/QR/NFC/ handle section */}
-      <Spacer />
       <Input alignSelf="center" textAlign="center" size="2xl" w="85%" borderWidth="3" borderColor="violet.800" variant="rounded">Name or @paymentHandle</Input>
 
       <HStack pl="8" pr="8">    
@@ -19,7 +80,7 @@ export default function Participants() {
         <VStack><Spacer /><Text pl="1">Add via NFC</Text><Spacer /></VStack>
       </HStack>
 
-      <HStack>
+      <HStack flex={1}>
         <ScrollView>
           <VStack space="4" pl="3">
 
@@ -55,115 +116,15 @@ export default function Participants() {
             </HStack>
             <Divider w="100%" alignSelf="center"/>
 
-            {/* Alphabetical contacts section */}
-            <Text fontSize="11"> A </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> B </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> C </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> D </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> E </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> F </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> G </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> H </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> I </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> J </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> K </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> L </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> M </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> N </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> O </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> P </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> Q </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> R </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> S </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> T </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> U </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> V </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> W </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> X </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> Y </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> Z </Text>
-            <Divider w="100%" alignSelf="center"/>
+            <AlphabeticalFriendsSection alphabet={alphabet} friends={friends}/>
 
           </VStack>
         </ScrollView>
+
         <VStack w="5%">
-          <Text fontSize="11"> A </Text>
-          <Text fontSize="11"> B </Text>
-          <Text fontSize="11"> C </Text>
-          <Text fontSize="11"> D </Text>
-          <Text fontSize="11"> E </Text>
-          <Text fontSize="11"> F </Text>
-          <Text fontSize="11"> G </Text>
-          <Text fontSize="11"> H </Text>
-          <Text fontSize="11"> I </Text>
-          <Text fontSize="11"> J </Text>
-          <Text fontSize="11"> K </Text>
-          <Text fontSize="11"> L </Text>
-          <Text fontSize="11"> M </Text>
-          <Text fontSize="11"> N </Text>
-          <Text fontSize="11"> O </Text>
-          <Text fontSize="11"> P </Text>
-          <Text fontSize="11"> Q </Text>
-          <Text fontSize="11"> R </Text>
-          <Text fontSize="11"> S </Text>
-          <Text fontSize="11"> T </Text>
-          <Text fontSize="11"> U </Text>
-          <Text fontSize="11"> V </Text>
-          <Text fontSize="11"> W </Text>
-          <Text fontSize="11"> X </Text>
-          <Text fontSize="11"> Y </Text>
-          <Text fontSize="11"> Z </Text>
+          <AlphabeticalSideBar alphabet={alphabet} />
         </VStack>
+
       </HStack>
     </VStack></>
   )
