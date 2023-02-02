@@ -1,6 +1,7 @@
 import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import NavBar from "./NavBar";
+import randomColor from "randomcolor";
 
 export default function Participants() {
 
@@ -39,7 +40,7 @@ export default function Participants() {
             if(friend.name[0] === letter) {
               return (<>
                 <HStack space="3" m="1"> 
-                  <Avatar bg="green.500">{friend.initials}</Avatar>
+                  <Avatar bg={randomColor()}>{friend.initials}</Avatar>
                   <VStack> 
                     <Text>{friend.paymentHandle}</Text>
                     <Text pl="3">{friend.name}</Text>
