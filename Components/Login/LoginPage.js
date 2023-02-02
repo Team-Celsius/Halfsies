@@ -6,10 +6,18 @@ import {
   Input,
   Spacer,
   Pressable,
+  Button,
 } from "native-base";
 import SignUpForm from "./SignUpForm";
+import LoginForm from "./LoginForm";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [signIn, setSignIn] = useState(false);
+
+  const toggleSignIn = () => {
+    setSignIn(!signIn);
+  };
   return (
     <ZStack>
       <>
@@ -32,31 +40,8 @@ export default function LoginPage() {
         </Text>
         <Spacer />
         <Spacer />
-        {/* <Pressable
-          textAlign="center"
-          borderWidth="3"
-          borderColor="violet.800"
-          variant="rounded"
-          backgroundColor="white"
-          color="violet.800"
-          p="5"
-          m="2"
-        >
-          <Text>Log In</Text>
-        </Pressable>
-        <Pressable
-          textAlign="center"
-          borderWidth="3"
-          borderColor="violet.800"
-          variant="rounded"
-          backgroundColor="white"
-          color="violet.800"
-          p="5"
-          m="2"
-        >
-          <Text>Sign Up</Text>
-        </Pressable> */}
-        <SignUpForm />
+        {signIn ? <SignUpForm /> : <LoginForm />}
+        <Button onPress={toggleSignIn}>{signIn ? "Log In" : "Sign Up"}</Button>
       </VStack>
     </ZStack>
   );

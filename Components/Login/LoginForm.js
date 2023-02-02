@@ -31,6 +31,7 @@ export default function LoginForm() {
 
   return (
     <View>
+      <Text>Log In</Text>
       <Controller
         control={control}
         rules={{

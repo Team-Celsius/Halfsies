@@ -31,6 +31,7 @@ export default function SignUpForm() {
 
   return (
     <View>
+      <Text>Sign Up</Text>
       <Controller
         control={control}
         rules={{
