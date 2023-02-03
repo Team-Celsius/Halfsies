@@ -80,12 +80,39 @@ export default function CameraView() {
     setCapturedImage(null);
   }
 
-  return ( 
-    capturedImage ? 
-    (<>
-    <ZStack>
-      <><Image source={{ uri: capturedImage.uri }} style={{ height: "100%", width: "100%", }} alt="Image captured" /></>
-      <VStack w="100%" h="100%">
+  return capturedImage ? (
+    <>
+      <ZStack>
+        <>
+          <Image
+            source={{ uri: capturedImage.uri }}
+            style={{ height: "100%", width: "100%" }}
+            alt="Image captured"
+          />
+        </>
+        <VStack w="100%" h="100%">
+          <NavBar />
+          <Spacer />
+          <HStack alignSelf="center" mb="10">
+            <Spacer />
+            <IconButton
+              onPress={retake}
+              icon={<FontAwesome5 name="redo" size={50} color="red" />}
+            />
+            <Spacer />
+            {/* when we build the next step of the user flow, this will go there */}
+            <IconButton
+              onPress={confirmPhoto}
+              icon={<FontAwesome5 name="check" size={50} color="green" />}
+            />
+            <Spacer />
+          </HStack>
+        </VStack>
+      </ZStack>
+    </>
+  ) : (
+    <>
+      <ExpoCamera h="100%" w="100%" ref={cameraRef} flashMode="on">
         <NavBar />
         <Spacer />
         <HStack mb="5">
