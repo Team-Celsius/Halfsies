@@ -1,16 +1,15 @@
 import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Pressable } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import randomColor from "randomcolor";
-import React, { useState } from "react";
 import NavBar from "./NavBar";
 
 export default function Participants() {
   let participants = []
+  let favorites = []
   const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
   let friends = [
     {
       initials: "SK",
-      paymentHandle: "@therealsteven",
       name: "Steven King",
       numPaymentRequests: 1,
       avatarColor: randomColor(),
@@ -18,7 +17,6 @@ export default function Participants() {
     },
     {
       initials: "JW",
-      paymentHandle: "@justinw",
       name: "Justin Wooley",
       numPaymentRequests: 2,
       avatarColor: randomColor(),
@@ -26,7 +24,6 @@ export default function Participants() {
     },
     {
       initials: "JP",
-      paymentHandle: "@jasonp",
       name: "Jason Potvin",
       numPaymentRequests: 4,
       avatarColor: randomColor(),
@@ -34,17 +31,64 @@ export default function Participants() {
     },
     {
       initials: "MT",
-      paymentHandle: "@michaeltheboss",
       name: "Michael Timo",
       numPaymentRequests: 3,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "AS",
+      name: "Andy Smith",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "LS",
+      name: "Lauren Smith",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "AC",
+      name: "Ashley Campbell",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "RM",
+      name: "Rich Merril",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "JL",
+      name: "Jeff Lincoln",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "AJ",
+      name: "Alexander Joseph",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "ZS",
+      name: "Zachary Smith",
+      numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
     }
   ]
 
-  function FavoriteFriendsSection(props) {
-    let friends = props.friends
-    let favorites = []
+  function FavoriteFriendsSection() {
+
     //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
     for(let i = 0; i < 4; ++i) {
       let currentHighest = friends[0]
@@ -60,17 +104,16 @@ export default function Participants() {
       })
       favorites.push(currentHighest)
     }
-
     return(<>
       {/* The map below renders the sorted favorites array  */}
       {favorites.map(favorite => {
         return(<>
-        {/* The pressable code below keeps track of who is selected, but it is not live updating the alphabetical section yet */}
+        {/* The pressable code below keeps track of who is selected */}
         <Pressable>
         {({isPressed}) => {
           if(isPressed) {
-
             favorite.selected = !favorite.selected
+            console.log(friends)
             if(!participants.includes(favorite)) {
               participants.push(favorite)
             }
@@ -79,7 +122,6 @@ export default function Participants() {
             }
           }
           return (<>
-          {/* the conditional statement in ternary below is returning undefined */}
             <HStack space="3" m="1"  bg={favorite.selected ? "green.400" : "white"}>
               <Avatar bg={favorite.avatarColor}>{favorite.initials}</Avatar>
               <VStack> 
@@ -94,32 +136,46 @@ export default function Participants() {
       })}
     </>)}
 
-//all these need to be pressable as well
-//bg color needs to be state managed still, its not live updating
-  function AlphabeticalFriendsSection() {
-    return(<>
-      {alphabet.map(letter => {
-        return (<>
-          <Text fontSize="11" key={letter}> {letter} </Text>
-
-          {friends.map(friend => {
-            if(friend.name[0] === letter) {
-              return (<>
-                <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
-                  <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
-                  <VStack> 
-                    <Text>{friend.paymentHandle}</Text>
-                    <Text pl="3">{friend.name}</Text>
-                  </VStack>
-                </HStack>
-              </>)
-            }
-          })}
-          
-          <Divider w="100%" alignSelf="center"/>
-        </>)})}
-    </>)
-  }
+function AlphabeticalFriendsSection() {
+  return(<>
+    {alphabet.map(letter => { 
+      return (<>
+        <Text fontSize="11" key={letter}> {letter} </Text>
+        <Divider w="100%" alignSelf="center"/>
+        {/* The map below renders the sorted favorites array  */}
+        {friends.map(friend => {
+          if((friend.name[0] === letter) && (!favorites.includes(friend))) {
+            return(<>
+              {/* The pressable code below keeps track of who is selected */}
+              <Pressable>
+                {({isPressed}) => {
+                  if(isPressed) {
+                    friend.selected = !friend.selected
+                    console.log(friends)
+                    if(!participants.includes(friend)) {
+                      participants.push(friend)
+                    }
+                    else {
+                      participants[participants.indexOf(friend)] = {}
+                    }
+                  }
+                  return (<>
+                    <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
+                      <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
+                      <VStack> 
+                        <Text pl="3">{friend.name}</Text>
+                      </VStack>
+                    </HStack>
+                  </>)
+                }}
+              </Pressable>
+            </>)
+          }
+        })}
+      </>)
+    })}
+  </>)
+}
 
   function AlphabeticalSideBar() {
     return (<>
