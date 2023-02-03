@@ -3,6 +3,7 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import randomColor from "randomcolor";
 import NavBar from "./NavBar";
 
+//I need to find a way to get it where it doesnt select a person while I am scrolling
 export default function Participants() {
   let participants = []
   let favorites = []
@@ -11,14 +12,14 @@ export default function Participants() {
     {
       initials: "SK",
       name: "Steven King",
-      numPaymentRequests: 1,
+      numPaymentRequests: 100,
       avatarColor: randomColor(),
       selected: false
     },
     {
       initials: "JW",
       name: "Justin Wooley",
-      numPaymentRequests: 2,
+      numPaymentRequests: 2000,
       avatarColor: randomColor(),
       selected: false
     },
@@ -32,7 +33,7 @@ export default function Participants() {
     {
       initials: "MT",
       name: "Michael Timo",
-      numPaymentRequests: 3,
+      numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
     },
@@ -88,21 +89,32 @@ export default function Participants() {
   ]
 
   function FavoriteFriendsSection() {
-
+    
     //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
     for(let i = 0; i < 4; ++i) {
+
       let currentHighest = friends[0]
-      let currentHighestIndex = 0
+
+      //while loop below checks to see if currentHighest is already a favorite
+      //if it is, it will keep iterating through the friends array till it finds one
+      //that is not already a favorite
+      while(favorites.includes(currentHighest)) {
+        currentHighest = friends[friends.indexOf(currentHighest) + 1]
+        console.log(currentHighest)
+      }
+
       friends.map(friend => {
         if(friends[friends.indexOf(friend) + 1]) {
           let nextFriend = friends[friends.indexOf(friend) + 1]
-          if((currentHighest.numPaymentRequests <= nextFriend.numPaymentRequests) && !favorites.includes(nextFriend)){
+          if((currentHighest.numPaymentRequests <= nextFriend.numPaymentRequests) && (!favorites.includes(nextFriend))){
             currentHighest = nextFriend
-            currentHighestIndex = friends.indexOf(nextFriend)
           }
         }
       })
-      favorites.push(currentHighest)
+
+      if((!favorites.includes(currentHighest))) {
+        favorites.push(currentHighest)
+      }
     }
     return(<>
       {/* The map below renders the sorted favorites array  */}
@@ -113,7 +125,6 @@ export default function Participants() {
         {({isPressed}) => {
           if(isPressed) {
             favorite.selected = !favorite.selected
-            console.log(friends)
             if(!participants.includes(favorite)) {
               participants.push(favorite)
             }
@@ -142,7 +153,7 @@ function AlphabeticalFriendsSection() {
       return (<>
         <Text fontSize="11" key={letter}> {letter} </Text>
         <Divider w="100%" alignSelf="center"/>
-        {/* The map below renders the sorted favorites array  */}
+        {/* The map below renders the friends array alphabetically  */}
         {friends.map(friend => {
           if((friend.name[0] === letter) && (!favorites.includes(friend))) {
             return(<>
@@ -151,7 +162,6 @@ function AlphabeticalFriendsSection() {
                 {({isPressed}) => {
                   if(isPressed) {
                     friend.selected = !friend.selected
-                    console.log(friends)
                     if(!participants.includes(friend)) {
                       participants.push(friend)
                     }
