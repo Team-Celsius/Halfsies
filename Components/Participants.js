@@ -1,6 +1,7 @@
-import { Avatar, HStack, VStack, Text, Input, Divider, ScrollView, Pressable, Modal, FormControl, Button } from "native-base";
-import { useState } from "react";
+import { Avatar, HStack, VStack, Text, Input, Divider, ScrollView, Pressable, Modal, FormControl, Button, Spacer, Center, AlertDialog } from "native-base";
+import { AntDesign } from '@expo/vector-icons';
 import randomColor from "randomcolor";
+import { useState, useRef } from "react";
 import NavBar from "./NavBar";
 //I need to find a way to get it where it doesnt select a person while I am scrolling
 export default function Participants() {
@@ -98,6 +99,51 @@ export default function Participants() {
     }
   ])
 
+  const DeleteFriendAlert = (props) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const friend = props.friend
+    const onClose = () => setIsOpen(false);
+    let newFriends = []
+  
+    const cancelRef = useRef(null);
+    return <Center>
+        <Button bg="white" onPress={() => setIsOpen(!isOpen)}>
+        <VStack>
+          <Spacer />
+          <AntDesign name="deleteuser" size={20} color="black" />
+          <Spacer />
+        </VStack>
+        </Button>
+        <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
+          <AlertDialog.Content>
+            <AlertDialog.CloseButton />
+            <AlertDialog.Header>Delete Friend</AlertDialog.Header>
+            <AlertDialog.Body>
+              <Text> This will delete all data relating to {friend.name}. This action cannot be reversed!</Text>
+            </AlertDialog.Body>
+            <AlertDialog.Footer>
+              <Button.Group space={2}>
+                <Button variant="unstyled" colorScheme="coolGray" onPress={onClose} ref={cancelRef}>
+                  Cancel
+                </Button>
+                <Button colorScheme="danger" onPress={()=> {
+                  onClose;
+                  friends.map((currentFriend) => {
+                    if(currentFriend.name !== friend.name) {
+                      newFriends.push(currentFriend)
+                    }
+                  })
+                  setFriends(newFriends)
+                }}>
+                  Delete
+                </Button>
+              </Button.Group>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog>
+      </Center>;
+  };
+
   function AddFriendForm() {
     const [modalVisible, setModalVisible] = useState(false);
     const [newFriendName, setNewFriendName] = useState('')
@@ -111,15 +157,16 @@ export default function Participants() {
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Name</FormControl.Label>
-                <Input onChangeText={(name) => {setNewFriendName(name); console.log(name)}}/>
+                <Input onChangeText={ name => {setNewFriendName(name)}}/>
                 <FormControl.Label>Email</FormControl.Label>
-                <Input onChangeText={(email) => {setNewFriendEmail(email); console.log(email)}}/>
+                <Input onChangeText={ email => {setNewFriendEmail(email)}}/>
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
               <Button flex="1" onPress={() => {
               setModalVisible(false);
               setFriends([...friends, {
+                //Need to fix initials to auto populate from name property
                 initials: "JL",
                 name: newFriendName,
                 email: newFriendEmail,
@@ -188,10 +235,13 @@ export default function Participants() {
           return (<>
             <HStack space="3" m="1"  bg={favorite.selected ? "green.400" : "white"}>
               <Avatar bg={favorite.avatarColor}>{favorite.initials}</Avatar>
-              <VStack> 
-                <Text>{favorite.paymentHandle}</Text>
+              <VStack>
+                <Spacer />
                 <Text pl="3">{favorite.name}</Text>
+                <Spacer />
               </VStack>
+              <Spacer />
+              <DeleteFriendAlert friend={favorite} />
             </HStack>
           </>)
           }}
@@ -200,54 +250,57 @@ export default function Participants() {
       })}
     </>)}
 
-function AlphabeticalFriendsSection() {
-  return(<>
-    {alphabet.map(letter => { 
-      return (<>
-        <Text fontSize="11" key={letter}> {letter} </Text>
-        <Divider w="100%" alignSelf="center"/>
-        {/* The map below renders the friends array alphabetically  */}
-        {friends.map(friend => {
-          if((friend.name[0] === letter) && (!favorites.includes(friend))) {
-            return(<>
-              {/* The pressable code below keeps track of who is selected */}
-              <Pressable>
-                {({isPressed}) => {
-                  if(isPressed) {
-                    friend.selected = !friend.selected
-                    if(!participants.includes(friend)) {
-                      participants.push(friend)
-                    }
-                    else {
-                      participants[participants.indexOf(friend)] = {}
-                    }
-                  }
-                  return (<>
-                    <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
-                      <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
-                      <VStack> 
-                        <Text pl="3">{friend.name}</Text>
-                      </VStack>
-                    </HStack>
-                  </>)
-                }}
-              </Pressable>
-            </>)
-          }
-        })}
-      </>)
-    })}
-  </>)
-}
-
-  function AlphabeticalSideBar() {
-    return (<>
-      {alphabet.map(letter => {
+  function AlphabeticalFriendsSection() {
+    return(<>
+      {alphabet.map(letter => { 
         return (<>
           <Text fontSize="11" key={letter}> {letter} </Text>
+          <Divider w="100%" alignSelf="center"/>
+          {/* The map below renders the friends array alphabetically  */}
+          {friends.map(friend => {
+            if((friend.name[0] === letter) && (!favorites.includes(friend))) {
+              return(<>
+                {/* The pressable code below keeps track of who is selected */}
+                <Pressable>
+                  {({isPressed}) => {
+                    if(isPressed) {
+                      friend.selected = !friend.selected
+                      if(!participants.includes(friend)) {
+                        participants.push(friend)
+                      }
+                      else {
+                        participants[participants.indexOf(friend)] = {}
+                      }
+                    }
+                    return (<>
+                      <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
+                        <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
+                        <VStack flex={1}> 
+                          <Spacer />
+                          <Text justify="center"pl="3">{friend.name}</Text>
+                          <Spacer />
+                        </VStack>
+                        <DeleteFriendAlert friend={friend} />
+                      </HStack>
+                    </>)
+                  }}
+                </Pressable>
+              </>)
+            }
+          })}
         </>)
       })}
     </>)
+  }
+
+  function AlphabeticalSideBar() {
+  return (<>
+    {alphabet.map(letter => {
+      return (<>
+        <Text fontSize="11" key={letter}> {letter} </Text>
+      </>)
+    })}
+  </>)
   }
 
   return (<>
