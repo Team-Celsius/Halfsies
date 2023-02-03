@@ -1,8 +1,7 @@
-import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Pressable } from "native-base";
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Pressable, Modal, FormControl, Button } from "native-base";
 import randomColor from "randomcolor";
 import NavBar from "./NavBar";
-
+import React from "react";
 //I need to find a way to get it where it doesnt select a person while I am scrolling
 export default function Participants() {
   let participants = []
@@ -88,6 +87,39 @@ export default function Participants() {
     }
   ]
 
+  function AddFriendForm() {
+    const [modalVisible, setModalVisible] = React.useState(false);
+    return <>
+        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} avoidKeyboard justifyContent="space-around" bottom="4" size="lg">
+          <Modal.Content>
+            <Modal.CloseButton />
+            <Modal.Header >Don't let them skip out on the bill!</Modal.Header>
+            <Modal.Body>
+              <FormControl mt="3">
+                <FormControl.Label>Name</FormControl.Label>
+                <Input />
+                <FormControl.Label>Email</FormControl.Label>
+                <Input />
+              </FormControl>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button flex="1" onPress={() => {
+              setModalVisible(false);
+            }}>
+                Add
+              </Button>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+        <VStack space={8} alignItems="center">
+          <Button w="50%" bg="violet.800" onPress={() => {
+          setModalVisible(!modalVisible);
+        }}>
+            Add a friend!
+          </Button>
+        </VStack>
+      </>;
+  }
   function FavoriteFriendsSection() {
     
     //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
@@ -100,7 +132,6 @@ export default function Participants() {
       //that is not already a favorite
       while(favorites.includes(currentHighest)) {
         currentHighest = friends[friends.indexOf(currentHighest) + 1]
-        console.log(currentHighest)
       }
 
       friends.map(friend => {
@@ -201,17 +232,7 @@ function AlphabeticalFriendsSection() {
     <VStack flex={1} space="3">
 
       <NavBar />
-
-      {/* Add via Name/Payment/QR/NFC/ handle section */}
-      <Input alignSelf="center" textAlign="center" size="2xl" w="85%" borderWidth="3" borderColor="violet.800" variant="rounded">Name or @paymentHandle</Input>
-
-      <HStack pl="8" pr="8">    
-        <MaterialIcons name="qr-code-scanner" size={40} color="black" />
-        <VStack><Spacer /><Text pl="3">Add via QR Code</Text><Spacer /></VStack>
-        <Spacer />
-        <MaterialCommunityIcons name="cellphone-nfc" size={40} color="black" />
-        <VStack><Spacer /><Text pl="1">Add via NFC</Text><Spacer /></VStack>
-      </HStack>
+      <AddFriendForm />
 
       <HStack flex={1}>
 
