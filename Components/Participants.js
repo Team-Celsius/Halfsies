@@ -1,87 +1,111 @@
-import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView } from "native-base";
+import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Pressable } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import NavBar from "./NavBar";
 import randomColor from "randomcolor";
+import React, { useState } from "react";
+import NavBar from "./NavBar";
 
 export default function Participants() {
-
+  let participants = []
   const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-  const friends = [
+  let friends = [
     {
       initials: "SK",
       paymentHandle: "@therealsteven",
       name: "Steven King",
-      favoritesCounter: 1,
-      avatarColor: randomColor()
+      numPaymentRequests: 1,
+      avatarColor: randomColor(),
+      selected: false
     },
     {
       initials: "JW",
       paymentHandle: "@justinw",
       name: "Justin Wooley",
-      favoritesCounter: 2,
-      avatarColor: randomColor()
+      numPaymentRequests: 2,
+      avatarColor: randomColor(),
+      selected: false
     },
     {
       initials: "JP",
       paymentHandle: "@jasonp",
       name: "Jason Potvin",
-      favoritesCounter: 4,
-      avatarColor: randomColor()
+      numPaymentRequests: 4,
+      avatarColor: randomColor(),
+      selected: false
     },
     {
       initials: "MT",
       paymentHandle: "@michaeltheboss",
       name: "Michael Timo",
-      favoritesCounter: 3,
-      avatarColor: randomColor()
+      numPaymentRequests: 3,
+      avatarColor: randomColor(),
+      selected: false
     }
   ]
 
   function FavoriteFriendsSection(props) {
     let friends = props.friends
     let favorites = []
-
+    //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
     for(let i = 0; i < 4; ++i) {
       let currentHighest = friends[0]
       let currentHighestIndex = 0
-
       friends.map(friend => {
         if(friends[friends.indexOf(friend) + 1]) {
           let nextFriend = friends[friends.indexOf(friend) + 1]
-          if(currentHighest.favoritesCounter <= nextFriend.favoritesCounter) {
+          if((currentHighest.numPaymentRequests <= nextFriend.numPaymentRequests) && !favorites.includes(nextFriend)){
             currentHighest = nextFriend
             currentHighestIndex = friends.indexOf(nextFriend)
           }
         }
       })
       favorites.push(currentHighest)
-      friends[currentHighestIndex].favoritesCounter = 0
     }
+
     return(<>
-      {favorites.map(friend => {
+      {/* The map below renders the sorted favorites array  */}
+      {favorites.map(favorite => {
         return(<>
-          <HStack space="3" m="1"> 
-            <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
-            <VStack> 
-              <Text>{friend.paymentHandle}</Text>
-              <Text pl="3">{friend.name}</Text>
-            </VStack>
-          </HStack>
+        {/* The pressable code below keeps track of who is selected, but it is not live updating the alphabetical section yet */}
+        <Pressable>
+        {({isPressed}) => {
+          if(isPressed) {
+
+            favorite.selected = !favorite.selected
+            if(!participants.includes(favorite)) {
+              participants.push(favorite)
+            }
+            else {
+              participants[participants.indexOf(favorite)] = {}
+            }
+          }
+          return (<>
+          {/* the conditional statement in ternary below is returning undefined */}
+            <HStack space="3" m="1"  bg={favorite.selected ? "green.400" : "white"}>
+              <Avatar bg={favorite.avatarColor}>{favorite.initials}</Avatar>
+              <VStack> 
+                <Text>{favorite.paymentHandle}</Text>
+                <Text pl="3">{favorite.name}</Text>
+              </VStack>
+            </HStack>
+          </>)
+          }}
+        </Pressable>
         </>)
       })}
     </>)}
 
-  function AlphabeticalFriendsSection(props) {
-    let alphabet = props.alphabet
-    let friends = props.friends
+//all these need to be pressable as well
+//bg color needs to be state managed still, its not live updating
+  function AlphabeticalFriendsSection() {
     return(<>
       {alphabet.map(letter => {
         return (<>
           <Text fontSize="11" key={letter}> {letter} </Text>
+
           {friends.map(friend => {
             if(friend.name[0] === letter) {
               return (<>
-                <HStack space="3" m="1"> 
+                <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
                   <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
                   <VStack> 
                     <Text>{friend.paymentHandle}</Text>
@@ -91,13 +115,13 @@ export default function Participants() {
               </>)
             }
           })}
+          
           <Divider w="100%" alignSelf="center"/>
         </>)})}
     </>)
   }
 
-  function AlphabeticalSideBar(props) {
-    let alphabet = props.alphabet
+  function AlphabeticalSideBar() {
     return (<>
       {alphabet.map(letter => {
         return (<>
@@ -128,8 +152,8 @@ export default function Participants() {
         <ScrollView>
           <VStack space="4" pl="3">
             <Text>Favorites</Text>
-            <FavoriteFriendsSection friends={friends}/>
-            <AlphabeticalFriendsSection alphabet={alphabet} friends={friends}/>
+            <FavoriteFriendsSection friends={friends} />
+            <AlphabeticalFriendsSection alphabet={alphabet} friends={friends} />
           </VStack>
         </ScrollView>
 
