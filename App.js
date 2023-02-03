@@ -39,7 +39,7 @@ export default function App() {
         {/* <Flex> */}
         {/* {isLoggedIn ? <CameraView /> : <LoginPage />} */}
         {/* <CameraView /> */}
-        {/* <Participants /> */}
+        <Participants />
         {/* <AssignItems /> */}
         {/* </Flex> */}
       </NativeBaseProvider>

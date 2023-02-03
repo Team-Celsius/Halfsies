@@ -1,14 +1,142 @@
-import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView } from "native-base";
+import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Pressable } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import randomColor from "randomcolor";
+import React, { useState } from "react";
 import NavBar from "./NavBar";
 
 export default function Participants() {
+  let participants = []
+  const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+  let friends = [
+    {
+      initials: "SK",
+      paymentHandle: "@therealsteven",
+      name: "Steven King",
+      numPaymentRequests: 1,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "JW",
+      paymentHandle: "@justinw",
+      name: "Justin Wooley",
+      numPaymentRequests: 2,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "JP",
+      paymentHandle: "@jasonp",
+      name: "Jason Potvin",
+      numPaymentRequests: 4,
+      avatarColor: randomColor(),
+      selected: false
+    },
+    {
+      initials: "MT",
+      paymentHandle: "@michaeltheboss",
+      name: "Michael Timo",
+      numPaymentRequests: 3,
+      avatarColor: randomColor(),
+      selected: false
+    }
+  ]
+
+  function FavoriteFriendsSection(props) {
+    let friends = props.friends
+    let favorites = []
+    //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
+    for(let i = 0; i < 4; ++i) {
+      let currentHighest = friends[0]
+      let currentHighestIndex = 0
+      friends.map(friend => {
+        if(friends[friends.indexOf(friend) + 1]) {
+          let nextFriend = friends[friends.indexOf(friend) + 1]
+          if((currentHighest.numPaymentRequests <= nextFriend.numPaymentRequests) && !favorites.includes(nextFriend)){
+            currentHighest = nextFriend
+            currentHighestIndex = friends.indexOf(nextFriend)
+          }
+        }
+      })
+      favorites.push(currentHighest)
+    }
+
+    return(<>
+      {/* The map below renders the sorted favorites array  */}
+      {favorites.map(favorite => {
+        return(<>
+        {/* The pressable code below keeps track of who is selected, but it is not live updating the alphabetical section yet */}
+        <Pressable>
+        {({isPressed}) => {
+          if(isPressed) {
+
+            favorite.selected = !favorite.selected
+            if(!participants.includes(favorite)) {
+              participants.push(favorite)
+            }
+            else {
+              participants[participants.indexOf(favorite)] = {}
+            }
+          }
+          return (<>
+          {/* the conditional statement in ternary below is returning undefined */}
+            <HStack space="3" m="1"  bg={favorite.selected ? "green.400" : "white"}>
+              <Avatar bg={favorite.avatarColor}>{favorite.initials}</Avatar>
+              <VStack> 
+                <Text>{favorite.paymentHandle}</Text>
+                <Text pl="3">{favorite.name}</Text>
+              </VStack>
+            </HStack>
+          </>)
+          }}
+        </Pressable>
+        </>)
+      })}
+    </>)}
+
+//all these need to be pressable as well
+//bg color needs to be state managed still, its not live updating
+  function AlphabeticalFriendsSection() {
+    return(<>
+      {alphabet.map(letter => {
+        return (<>
+          <Text fontSize="11" key={letter}> {letter} </Text>
+
+          {friends.map(friend => {
+            if(friend.name[0] === letter) {
+              return (<>
+                <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
+                  <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
+                  <VStack> 
+                    <Text>{friend.paymentHandle}</Text>
+                    <Text pl="3">{friend.name}</Text>
+                  </VStack>
+                </HStack>
+              </>)
+            }
+          })}
+          
+          <Divider w="100%" alignSelf="center"/>
+        </>)})}
+    </>)
+  }
+
+  function AlphabeticalSideBar() {
+    return (<>
+      {alphabet.map(letter => {
+        return (<>
+          <Text fontSize="11" key={letter}> {letter} </Text>
+        </>)
+      })}
+    </>)
+  }
 
   return (<>
-    <VStack space="3">
+    <VStack flex={1} space="3">
+
       <NavBar />
+
       {/* Add via Name/Payment/QR/NFC/ handle section */}
-      <Spacer />
       <Input alignSelf="center" textAlign="center" size="2xl" w="85%" borderWidth="3" borderColor="violet.800" variant="rounded">Name or @paymentHandle</Input>
 
       <HStack pl="8" pr="8">    
@@ -19,152 +147,22 @@ export default function Participants() {
         <VStack><Spacer /><Text pl="1">Add via NFC</Text><Spacer /></VStack>
       </HStack>
 
-      <HStack>
+      <HStack flex={1}>
+
         <ScrollView>
           <VStack space="4" pl="3">
-
-            {/* Favorite contacts section */}
             <Text>Favorites</Text>
-            <HStack space="3"> 
-              <Avatar bg="green.500">JW</Avatar>
-              <VStack> 
-                <Text>@justinw</Text>
-                <Text pl="3">Justin Wooley</Text>
-              </VStack>
-            </HStack>
-            <HStack space="3"> 
-              <Avatar bg="blue.500">JP</Avatar>
-              <VStack> 
-                <Text>@jasonp</Text>
-                <Text pl="3">Jason Potvin</Text>
-              </VStack>
-            </HStack>
-            <HStack space="3"> 
-              <Avatar bg="red.500">MT</Avatar>
-              <VStack> 
-                <Text>@michaeltheboss</Text>
-                <Text pl="3">Michael Timo</Text>
-              </VStack>
-            </HStack>
-            <HStack space="3"> 
-              <Avatar bg="yellow.500">SK</Avatar>
-              <VStack> 
-                <Text>@therealsteven</Text>
-                <Text pl="3">Steven King</Text>
-              </VStack>
-            </HStack>
-            <Divider w="100%" alignSelf="center"/>
-
-            {/* Alphabetical contacts section */}
-            <Text fontSize="11"> A </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> B </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> C </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> D </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> E </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> F </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> G </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> H </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> I </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> J </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> K </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> L </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> M </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> N </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> O </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> P </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> Q </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> R </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> S </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> T </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> U </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> V </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> W </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> X </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> Y </Text>
-            <Divider w="100%" alignSelf="center"/>
-
-            <Text fontSize="11"> Z </Text>
-            <Divider w="100%" alignSelf="center"/>
-
+            <FavoriteFriendsSection friends={friends} />
+            <AlphabeticalFriendsSection alphabet={alphabet} friends={friends} />
           </VStack>
         </ScrollView>
+
         <VStack w="5%">
-          <Text fontSize="11"> A </Text>
-          <Text fontSize="11"> B </Text>
-          <Text fontSize="11"> C </Text>
-          <Text fontSize="11"> D </Text>
-          <Text fontSize="11"> E </Text>
-          <Text fontSize="11"> F </Text>
-          <Text fontSize="11"> G </Text>
-          <Text fontSize="11"> H </Text>
-          <Text fontSize="11"> I </Text>
-          <Text fontSize="11"> J </Text>
-          <Text fontSize="11"> K </Text>
-          <Text fontSize="11"> L </Text>
-          <Text fontSize="11"> M </Text>
-          <Text fontSize="11"> N </Text>
-          <Text fontSize="11"> O </Text>
-          <Text fontSize="11"> P </Text>
-          <Text fontSize="11"> Q </Text>
-          <Text fontSize="11"> R </Text>
-          <Text fontSize="11"> S </Text>
-          <Text fontSize="11"> T </Text>
-          <Text fontSize="11"> U </Text>
-          <Text fontSize="11"> V </Text>
-          <Text fontSize="11"> W </Text>
-          <Text fontSize="11"> X </Text>
-          <Text fontSize="11"> Y </Text>
-          <Text fontSize="11"> Z </Text>
+          <AlphabeticalSideBar alphabet={alphabet} />
         </VStack>
+
       </HStack>
+
     </VStack></>
   )
 }
