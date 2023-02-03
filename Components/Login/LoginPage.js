@@ -3,7 +3,6 @@ import {
   Text,
   ZStack,
   VStack,
-  Input,
   Spacer,
   Pressable,
   Button,
@@ -41,7 +40,21 @@ export default function LoginPage() {
         <Spacer />
         <Spacer />
         {signIn ? <SignUpForm /> : <LoginForm />}
-        <Button onPress={toggleSignIn}>{signIn ? "Log In" : "Sign Up"}</Button>
+        <Pressable
+          textAlign="center"
+          borderWidth="3"
+          borderColor="violet.800"
+          variant="rounded"
+          backgroundColor="violet.800"
+          color="violet.800"
+          p="5"
+          m="2"
+          onPress={toggleSignIn}
+        >
+          <Text textAlign="center" color="white">
+            {signIn ? "Log In" : "Sign Up"}
+          </Text>
+        </Pressable>
       </VStack>
     </ZStack>
   );
