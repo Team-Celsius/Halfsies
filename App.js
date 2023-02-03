@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import { NativeBaseProvider, Flex } from "native-base";
 import LoginPage from "./Components/Login/LoginPage";
 import Participants from "./Components/Participants";
@@ -6,6 +7,11 @@ import CameraView from "./Components/Camera/CameraView";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseConfig";
 import { useState } from "react";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -20,13 +26,23 @@ export default function App() {
   });
 
   return (
-    <NativeBaseProvider>
-      <Flex>
-        {isLoggedIn ? <CameraView /> : <LoginPage />}
+    <NavigationContainer>
+      <NativeBaseProvider>
+        <Stack.Navigator initialRouteName="LogIn">
+          <Stack.Screen
+            name="LogIn"
+            component={LoginPage}
+            options={{ title: "Log In" }}
+          />
+          <Stack.Screen name="Camera" component={CameraView} />
+        </Stack.Navigator>
+        {/* <Flex> */}
+        {/* {isLoggedIn ? <CameraView /> : <LoginPage />} */}
         {/* <CameraView /> */}
         {/* <Participants /> */}
         {/* <AssignItems /> */}
-      </Flex>
-    </NativeBaseProvider>
+        {/* </Flex> */}
+      </NativeBaseProvider>
+    </NavigationContainer>
   );
 }
