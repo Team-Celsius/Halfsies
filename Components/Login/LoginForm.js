@@ -1,10 +1,13 @@
-import { Image, ZStack, VStack, Input, Spacer, Pressable } from "native-base";
+import { Alert, Input, Pressable, Text } from "native-base";
 import { useForm, Controller } from "react-hook-form";
-import { Text, View, TextInput, Button, Alert } from "react-native";
+import { View } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../Firebase/firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
 
 export default function LoginForm() {
+  const navigation = useNavigation();
+
   const {
     control,
     handleSubmit,
@@ -17,11 +20,10 @@ export default function LoginForm() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log("user", user);
+        navigation.navigate("Camera");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -31,7 +33,6 @@ export default function LoginForm() {
 
   return (
     <View>
-      <Text>Log In</Text>
       <Controller
         control={control}
         rules={{
@@ -48,6 +49,7 @@ export default function LoginForm() {
             color="violet.800"
             p="5"
             m="2"
+            placeholder="Email"
             onChangeText={onChange}
             value={value}
           />
@@ -73,6 +75,7 @@ export default function LoginForm() {
             color="violet.800"
             p="5"
             m="2"
+            placeholder="Password"
             onChangeText={onChange}
             value={value}
           />
@@ -80,8 +83,21 @@ export default function LoginForm() {
         name="password"
       />
       {errors.password && <Text>Password is required.</Text>}
-
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Pressable
+        textAlign="center"
+        borderWidth="3"
+        borderColor="violet.800"
+        variant="rounded"
+        backgroundColor="violet.800"
+        color="violet.800"
+        p="5"
+        m="2"
+        onPress={handleSubmit(onSubmit)}
+      >
+        <Text textAlign="center" color="white">
+          Log In
+        </Text>
+      </Pressable>
     </View>
   );
 }
