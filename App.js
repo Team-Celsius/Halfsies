@@ -28,13 +28,14 @@ export default function App() {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        <Stack.Navigator initialRouteName="LogIn">
+        <Stack.Navigator initialRouteName="Participants">
           <Stack.Screen
             name="LogIn"
             component={LoginPage}
             options={{ title: "Log In" }}
           />
           <Stack.Screen name="Camera" component={CameraView} />
+          <Stack.Screen name="Participants" component={Participants} />
         </Stack.Navigator>
         {/* <Flex> */}
         {/* {isLoggedIn ? <CameraView /> : <LoginPage />} */}
