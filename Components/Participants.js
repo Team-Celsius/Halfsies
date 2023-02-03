@@ -99,7 +99,7 @@ export default function Participants() {
     }
   ])
 
-  const DeleteFriendAlert = (props) => {
+  function DeleteFriendAlert(props) {
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend
     const onClose = () => setIsOpen(false);
@@ -221,31 +221,31 @@ export default function Participants() {
       {favorites.map(favorite => {
         return(<>
         {/* The pressable code below keeps track of who is selected */}
-        <Pressable>
-        {({isPressed}) => {
-          if(isPressed) {
-            favorite.selected = !favorite.selected
-            if(!participants.includes(favorite)) {
-              participants.push(favorite)
+        <HStack space="3" m="1">
+          <Pressable>
+          {({isPressed}) => {
+            if(isPressed) {
+              favorite.selected = !favorite.selected
+              if(!participants.includes(favorite)) {
+                participants.push(favorite)
+              }
+              else {
+                participants[participants.indexOf(favorite)] = {}
+              }
             }
-            else {
-              participants[participants.indexOf(favorite)] = {}
-            }
-          }
-          return (<>
-            <HStack space="3" m="1"  bg={favorite.selected ? "green.400" : "white"}>
-              <Avatar bg={favorite.avatarColor}>{favorite.initials}</Avatar>
-              <VStack>
-                <Spacer />
-                <Text pl="3">{favorite.name}</Text>
-                <Spacer />
-              </VStack>
-              <Spacer />
-              <DeleteFriendAlert friend={favorite} />
-            </HStack>
-          </>)
-          }}
-        </Pressable>
+            return (<>
+                {favorite.selected ?  <AntDesign name="checkcircle" size={47} color="green" /> : <Avatar bg={favorite.avatarColor} justify="center">{favorite.initials}</Avatar>}
+            </>)
+            }}
+          </Pressable>
+          <VStack>
+            <Spacer />
+            <Text pl="3">{favorite.name}</Text>
+            <Spacer />
+          </VStack>
+          <Spacer />
+          <DeleteFriendAlert friend={favorite} />
+        </HStack>
         </>)
       })}
     </>)}
@@ -261,30 +261,30 @@ export default function Participants() {
             if((friend.name[0] === letter) && (!favorites.includes(friend))) {
               return(<>
                 {/* The pressable code below keeps track of who is selected */}
-                <Pressable>
-                  {({isPressed}) => {
-                    if(isPressed) {
-                      friend.selected = !friend.selected
-                      if(!participants.includes(friend)) {
-                        participants.push(friend)
+                <HStack space="3" m="1"> 
+                  <Pressable>
+                    {({isPressed}) => {
+                      if(isPressed) {
+                        friend.selected = !friend.selected
+                        if(!participants.includes(friend)) {
+                          participants.push(friend)
+                        }
+                        else {
+                          participants[participants.indexOf(friend)] = {}
+                        }
                       }
-                      else {
-                        participants[participants.indexOf(friend)] = {}
-                      }
-                    }
-                    return (<>
-                      <HStack space="3" m="1" bg={friend.selected ? "green.400" : "white"}> 
-                        <Avatar bg={friend.avatarColor}>{friend.initials}</Avatar>
-                        <VStack flex={1}> 
-                          <Spacer />
-                          <Text justify="center"pl="3">{friend.name}</Text>
-                          <Spacer />
-                        </VStack>
-                        <DeleteFriendAlert friend={friend} />
-                      </HStack>
-                    </>)
-                  }}
-                </Pressable>
+                      return (<>
+                          {friend.selected ?  <AntDesign name="checkcircle" size={47} color="green" /> : <Avatar bg={friend.avatarColor} justify="center">{friend.initials}</Avatar>}
+                      </>)
+                    }}
+                  </Pressable>
+                  <VStack flex={1}> 
+                    <Spacer />
+                    <Text justify="center"pl="3">{friend.name}</Text>
+                    <Spacer />
+                  </VStack>
+                  <DeleteFriendAlert friend={friend} />
+                </HStack>
               </>)
             }
           })}
