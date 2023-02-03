@@ -1,16 +1,17 @@
-import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Pressable, Modal, FormControl, Button } from "native-base";
+import { Avatar, HStack, VStack, Text, Input, Divider, ScrollView, Pressable, Modal, FormControl, Button } from "native-base";
+import { useState } from "react";
 import randomColor from "randomcolor";
 import NavBar from "./NavBar";
-import React from "react";
 //I need to find a way to get it where it doesnt select a person while I am scrolling
 export default function Participants() {
   let participants = []
   let favorites = []
   const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-  let friends = [
+  let [friends, setFriends] = useState([
     {
       initials: "SK",
       name: "Steven King",
+      email: "email",
       numPaymentRequests: 100,
       avatarColor: randomColor(),
       selected: false
@@ -18,6 +19,7 @@ export default function Participants() {
     {
       initials: "JW",
       name: "Justin Wooley",
+      email: "email",
       numPaymentRequests: 2000,
       avatarColor: randomColor(),
       selected: false
@@ -25,6 +27,7 @@ export default function Participants() {
     {
       initials: "JP",
       name: "Jason Potvin",
+      email: "email",
       numPaymentRequests: 4,
       avatarColor: randomColor(),
       selected: false
@@ -32,13 +35,15 @@ export default function Participants() {
     {
       initials: "MT",
       name: "Michael Timo",
-      numPaymentRequests: 0,
+      email: "email",
+      numPaymentRequests: 8,
       avatarColor: randomColor(),
       selected: false
     },
     {
       initials: "AS",
       name: "Andy Smith",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
@@ -46,6 +51,7 @@ export default function Participants() {
     {
       initials: "LS",
       name: "Lauren Smith",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
@@ -53,6 +59,7 @@ export default function Participants() {
     {
       initials: "AC",
       name: "Ashley Campbell",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
@@ -60,6 +67,7 @@ export default function Participants() {
     {
       initials: "RM",
       name: "Rich Merril",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
@@ -67,6 +75,7 @@ export default function Participants() {
     {
       initials: "JL",
       name: "Jeff Lincoln",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
@@ -74,6 +83,7 @@ export default function Participants() {
     {
       initials: "AJ",
       name: "Alexander Joseph",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
@@ -81,14 +91,18 @@ export default function Participants() {
     {
       initials: "ZS",
       name: "Zachary Smith",
+      email: "email",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false
     }
-  ]
+  ])
 
   function AddFriendForm() {
-    const [modalVisible, setModalVisible] = React.useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [newFriendName, setNewFriendName] = useState('')
+    const [newFriendEmail, setNewFriendEmail] = useState('')
+
     return <>
         <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} avoidKeyboard justifyContent="space-around" bottom="4" size="lg">
           <Modal.Content>
@@ -97,14 +111,22 @@ export default function Participants() {
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Name</FormControl.Label>
-                <Input />
+                <Input onChangeText={(name) => {setNewFriendName(name); console.log(name)}}/>
                 <FormControl.Label>Email</FormControl.Label>
-                <Input />
+                <Input onChangeText={(email) => {setNewFriendEmail(email); console.log(email)}}/>
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
               <Button flex="1" onPress={() => {
               setModalVisible(false);
+              setFriends([...friends, {
+                initials: "JL",
+                name: newFriendName,
+                email: newFriendEmail,
+                numPaymentRequests: 0,
+                avatarColor: randomColor(),
+                selected: false
+              }]);
             }}>
                 Add
               </Button>
