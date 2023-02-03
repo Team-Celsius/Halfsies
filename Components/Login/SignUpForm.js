@@ -1,7 +1,7 @@
-import { Image, ZStack, VStack, Input, Spacer, Pressable } from "native-base";
+import { Input, Pressable, Text } from "native-base";
 import { useForm, Controller } from "react-hook-form";
-import { Text, View, TextInput, Button, Alert } from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { View } from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../Firebase/firebaseConfig";
 
 export default function SignUpForm() {
@@ -31,7 +31,6 @@ export default function SignUpForm() {
 
   return (
     <View>
-      <Text>Sign Up</Text>
       <Controller
         control={control}
         rules={{
@@ -48,6 +47,7 @@ export default function SignUpForm() {
             color="violet.800"
             p="5"
             m="2"
+            placeholder="Email"
             onChangeText={onChange}
             value={value}
           />
@@ -73,6 +73,7 @@ export default function SignUpForm() {
             color="violet.800"
             p="5"
             m="2"
+            placeholder="Password"
             onChangeText={onChange}
             value={value}
           />
@@ -80,8 +81,25 @@ export default function SignUpForm() {
         name="password"
       />
       {errors.password && <Text>Password is required.</Text>}
+      <Text textAlign="center" color="white">
+        Password must be over 6 characters
+      </Text>
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Pressable
+        textAlign="center"
+        borderWidth="3"
+        borderColor="violet.800"
+        variant="rounded"
+        backgroundColor="violet.800"
+        color="violet.800"
+        p="5"
+        m="2"
+        onPress={handleSubmit(onSubmit)}
+      >
+        <Text textAlign="center" color="white">
+          Sign Up
+        </Text>
+      </Pressable>
     </View>
   );
 }
