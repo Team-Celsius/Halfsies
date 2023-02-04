@@ -62,9 +62,10 @@ export default function Participants(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [newFriendName, setNewFriendName] = useState('')
     const [newFriendEmail, setNewFriendEmail] = useState('')
-
+    
     return <>
-        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} avoidKeyboard justifyContent="space-around" bottom="4" size="lg">
+        <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)} avoidKeyboard="true" justifyContent="space-around" bottom="4" size="lg">
+    <Spacer />
           <Modal.Content>
             <Modal.CloseButton />
             <Modal.Header >Don't let them skip out on the bill!</Modal.Header>
@@ -93,6 +94,9 @@ export default function Participants(props) {
               </Button>
             </Modal.Footer>
           </Modal.Content>
+        <Spacer />
+        <Spacer />
+        <Spacer />
         </Modal>
         <VStack space={8} alignItems="center">
           <Button w="50%" bg="violet.800" onPress={() => {
