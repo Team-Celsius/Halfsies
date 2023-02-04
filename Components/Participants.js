@@ -3,7 +3,7 @@ import { AntDesign } from '@expo/vector-icons';
 import randomColor from "randomcolor";
 import { useState, useRef } from "react";
 import NavBar from "./NavBar";
-//I need to find a way to get it where it doesnt select a person while I am scrolling
+
 export default function Participants() {
   let participants = []
   let favorites = []

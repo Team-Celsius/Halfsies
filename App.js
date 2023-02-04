@@ -7,13 +7,13 @@ import { useState } from 'react';
 
 
 export default function App() {
-  // const [participants, setParticipants] = useState([])
+  const [participants, setParticipants] = useState([{}])
   return (
     <NativeBaseProvider>
         {/* <LoginPage /> */}
-        <CameraView />
+        {/* <CameraView /> */}
         {/* <Participants participants={participants} /> */}
-        {/* <AssignItems /> */}
+        <AssignItems participants={participants} />
     </NativeBaseProvider>
   );
 }
