@@ -166,13 +166,17 @@ export default function App() {
             options={{ title: "Log In" }}
           />
           <Stack.Screen name="Camera" component={CameraView} />
-          <Stack.Screen name="Participants" component={Participants} />
+          <Stack.Screen name="Participants">
+            {(props) => {
+              <Participants {...props} />
+            }}
+          </Stack.Screen>
         </Stack.Navigator>
         {/* <Flex> */}
         {/* {isLoggedIn ? <CameraView /> : <LoginPage />} */}
         {/* <CameraView /> */}
-        {/* <Participants setFriends={setFriends} friends={friends}  participants={participants} setParticipants={setParticipants} /> */}
-        <AssignItems participants={participants}/>
+        <Participants setFriends={setFriends} friends={friends}  participants={participants} setParticipants={setParticipants} />
+        {/* <AssignItems participants={participants}/> */}
         {/* </Flex> */}
       </NativeBaseProvider>
      </NavigationContainer>
