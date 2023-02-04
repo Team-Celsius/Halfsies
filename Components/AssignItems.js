@@ -1,8 +1,9 @@
-import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, Center, Box, Heading, Pressable, Icon, Modal, FormControl, Button, Select, CheckIcon, useDisclose } from "native-base";
+import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, Box, Heading, Pressable, Icon, Modal, FormControl, Button, Select, CheckIcon, Flex } from "native-base";
 import { MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useState } from "react";
 import NavBar from "./NavBar";
+import randomColor from "randomcolor";
 
 export default function AssignItems(props) {
   let participants = props.participants
@@ -114,33 +115,43 @@ export default function AssignItems(props) {
     const [inputQty, setInputQty] = useState()
     const [inputDescription, setInputDescription] = useState()
     const [inputPrice, setInputPrice] = useState()
-    
+    const [errors, setErrors] = useState(false);
+    const [buttonColor, setButtonColor] = useState("violet.800")
+
+    const validate = () => {
+
+      //this validation for inputPrice does not work. The form returns a string,
+      // and if i force it with Number() then string input gets validated as a number
+      // if (typeof(inputPrice) !== "number") {
+      //   setErrors(true)
+      //   return false
+      // }
+     if(typeof(inputQty) !== "number") {
+        setErrors(true)
+        return false
+      } 
+      else if(typeof(inputDescription) !== "string") {
+        setErrors(true)
+        return false
+      } 
+      return true;
+    }
+
     function SelectDropdownMenu() {
       const numbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
       return (
-        <Center>
-          <Box>
-            <Select selectedValue={inputQty} minWidth="200" accessibilityLabel="Choose Quantity" placeholder="" _selectedItem={{
-            bgColor: "teal.600",
-            endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={quantity=> {setInputQty(quantity)}}>
+            <Select selectedValue={inputQty} _selectedItem={{bgColor: "violet.800", endIcon: <CheckIcon size="5" />}} mt={1} onValueChange={quantity=> {setInputQty(quantity)}}>
               {numbers.map((number) => {
                 return (
-                  <Select.Item key={numbers} alignItems="center" label={number} value={number} />
+                  <Select.Item key={numbers + 20} alignItems="center" label={number} value={number} />
                 )
               })}
             </Select>
-          </Box>
-        </Center>
         )
     }
     
     return <>
-        <Modal isOpen={modalVisible} avoidKeyboard justifyContent="space-around" bottom="4" size="lg"
-          onClose={() => {
-            setModalVisible(false) 
-          }} 
-        >
+        <Modal isOpen={modalVisible} avoidKeyboard justifyContent="space-around" bottom="4" size="lg" onClose={() => setModalVisible(false)}>
           <Spacer />
           <Modal.Content>
             <Modal.CloseButton />
@@ -148,22 +159,42 @@ export default function AssignItems(props) {
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Qty</FormControl.Label>
-                <SelectDropdownMenu value={inputQty}/>
+                {/* Cannot get quantity to display when selected */}
+                <SelectDropdownMenu />
                 <FormControl.Label>Description</FormControl.Label>
                 <Input onChangeText={ userDescription => setInputDescription(userDescription)}/>
                 <FormControl.Label>Price per item</FormControl.Label>
-                <Input onChangeText={ itemPrice => setInputPrice("$" + itemPrice)}/>
+                <Input onChangeText={ itemPrice => setInputPrice(itemPrice)}/>
+                <FormControl.HelperText> Price must be a number. Do not include "$"</FormControl.HelperText>
+
+
+                {/* this error message will not display, even when it was part of a ternary */}
+                {/* <FormControl.ErrorMessage _text={{
+        fontSize: 'xs'
+      }}>Error. Price must be a number. Do not include "$"</FormControl.ErrorMessage> */}
+                
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
-              <Button flex="1" onPress={() => {
-                setModalVisible(false)
-                setListData([...listData, {
-                  key: {inputDescription},
-                  qty: inputQty,
-                  description: inputDescription,
-                  price: inputPrice
-                }])
+              <Button key={"formButton"} flex="1" bgColor={buttonColor} onPress={() => {
+                if(validate()) {
+                  setButtonColor("green.500")
+                  setTimeout(() => {
+                    setButtonColor("violet.800")
+                    setListData([...listData, {
+                    key: <>{inputQty + inputPrice}</>,
+                    qty: inputQty,
+                    description: inputDescription,
+                    price: "$" + inputPrice
+                  }])
+                  }, 1000)
+                }
+                else {
+                  setButtonColor("red.500")
+                  setTimeout(() => {
+                    setButtonColor("violet.800")
+                  }, 1000)
+                }
               }}>
                 Add Item
               </Button>

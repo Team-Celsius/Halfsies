@@ -3,7 +3,6 @@ import { AntDesign } from '@expo/vector-icons';
 import { useState, useRef } from "react";
 import randomColor from "randomcolor";
 import NavBar from "./NavBar";
-import App from "../App";
 
 export default function Participants(props) {
   let friends = props.friends
