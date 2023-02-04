@@ -1,54 +1,62 @@
-import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Center, Box, Heading, Pressable, Icon, Modal, FormControl, Button, Select, CheckIcon } from "native-base";
+import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, ScrollView, Box, Heading, Pressable, Icon, Modal, FormControl, Button, Select, CheckIcon } from "native-base";
 import { MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useState } from "react";
 import NavBar from "./NavBar";
 
 
-export default function AssignItems() {
-  let data = [{
-    qty: 1,
-    description: 'Chicken Sandwich',
-    price: '$14',
+export default function AssignItems(props) {
+  let participants = props.participants
+  const data = [{
+      key: 1,
+      qty: 1,
+      description: 'Chicken Sandwich',
+      price: '$14',
   }, {
+    key: 2,
     qty: 2,
     description: 'Cheeseburger',
     price: '$12',
   }, {
+    key: 3,
     qty: 1,
     description: 'Steak',
     price: '$40',
   }, {
+    key: 4,
     qty: 2,
     description: 'Salad',
     price: '$12',
   }, {
+    key: 5,
     qty: 6,
     description: 'Ice Cream',
     price: '$10',
   }, {
+    key: 6,
     qty: 6,
     description: 'Ice Cream',
     price: '$10',
   }, {
+    key: 7,
     qty: 6,
     description: 'Ice Cream',
     price: '$10',
   }, {
+    key: 8,
     qty: 6,
     description: 'Ice Cream',
     price: '$10',
-  }];
+  }]
+  const [listData, setListData] = useState(data);
   function SwipeScrollList() {
     return (<>
-        <ScrollView flex={1} m="5">
-          <Basic />
-        </ScrollView>
+          <Basic/>   
     </>) 
   }
   function Basic() {
-    
-    const [listData, setListData] = useState(data);
+    //DELETE IS NOT WORKING
+    //and it is not updating
   
     const closeRow = (rowMap, rowKey) => {
       if (rowMap[rowKey]) {
@@ -77,7 +85,7 @@ export default function AssignItems() {
       }} _light={{
         bg: 'white'
       }}>
-          <VStack>
+          <VStack m="4">
             <HStack p="3">
               <Text>{item.qty}</Text>
               <Spacer />
@@ -93,11 +101,9 @@ export default function AssignItems() {
         </Pressable>
       </Box>;
   
-    const renderHiddenItem = (data, rowMap) => <HStack flex="1" pl="2">
-        <Pressable w="70" ml="auto" cursor="pointer" bg="white" justifyContent="center" onPress={() => closeRow(rowMap, data.item.key)} _pressed={{
-        opacity: 0.5
-      }}>
-        </Pressable>
+    const renderHiddenItem = (data, rowMap) => 
+      <HStack flex="1" pl="2">
+        <Spacer />
         <Pressable w="70" cursor="pointer" bg="red.500" justifyContent="center" onPress={() => deleteRow(rowMap, data.item.key)} _pressed={{
         opacity: 0.5
       }}>
@@ -131,7 +137,7 @@ export default function AssignItems() {
           }} mt={1} onValueChange={quantity=> {inputQty = quantity}}>
             {numbers.map((number) => {
               return (
-                <Select.Item alignItems="center" label={number} value={number} />
+                <Select.Item key={numbers} alignItems="center" label={number} value={number} />
               )
             })}
           </Select>
@@ -149,20 +155,20 @@ export default function AssignItems() {
                 <FormControl.Label>Qty</FormControl.Label>
                 <SelectDropdownMenu />
                 <FormControl.Label>Description</FormControl.Label>
-                <Input onChangeText={ userDescription => {inputDescription = userDescription; console.log(inputDescription)}}/>
+                <Input onChangeText={ userDescription => inputDescription = userDescription}/>
                 <FormControl.Label>Price per item</FormControl.Label>
-                <Input onChangeText={ itemPrice => {inputPrice = itemPrice}}/>
+                <Input onChangeText={ itemPrice => inputPrice = itemPrice}/>
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
               <Button flex="1" onPress={() => {
               setModalVisible(false);
-              data.push({
+              setListData([...listData, {
+                key: {inputDescription},
                 qty: inputQty,
                 description: inputDescription,
                 price: inputPrice
-              })
-              console.log(data)
+              }])
             }}>
                 Add Item
               </Button>
@@ -196,10 +202,9 @@ export default function AssignItems() {
       {/* Avatar and checkbox section */}
       <VStack>
         <HStack space="1" alignSelf="center">
-          <Avatar bg="blue.500">JP</Avatar>
-          <Avatar bg="green.500">SK</Avatar>
-          <Avatar bg="yellow.500">JW</Avatar>
-          <Avatar bg="orange.500">MT</Avatar>
+          {participants.map((participant) => {
+            return (<Avatar key={participant.name}bg={participant.avatarColor}>{participant.initials}</Avatar>)
+          })}
           <Avatar bg="orange.500">
             <VStack alignItems="center">
               <MaterialCommunityIcons name="account-group" size={24} color="violet.800" />

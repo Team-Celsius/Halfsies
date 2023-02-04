@@ -1,105 +1,19 @@
 import { Avatar, HStack, VStack, Text, Input, Divider, ScrollView, Pressable, Modal, FormControl, Button, Spacer, Center, AlertDialog } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
-import randomColor from "randomcolor";
 import { useState, useRef } from "react";
+import randomColor from "randomcolor";
 import NavBar from "./NavBar";
+import App from "../App";
 
-export default function Participants() {
+export default function Participants(props) {
+  let friends = props.friends
+  let setFriends = props.setFriends
   let participants = []
   let favorites = []
   const alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-  let [friends, setFriends] = useState([
-    {
-      initials: "SK",
-      name: "Steven King",
-      email: "email",
-      numPaymentRequests: 100,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "JW",
-      name: "Justin Wooley",
-      email: "email",
-      numPaymentRequests: 2000,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "JP",
-      name: "Jason Potvin",
-      email: "email",
-      numPaymentRequests: 4,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "MT",
-      name: "Michael Timo",
-      email: "email",
-      numPaymentRequests: 8,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "AS",
-      name: "Andy Smith",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "LS",
-      name: "Lauren Smith",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "AC",
-      name: "Ashley Campbell",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "RM",
-      name: "Rich Merril",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "JL",
-      name: "Jeff Lincoln",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "AJ",
-      name: "Alexander Joseph",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    },
-    {
-      initials: "ZS",
-      name: "Zachary Smith",
-      email: "email",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false
-    }
-  ])
 
   function DeleteFriendAlert(props) {
+    setFriends = props.setFriends
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend
     const onClose = () => setIsOpen(false);
@@ -244,7 +158,7 @@ export default function Participants() {
             <Spacer />
           </VStack>
           <Spacer />
-          <DeleteFriendAlert friend={favorite} />
+          <DeleteFriendAlert friend={favorite} setFriends={setFriends}/>
         </HStack>
         </>)
       })}
@@ -283,7 +197,7 @@ export default function Participants() {
                     <Text justify="center"pl="3">{friend.name}</Text>
                     <Spacer />
                   </VStack>
-                  <DeleteFriendAlert friend={friend} />
+                  <DeleteFriendAlert friend={friend} setFriends={setFriends} />
                 </HStack>
               </>)
             }
