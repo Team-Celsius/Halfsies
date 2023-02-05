@@ -28,7 +28,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        <Stack.Navigator initialRouteName="Participants">
+        <Stack.Navigator initialRouteName="LogIn">
           <Stack.Screen
             name="LogIn"
             component={LoginPage}
@@ -36,13 +36,8 @@ export default function App() {
           />
           <Stack.Screen name="Camera" component={CameraView} />
           <Stack.Screen name="Participants" component={Participants} />
+          <Stack.Screen name="AssignItems" component={AssignItems} />
         </Stack.Navigator>
-        {/* <Flex> */}
-        {/* {isLoggedIn ? <CameraView /> : <LoginPage />} */}
-        {/* <CameraView /> */}
-        {/* <Participants /> */}
-        {/* <AssignItems /> */}
-        {/* </Flex> */}
       </NativeBaseProvider>
     </NavigationContainer>
   );
