@@ -1,4 +1,5 @@
 import {
+  Box,
   Avatar,
   HStack,
   VStack,
@@ -16,40 +17,13 @@ import {
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import randomColor from "randomcolor";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import NavBar from "./NavBar";
+import { auth, db } from "../Firebase/firebaseConfig";
+import { ref, set, onValue } from "firebase/database";
+import uuid from "react-native-uuid";
 
 export default function Participants() {
-  let participants = [];
-  let favorites = [];
-  const alphabet = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
   let [friends, setFriends] = useState([
     {
       initials: "SK",
@@ -141,6 +115,48 @@ export default function Participants() {
     },
   ]);
 
+  const userId = auth.currentUser.uid;
+  const userFriendsRef = ref(db, "users/" + userId + "/friends/");
+
+  useEffect(() => {
+    onValue(userFriendsRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      setFriends(Object.values(data));
+    });
+  }, []);
+
+  let participants = [];
+  let favorites = [];
+  const alphabet = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+
   function getInitials(firstName, lastName) {
     const fInitial = firstName[0];
     const lInitial = lastName[0];
@@ -149,7 +165,7 @@ export default function Participants() {
   }
 
   function joinName(firstName, lastName) {
-    return firstName.concat(" ", lastName);
+    return firstName + " " + lastName;
   }
 
   function addfriendData(userId, firstName, lastName, email) {
@@ -235,6 +251,7 @@ export default function Participants() {
     const [newFriendFirstName, setNewFriendFirstName] = useState("");
     const [newFriendLastName, setNewFriendLastName] = useState("");
     const [newFriendEmail, setNewFriendEmail] = useState("");
+    const userUid = auth.currentUser.uid;
 
     return (
       <>
@@ -278,7 +295,12 @@ export default function Participants() {
                 onPress={() => {
                   setModalVisible(false);
                   //******* Create new friend in data base ******* */
-                  addfriendData();
+                  addfriendData(
+                    userUid,
+                    newFriendFirstName,
+                    newFriendLastName,
+                    newFriendEmail
+                  );
                 }}
               >
                 Add
@@ -300,6 +322,7 @@ export default function Participants() {
       </>
     );
   }
+
   function FavoriteFriendsSection() {
     //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
     for (let i = 0; i < 4; ++i) {
@@ -334,7 +357,7 @@ export default function Participants() {
         {/* The map below renders the sorted favorites array  */}
         {favorites.map((favorite) => {
           return (
-            <>
+            <Box key={uuid.v4()}>
               {/* The pressable code below keeps track of who is selected */}
               <HStack space="3" m="1">
                 <Pressable>
@@ -372,7 +395,7 @@ export default function Participants() {
                 <Spacer />
                 <DeleteFriendAlert friend={favorite} />
               </HStack>
-            </>
+            </Box>
           );
         })}
       </>
@@ -384,17 +407,14 @@ export default function Participants() {
       <>
         {alphabet.map((letter) => {
           return (
-            <>
-              <Text fontSize="11" key={letter}>
-                {" "}
-                {letter}{" "}
-              </Text>
+            <Box key={uuid.v4()}>
+              <Text fontSize="11"> {letter} </Text>
               <Divider w="100%" alignSelf="center" />
               {/* The map below renders the friends array alphabetically  */}
               {friends.map((friend) => {
                 if (friend.name[0] === letter && !favorites.includes(friend)) {
                   return (
-                    <>
+                    <Box key={uuid.v4()}>
                       {/* The pressable code below keeps track of who is selected */}
                       <HStack space="3" m="1">
                         <Pressable>
@@ -436,11 +456,11 @@ export default function Participants() {
                         </VStack>
                         <DeleteFriendAlert friend={friend} />
                       </HStack>
-                    </>
+                    </Box>
                   );
                 }
               })}
-            </>
+            </Box>
           );
         })}
       </>
@@ -452,12 +472,10 @@ export default function Participants() {
       <>
         {alphabet.map((letter) => {
           return (
-            <>
-              <Text fontSize="11" key={letter}>
-                {" "}
-                {letter}{" "}
-              </Text>
-            </>
+            <Text fontSize="11" key={uuid.v4()}>
+              {" "}
+              {letter}{" "}
+            </Text>
           );
         })}
       </>
