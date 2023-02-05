@@ -1,12 +1,4 @@
-import {
-  Image,
-  Text,
-  ZStack,
-  VStack,
-  Spacer,
-  Pressable,
-  Button,
-} from "native-base";
+import { Image, Text, ZStack, VStack, Spacer, Pressable } from "native-base";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
 import { useState } from "react";
@@ -22,7 +14,7 @@ export default function LoginPage() {
       <>
         <Image
           source={require("../../assets/loginPage.jpg")}
-          alt="handFull of fies with ketchup on then being taken by another hand"
+          alt="A yellow background with a hand full of fries with ketchup on then with one fry being taken by another hand"
           style={{ width: "100%", height: "100%" }}
         />
       </>
