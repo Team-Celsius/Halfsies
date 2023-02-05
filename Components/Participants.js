@@ -183,6 +183,7 @@ export default function Participants() {
   }
 
   function DeleteFriendAlert(props) {
+    setFriends = props.setFriends;
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend;
     const onClose = () => setIsOpen(false);
@@ -307,6 +308,9 @@ export default function Participants() {
               </Button>
             </Modal.Footer>
           </Modal.Content>
+          <Spacer />
+          <Spacer />
+          <Spacer />
         </Modal>
         <VStack space={8} alignItems="center">
           <Button

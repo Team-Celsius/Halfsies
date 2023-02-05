@@ -1,3 +1,4 @@
+
 import {
   Spacer,
   IconButton,
@@ -9,6 +10,7 @@ import {
   ZStack,
   Image,
   Flex,
+  Box
 } from "native-base";
 import {
   MaterialCommunityIcons,
@@ -16,6 +18,7 @@ import {
   FontAwesome5,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+
 import * as ImagePicker from "expo-image-picker";
 import { useState, useRef } from "react";
 import { Camera } from "expo-camera";
@@ -151,3 +154,4 @@ export default function CameraView() {
     </>
   );
 }
+
