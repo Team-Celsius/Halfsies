@@ -15,42 +15,56 @@ import {
   AlertDialog,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import randomColor from "randomcolor";
 import { useState, useRef } from "react";
+import randomColor from "randomcolor";
 import NavBar from "./NavBar";
 
-export default function Participants() {
-  let participants = [];
+export default function Participants(props) {
   let favorites = [];
-  const alphabet = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
-  let [friends, setFriends] = useState([
+  const [participants, setParticipants] = useState([
+    {
+      initials: "SK",
+      name: "Steven King",
+      email: "email",
+      numPaymentRequests: 100,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "JW",
+      name: "Justin Wooley",
+      email: "email",
+      numPaymentRequests: 2000,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "JP",
+      name: "Jason Potvin",
+      email: "email",
+      numPaymentRequests: 4,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "MT",
+      name: "Michael Timo",
+      email: "email",
+      numPaymentRequests: 8,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "AS",
+      name: "Andy Smith",
+      email: "email",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+  ]);
+
+  const [friends, setFriends] = useState([
     {
       initials: "SK",
       name: "Steven King",
@@ -141,37 +155,40 @@ export default function Participants() {
     },
   ]);
 
-  function getInitials(firstName, lastName) {
-    const fInitial = firstName[0];
-    const lInitial = lastName[0];
-
-    return fInitial.concat(lInitial);
-  }
-
-  function joinName(firstName, lastName) {
-    return firstName.concat(" ", lastName);
-  }
-
-  function addfriendData(userId, firstName, lastName, email) {
-    const fullName = joinName(firstName, lastName);
-    const initials = getInitials(firstName, lastName);
-
-    set(ref(db, "users/" + userId + "/friends/" + fullName), {
-      initials: initials,
-      name: fullName,
-      email: email,
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false,
-    });
-  }
+  const alphabet = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
 
   function DeleteFriendAlert(props) {
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend;
     const onClose = () => setIsOpen(false);
     let newFriends = [];
-
     const cancelRef = useRef(null);
     return (
       <Center>
@@ -207,7 +224,6 @@ export default function Participants() {
                 >
                   Cancel
                 </Button>
-                {/***********Remove friend from db***********/}
                 <Button
                   colorScheme="danger"
                   onPress={() => {
@@ -232,36 +248,28 @@ export default function Participants() {
 
   function AddFriendForm() {
     const [modalVisible, setModalVisible] = useState(false);
-    const [newFriendFirstName, setNewFriendFirstName] = useState("");
-    const [newFriendLastName, setNewFriendLastName] = useState("");
+    const [newFriendName, setNewFriendName] = useState("");
     const [newFriendEmail, setNewFriendEmail] = useState("");
-
     return (
       <>
         <Modal
           isOpen={modalVisible}
           onClose={() => setModalVisible(false)}
-          avoidKeyboard
+          avoidKeyboard="true"
           justifyContent="space-around"
           bottom="4"
           size="lg"
         >
+          <Spacer />
           <Modal.Content>
             <Modal.CloseButton />
             <Modal.Header>Don't let them skip out on the bill!</Modal.Header>
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Name</FormControl.Label>
-
-                {/* make first name required */}
                 <Input
-                  onChangeText={(firstName) => {
-                    setNewFriendFirstName(firstName);
-                  }}
-                />
-                <Input
-                  onChangeText={(lastName) => {
-                    setNewFriendLastName(lastName);
+                  onChangeText={(name) => {
+                    setNewFriendName(name);
                   }}
                 />
                 <FormControl.Label>Email</FormControl.Label>
@@ -277,14 +285,27 @@ export default function Participants() {
                 flex="1"
                 onPress={() => {
                   setModalVisible(false);
-                  //******* Create new friend in data base ******* */
-                  addfriendData();
+                  setFriends([
+                    ...friends,
+                    {
+                      //Need to fix initials to auto populate from name property
+                      initials: "JL",
+                      name: newFriendName,
+                      email: newFriendEmail,
+                      numPaymentRequests: 0,
+                      avatarColor: randomColor(),
+                      selected: false,
+                    },
+                  ]);
                 }}
               >
                 Add
               </Button>
             </Modal.Footer>
           </Modal.Content>
+          <Spacer />
+          <Spacer />
+          <Spacer />
         </Modal>
         <VStack space={8} alignItems="center">
           <Button
@@ -300,18 +321,17 @@ export default function Participants() {
       </>
     );
   }
+
   function FavoriteFriendsSection() {
     //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
     for (let i = 0; i < 4; ++i) {
       let currentHighest = friends[0];
-
       //while loop below checks to see if currentHighest is already a favorite
       //if it is, it will keep iterating through the friends array till it finds one
       //that is not already a favorite
       while (favorites.includes(currentHighest)) {
         currentHighest = friends[friends.indexOf(currentHighest) + 1];
       }
-
       friends.map((friend) => {
         if (friends[friends.indexOf(friend) + 1]) {
           let nextFriend = friends[friends.indexOf(friend) + 1];
@@ -324,7 +344,6 @@ export default function Participants() {
           }
         }
       });
-
       if (!favorites.includes(currentHighest)) {
         favorites.push(currentHighest);
       }
@@ -370,7 +389,7 @@ export default function Participants() {
                   <Spacer />
                 </VStack>
                 <Spacer />
-                <DeleteFriendAlert friend={favorite} />
+                <DeleteFriendAlert friend={favorite} setFriends={setFriends} />
               </HStack>
             </>
           );
@@ -434,7 +453,10 @@ export default function Participants() {
                           </Text>
                           <Spacer />
                         </VStack>
-                        <DeleteFriendAlert friend={friend} />
+                        <DeleteFriendAlert
+                          friend={friend}
+                          setFriends={setFriends}
+                        />
                       </HStack>
                     </>
                   );
@@ -463,13 +485,11 @@ export default function Participants() {
       </>
     );
   }
-
   return (
     <>
       <VStack flex={1} space="3">
         <NavBar />
         <AddFriendForm />
-
         <HStack flex={1}>
           <ScrollView>
             <VStack space="4" pl="3">
@@ -481,7 +501,6 @@ export default function Participants() {
               />
             </VStack>
           </ScrollView>
-
           <VStack w="5%">
             <AlphabeticalSideBar alphabet={alphabet} />
           </VStack>

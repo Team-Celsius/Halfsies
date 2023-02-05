@@ -7,7 +7,7 @@ import CameraView from "./Components/Camera/CameraView";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseConfig";
 import { useState } from "react";
-
+import randomColor from "randomcolor";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -35,13 +35,20 @@ export default function App() {
             options={{ title: "Log In" }}
           />
           <Stack.Screen name="Camera" component={CameraView} />
-          <Stack.Screen name="Participants" component={Participants} />
+          <Stack.Screen
+            name="Participants"
+            component={Participants}
+            // initialParams={{
+            //   setFriends: { setFriends },
+            //   friends: { friends },
+            //   participants: { participants },
+            //   setParticipants: { setParticipants },
+            // }}
+          />
         </Stack.Navigator>
         {/* <Flex> */}
-        {/* {isLoggedIn ? <CameraView /> : <LoginPage />} */}
         {/* <CameraView /> */}
-        {/* <Participants /> */}
-        {/* <AssignItems /> */}
+        {/* <AssignItems participants={participants}/> */}
         {/* </Flex> */}
       </NativeBaseProvider>
     </NavigationContainer>
