@@ -24,40 +24,7 @@ import { ref, set, onValue } from "firebase/database";
 import uuid from "react-native-uuid";
 
 export default function Participants() {
-  let [newFriends, setNewFriends] = useState([
-    {
-      initials: "SK",
-      name: "Steven King",
-      email: "email",
-      numPaymentRequests: 100,
-      avatarColor: randomColor(),
-      selected: false,
-    },
-    {
-      initials: "JW",
-      name: "Justin Wooley",
-      email: "email",
-      numPaymentRequests: 2000,
-      avatarColor: randomColor(),
-      selected: false,
-    },
-    {
-      initials: "JP",
-      name: "Jason Potvin",
-      email: "email",
-      numPaymentRequests: 4,
-      avatarColor: randomColor(),
-      selected: false,
-    },
-    {
-      initials: "MT",
-      name: "Michael Timo",
-      email: "email",
-      numPaymentRequests: 8,
-      avatarColor: randomColor(),
-      selected: false,
-    },
-  ]);
+  let [newFriends, setNewFriends] = useState([]);
 
   const userId = auth.currentUser.uid;
   const userFriendsRef = ref(db, "users/" + userId + "/friends/");
@@ -453,7 +420,7 @@ export default function Participants() {
               <Text>Favorites</Text>
               {newFriends.length > 0 ? (
                 <Box>
-                  <FavoriteFriendsSection friends={newFriends} />
+                  {/* <FavoriteFriendsSection friends={newFriends} /> */}
                   <AlphabeticalFriendsSection
                     alphabet={alphabet}
                     friends={newFriends}
