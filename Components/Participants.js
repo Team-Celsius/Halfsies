@@ -93,12 +93,11 @@ export default function Participants() {
   }
 
   function DeleteFriendAlert(props) {
-    const { setFriends } = props;
+    const { setNewFriends } = props;
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend;
     const onClose = () => setIsOpen(false);
     let newFriends = [];
-
     const cancelRef = useRef(null);
     return (
       <Center>
@@ -134,7 +133,6 @@ export default function Participants() {
                 >
                   Cancel
                 </Button>
-                {/***********Remove friend from db***********/}
                 <Button
                   colorScheme="danger"
                   onPress={() => {
@@ -174,7 +172,7 @@ export default function Participants() {
         <Modal
           isOpen={modalVisible}
           onClose={() => setModalVisible(false)}
-          avoidKeyboard
+          avoidKeyboard="true"
           justifyContent="space-around"
           bottom="4"
           size="lg"
@@ -185,7 +183,6 @@ export default function Participants() {
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Name</FormControl.Label>
-
                 {/* make first name required */}
                 <Input
                   onChangeText={(firstName) => {
@@ -226,6 +223,9 @@ export default function Participants() {
           <Spacer />
           <Spacer />
           <Spacer />
+          <Spacer />
+          <Spacer />
+          <Spacer />
         </Modal>
         <VStack space={8} alignItems="center">
           <Button
@@ -247,14 +247,12 @@ export default function Participants() {
     //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
     for (let i = 0; i < 4; ++i) {
       let currentHighest = friends[0];
-
       //while loop below checks to see if currentHighest is already a favorite
       //if it is, it will keep iterating through the friends array till it finds one
       //that is not already a favorite
       while (favorites.includes(currentHighest)) {
         currentHighest = friends[friends.indexOf(currentHighest) + 1];
       }
-
       friends.map((friend) => {
         if (friends[friends.indexOf(friend) + 1]) {
           let nextFriend = friends[friends.indexOf(friend) + 1];
@@ -267,7 +265,6 @@ export default function Participants() {
           }
         }
       });
-
       if (!favorites.includes(currentHighest)) {
         favorites.push(currentHighest);
       }
@@ -313,7 +310,11 @@ export default function Participants() {
                   <Spacer />
                 </VStack>
                 <Spacer />
-                <DeleteFriendAlert friend={favorite} />
+                {/*** might have to change for delete db ***/}
+                <DeleteFriendAlert
+                  friend={favorite}
+                  setFriends={setNewFriends}
+                />
               </HStack>
             </Box>
           );
@@ -375,7 +376,11 @@ export default function Participants() {
                           </Text>
                           <Spacer />
                         </VStack>
-                        <DeleteFriendAlert friend={friend} />
+                        {/*** might have to change for delete db ***/}
+                        <DeleteFriendAlert
+                          friend={friend}
+                          setFriends={setNewFriends}
+                        />
                       </HStack>
                     </Box>
                   );
@@ -403,13 +408,11 @@ export default function Participants() {
       </>
     );
   }
-
   return (
     <>
       <VStack flex={1} space="3">
         <NavBar />
         <AddFriendForm />
-
         <HStack flex={1}>
           <ScrollView>
             <VStack space="4" pl="3">
@@ -425,7 +428,6 @@ export default function Participants() {
               ) : null}
             </VStack>
           </ScrollView>
-
           <VStack w="5%">
             <AlphabeticalSideBar alphabet={alphabet} />
           </VStack>
