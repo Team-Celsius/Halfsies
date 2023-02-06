@@ -5,8 +5,11 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from "firebase/database";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import randomColor from "randomcolor";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SignUpForm() {
+  const navigation = useNavigation();
+
   const {
     control,
     handleSubmit,
@@ -58,6 +61,7 @@ export default function SignUpForm() {
         const user = userCredential.user;
         writeUserData(user.uid, user.email);
         addfriendData(user.uid, data.firstName, data.lastName, data.email);
+        navigation.navigate("Participants");
       })
       .catch((error) => {
         /******** add something to happen on error **********/
@@ -74,6 +78,8 @@ export default function SignUpForm() {
         control={control}
         rules={{
           required: true,
+          minLength: 1,
+          maxLength: 100,
         }}
         render={({ field: { onChange, value } }) => (
           <Input
@@ -92,7 +98,7 @@ export default function SignUpForm() {
         )}
         name="firstName"
       />
-      {errors.email && <Text>Email is required.</Text>}
+      {errors.firstName && <Text>Please add a first name</Text>}
 
       <Controller
         control={control}
@@ -113,7 +119,6 @@ export default function SignUpForm() {
         )}
         name="lastName"
       />
-      {errors.email && <Text>Email is required.</Text>}
 
       <Controller
         control={control}
