@@ -28,12 +28,14 @@ export default function SignUpForm() {
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log("user", user);
         writeUserData(user.uid, user.email);
       })
       .catch((error) => {
+        /******** add something to happen on error **********/
         const errorCode = error.code;
         const errorMessage = error.message;
+        console.log("errorCode: ", errorCode);
+        console.log("errorMessage: ", errorMessage);
       });
   };
 

@@ -23,12 +23,14 @@ import * as ImagePicker from "expo-image-picker";
 import { useState, useRef } from "react";
 import { Camera } from "expo-camera";
 import NavBar from "./../NavBar.js";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CameraView() {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState(null);
   const cameraRef = useRef(null);
   const ExpoCamera = Factory(Camera);
+  const navigation = useNavigation();
 
   if (!permission) {
     // Camera permissions are still loading
@@ -81,6 +83,7 @@ export default function CameraView() {
 
   function confirmPhoto() {
     setCapturedImage(null);
+    navigation.navigate("Participants");
   }
 
   return capturedImage ? (
