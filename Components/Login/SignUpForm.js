@@ -2,7 +2,8 @@ import { Input, Pressable, Text } from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../Firebase/firebaseConfig";
+import { ref, set } from "firebase/database";
+import { auth, db } from "../../Firebase/firebaseConfig";
 
 export default function SignUpForm() {
   const {
@@ -16,12 +17,19 @@ export default function SignUpForm() {
     },
   });
 
+  function writeUserData(userId, email) {
+    set(ref(db, "users/" + userId), {
+      email: email,
+    });
+  }
+
   const onSubmit = (data) => {
     console.log(data);
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
         console.log("user", user);
+        writeUserData(user.uid, user.email);
       })
       .catch((error) => {
         const errorCode = error.code;
