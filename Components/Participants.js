@@ -24,7 +24,40 @@ import { ref, set, onValue } from "firebase/database";
 import uuid from "react-native-uuid";
 
 export default function Participants() {
-  let [newFriends, setNewFriends] = useState([]);
+  let [newFriends, setNewFriends] = useState([
+    {
+      initials: "SK",
+      name: "Steven King",
+      email: "email",
+      numPaymentRequests: 100,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "JW",
+      name: "Justin Wooley",
+      email: "email",
+      numPaymentRequests: 2000,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "JP",
+      name: "Jason Potvin",
+      email: "email",
+      numPaymentRequests: 4,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+    {
+      initials: "MT",
+      name: "Michael Timo",
+      email: "email",
+      numPaymentRequests: 8,
+      avatarColor: randomColor(),
+      selected: false,
+    },
+  ]);
 
   const userId = auth.currentUser.uid;
   const userFriendsRef = ref(db, "users/" + userId + "/friends/");
@@ -32,6 +65,7 @@ export default function Participants() {
   useEffect(() => {
     onValue(userFriendsRef, (snapshot) => {
       const data = snapshot.val();
+      console.log("data", data);
       setNewFriends(Object.values(data));
     });
   }, []);
