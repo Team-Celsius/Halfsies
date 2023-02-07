@@ -134,7 +134,7 @@ export default function Participants() {
 
     return (
       <Center>
-        <Button bg="white" onPress={() => setIsOpen(!isOpen)}>
+        <Button bg="transparent" onPress={() => setIsOpen(!isOpen)}>
           <VStack>
             <Spacer />
             <AntDesign name="deleteuser" size={20} color="black" />
@@ -425,8 +425,7 @@ export default function Participants() {
   }
   return (
     <>
-      <VStack flex={1} space="3">
-        <NavBar />
+      <VStack flex={1} space="3" pt="5">
         <AddFriendForm />
         <ConfirmButton participants={participants} />
         <HStack flex={1}>
