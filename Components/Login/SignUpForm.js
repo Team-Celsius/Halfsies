@@ -40,11 +40,15 @@ export default function SignUpForm() {
     return firstName + " " + lastName;
   }
 
-  function addfriendData(userId, firstName, lastName, email) {
+  function addUserData(userId, firstName, lastName, email) {
     const fullName = joinName(firstName, lastName);
     const initials = getInitials(firstName, lastName);
 
-    set(ref(db, "users/" + userId + "/friends/" + fullName), {
+    const userRef = ref(db, "users/" + userId + "/friends");
+    const newUserRef = push(userRef);
+
+    set(ref(db, "users/" + userId + "/friends"), {
+      userId: newUserRef.key,
       initials: initials,
       name: fullName,
       email: email,
@@ -60,7 +64,7 @@ export default function SignUpForm() {
       .then((userCredential) => {
         const user = userCredential.user;
         writeUserData(user.uid, user.email);
-        addfriendData(user.uid, data.firstName, data.lastName, data.email);
+        addUserData(user.uid, data.firstName, data.lastName, data.email);
         navigation.navigate("Participants");
       })
       .catch((error) => {
