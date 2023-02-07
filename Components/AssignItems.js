@@ -22,8 +22,10 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { useState } from "react";
 import NavBar from "./NavBar";
 import randomColor from "randomcolor";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AssignItems(props) {
+  const navigation = useNavigation();
   let participants = props.route.params.participants;
   const data = [
     {
@@ -291,13 +293,28 @@ export default function AssignItems(props) {
   return (
     <>
       <VStack h="100%">
-        <NavBar />
-        <VStack mt="5">
-          <Heading alignSelf="center" size="lg">
-            Items
-          </Heading>
-          <AddItemManually />
-        </VStack>
+        <HStack mt="5" mb="5">
+          <Spacer />
+          <VStack alignSelf="center">
+            <Heading alignSelf="center" size="lg">
+              Items
+            </Heading>
+            <AddItemManually />
+          </VStack>
+          <Spacer />
+          <VStack>
+            <Spacer />
+            <Button bg="violet.800"
+              onPress={() => {
+                navigation.navigate("balancePage", { participants: participants });
+              }}
+            >
+              Confirm
+            </Button>
+              <Spacer />
+          </VStack>
+          <Spacer />
+        </HStack>
         <SwipeableScrollableMenu />
         {/* Avatar and checkbox section */}
         <VStack>
@@ -320,9 +337,6 @@ export default function AssignItems(props) {
               </VStack>
             </Avatar>
             <Avatar bg="violet.800">+</Avatar>
-          </HStack>
-          <HStack alignSelf="center" p="5">
-            <AntDesign name="checkcircle" size={50} color="black" />
           </HStack>
         </VStack>
       </VStack>

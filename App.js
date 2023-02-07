@@ -4,6 +4,8 @@ import LoginPage from "./Components/Login/LoginPage";
 import Participants from "./Components/Participants";
 import AssignItems from "./Components/AssignItems";
 import CameraView from "./Components/Camera/CameraView";
+import BalancePage from "./Components/BalancePage";
+
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseConfig";
 import { useState } from "react";
@@ -169,6 +171,7 @@ export default function App() {
           <Stack.Screen name="Camera" component={CameraView} />
           <Stack.Screen name="Participants" component={Participants} />
           <Stack.Screen name="AssignItems" component={AssignItems} />
+          <Stack.Screen name="BalancePage" component={BalancePage} />
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>
