@@ -20,17 +20,7 @@ import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import NavBar from "./NavBar";
 import { auth, db } from "../Firebase/firebaseConfig";
-import {
-  ref,
-  set,
-  onValue,
-  remove,
-  push,
-  query,
-  equalTo,
-  orderByChild,
-  orderByKey,
-} from "firebase/database";
+import { ref, set, onValue, remove, push } from "firebase/database";
 import uuid from "react-native-uuid";
 
 export default function Participants() {
@@ -253,31 +243,21 @@ export default function Participants() {
 
   function FavoriteFriendsSection(props) {
     const friends = props.friends;
-    //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
-    for (let i = 0; i < 4; ++i) {
-      let currentHighest = friends[0];
-      //while loop below checks to see if currentHighest is already a favorite
-      //if it is, it will keep iterating through the friends array till it finds one
-      //that is not already a favorite
-      while (favorites.includes(currentHighest)) {
-        currentHighest = friends[friends.indexOf(currentHighest) + 1];
-      }
-      friends.map((friend) => {
-        if (friends[friends.indexOf(friend) + 1]) {
-          let nextFriend = friends[friends.indexOf(friend) + 1];
-          if (
-            currentHighest.numPaymentRequests <=
-              nextFriend.numPaymentRequests &&
-            !favorites.includes(nextFriend)
-          ) {
-            currentHighest = nextFriend;
-          }
+
+    const createFavorites = (friends) => {
+      const sortedFriends = friends.sort(
+        (a, b) => b.numPaymentRequests - a.numPaymentRequests
+      );
+
+      for (let i = 0; i < 4; i++) {
+        if (sortedFriends[i]) {
+          favorites.push(sortedFriends[i]);
         }
-      });
-      if (!favorites.includes(currentHighest)) {
-        favorites.push(currentHighest);
       }
-    }
+    };
+
+    createFavorites(friends);
+
     return (
       <>
         {/* The map below renders the sorted favorites array  */}
@@ -420,7 +400,7 @@ export default function Participants() {
               <Text>Favorites</Text>
               {newFriends.length > 0 ? (
                 <Box>
-                  {/* <FavoriteFriendsSection friends={newFriends} /> */}
+                  <FavoriteFriendsSection friends={newFriends} />
                   <AlphabeticalFriendsSection
                     alphabet={alphabet}
                     friends={newFriends}
