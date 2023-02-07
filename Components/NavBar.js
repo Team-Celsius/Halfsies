@@ -3,7 +3,6 @@ import {
 	HStack,
 	StatusBar,
 	IconButton,
-	HamburgerIcon,
 	CloseIcon,
 	Spacer,
 } from "native-base";
