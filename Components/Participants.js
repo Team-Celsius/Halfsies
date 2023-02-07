@@ -18,7 +18,6 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
-import NavBar from "./NavBar";
 import { auth, db } from "../Firebase/firebaseConfig";
 import { ref, set, onValue, remove, push, update } from "firebase/database";
 import uuid from "react-native-uuid";
@@ -71,10 +70,14 @@ export default function Participants() {
 
   //fix if input one if just have first name
   function getInitials(firstName, lastName) {
-    const fInitial = firstName[0];
-    const lInitial = lastName[0];
+    if (lastName) {
+      const fInitial = firstName[0];
+      const lInitial = lastName[0];
 
-    return fInitial.concat(lInitial);
+      return fInitial.concat(lInitial);
+    } else {
+      return firstName[0];
+    }
   }
 
   //fix for if theres only one name
@@ -361,8 +364,8 @@ export default function Participants() {
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
                               } else {
-                                participants = participants.filter((friend) => {
-                                  return friend != favorite;
+                                participants = participants.filter((person) => {
+                                  return person != friend;
                                 });
                               }
                             }
