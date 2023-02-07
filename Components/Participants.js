@@ -112,12 +112,11 @@ export default function Participants() {
   }
 
   addUserToParticipants(newFriends);
-
+  
   function ConfirmButton() {
     return (
       <VStack space={8} alignItems="center">
         <Button
-          w="50%"
           bg="violet.800"
           onPress={() => {
             navigation.navigate("AssignItems", { participants: participants });
@@ -259,7 +258,6 @@ export default function Participants() {
         </Modal>
         <VStack space={8} alignItems="center">
           <Button
-            w="50%"
             bg="violet.800"
             onPress={() => {
               setModalVisible(!modalVisible);
@@ -363,6 +361,7 @@ export default function Participants() {
                               friend.selected = !friend.selected;
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
+                                console.log(participants)
                               } else {
                                 participants = participants.filter((person) => {
                                   return person != friend;
@@ -429,8 +428,13 @@ export default function Participants() {
   return (
     <>
       <VStack flex={1} space="3" pt="5">
-        <AddFriendForm />
-        <ConfirmButton participants={participants} />
+        <HStack>
+          <Spacer />
+          <AddFriendForm/>
+          <Spacer />
+          <ConfirmButton participants={participants} />
+          <Spacer />
+        </HStack>
         <HStack flex={1}>
           <ScrollView>
             <VStack space="4" pl="3">
