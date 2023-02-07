@@ -20,7 +20,7 @@ import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import NavBar from "./NavBar";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue } from "firebase/database";
+import { ref, set, onValue, remove } from "firebase/database";
 import uuid from "react-native-uuid";
 
 export default function Participants() {
@@ -101,7 +101,7 @@ export default function Participants() {
     const cancelRef = useRef(null);
     return (
       <Center>
-        <Button bg="white" onPress={() => setIsOpen(!isOpen)}>
+        <Button bg="transparent" onPress={() => setIsOpen(!isOpen)}>
           <VStack>
             <Spacer />
             <AntDesign name="deleteuser" size={20} color="black" />
@@ -137,17 +137,11 @@ export default function Participants() {
                   colorScheme="danger"
                   onPress={() => {
                     onClose;
-                    // const friendRef = ref(
-                    //   db,
-                    //   "users/" + userId + "/friends/" + friend.name
-                    // );
-                    // remove(friendRef);
-                    // friends.map((currentFriend) => {
-                    //   if (currentFriend.name !== friend.name) {
-                    //     newFriends.push(currentFriend);
-                    //   }
-                    // });
-                    // setFriends(newFriends);
+                    const friendRef = ref(
+                      db,
+                      "users/" + userId + "/friends/" + friend.name
+                    );
+                    remove(friendRef);
                   }}
                 >
                   Delete
@@ -310,7 +304,6 @@ export default function Participants() {
                   <Spacer />
                 </VStack>
                 <Spacer />
-                {/*** might have to change for delete db ***/}
                 <DeleteFriendAlert
                   friend={favorite}
                   setFriends={setNewFriends}
@@ -376,7 +369,6 @@ export default function Participants() {
                           </Text>
                           <Spacer />
                         </VStack>
-                        {/*** might have to change for delete db ***/}
                         <DeleteFriendAlert
                           friend={friend}
                           setFriends={setNewFriends}
@@ -410,8 +402,7 @@ export default function Participants() {
   }
   return (
     <>
-      <VStack flex={1} space="3">
-        <NavBar />
+      <VStack flex={1} space="3" pt="5">
         <AddFriendForm />
         <HStack flex={1}>
           <ScrollView>
