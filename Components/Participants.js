@@ -18,12 +18,13 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
-import NavBar from "./NavBar";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue, remove } from "firebase/database";
+import { ref, set, onValue, remove, push, update } from "firebase/database";
 import uuid from "react-native-uuid";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Participants() {
+  const navigation = useNavigation();
   let [newFriends, setNewFriends] = useState([]);
 
   const userId = auth.currentUser.uid;
@@ -67,13 +68,19 @@ export default function Participants() {
     "Z",
   ];
 
+  //fix if input one if just have first name
   function getInitials(firstName, lastName) {
-    const fInitial = firstName[0];
-    const lInitial = lastName[0];
+    if (lastName) {
+      const fInitial = firstName[0];
+      const lInitial = lastName[0];
 
-    return fInitial.concat(lInitial);
+      return fInitial.concat(lInitial);
+    } else {
+      return firstName[0];
+    }
   }
 
+  //fix for if theres only one name
   function joinName(firstName, lastName) {
     return firstName + " " + lastName;
   }
@@ -82,7 +89,11 @@ export default function Participants() {
     const fullName = joinName(firstName, lastName);
     const initials = getInitials(firstName, lastName);
 
-    set(ref(db, "users/" + userId + "/friends/" + fullName), {
+    const friendRef = ref(db, "users/" + userId + "/friends");
+    const newFriendRef = push(friendRef);
+
+    set(newFriendRef, {
+      userId: newFriendRef.key,
       initials: initials,
       name: fullName,
       email: email,
@@ -92,13 +103,38 @@ export default function Participants() {
     });
   }
 
+  function addUserToParticipants(friends) {
+    friends.forEach((friend) => {
+      if (friend.selected) {
+        participants.push(friend);
+      }
+    });
+  }
+
+  addUserToParticipants(newFriends);
+
+  function ConfirmButton() {
+    return (
+      <VStack space={8} alignItems="center">
+        <Button
+          w="50%"
+          bg="violet.800"
+          onPress={() => {
+            navigation.navigate("AssignItems", { participants: participants });
+          }}
+        >
+          Confirm
+        </Button>
+      </VStack>
+    );
+  }
+
   function DeleteFriendAlert(props) {
-    const { setNewFriends } = props;
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend;
     const onClose = () => setIsOpen(false);
-    let newFriends = [];
     const cancelRef = useRef(null);
+
     return (
       <Center>
         <Button bg="transparent" onPress={() => setIsOpen(!isOpen)}>
@@ -139,7 +175,7 @@ export default function Participants() {
                     onClose;
                     const friendRef = ref(
                       db,
-                      "users/" + userId + "/friends/" + friend.name
+                      "users/" + userId + "/friends/" + friend.userId
                     );
                     remove(friendRef);
                   }}
@@ -238,31 +274,21 @@ export default function Participants() {
 
   function FavoriteFriendsSection(props) {
     const friends = props.friends;
-    //The for/map combo below organizes the friends in order of how many times you've sent them a payment request
-    for (let i = 0; i < 4; ++i) {
-      let currentHighest = friends[0];
-      //while loop below checks to see if currentHighest is already a favorite
-      //if it is, it will keep iterating through the friends array till it finds one
-      //that is not already a favorite
-      while (favorites.includes(currentHighest)) {
-        currentHighest = friends[friends.indexOf(currentHighest) + 1];
-      }
-      friends.map((friend) => {
-        if (friends[friends.indexOf(friend) + 1]) {
-          let nextFriend = friends[friends.indexOf(friend) + 1];
-          if (
-            currentHighest.numPaymentRequests <=
-              nextFriend.numPaymentRequests &&
-            !favorites.includes(nextFriend)
-          ) {
-            currentHighest = nextFriend;
-          }
+
+    const createFavorites = (friends) => {
+      const sortedFriends = friends.sort(
+        (a, b) => b.numPaymentRequests - a.numPaymentRequests
+      );
+
+      for (let i = 0; i < 4; i++) {
+        if (sortedFriends[i]) {
+          favorites.push(sortedFriends[i]);
         }
-      });
-      if (!favorites.includes(currentHighest)) {
-        favorites.push(currentHighest);
       }
-    }
+    };
+
+    createFavorites(friends);
+
     return (
       <>
         {/* The map below renders the sorted favorites array  */}
@@ -278,7 +304,9 @@ export default function Participants() {
                       if (!participants.includes(favorite)) {
                         participants.push(favorite);
                       } else {
-                        participants[participants.indexOf(favorite)] = {};
+                        participants = participants.filter((friend) => {
+                          return friend != favorite;
+                        });
                       }
                     }
                     return (
@@ -304,10 +332,7 @@ export default function Participants() {
                   <Spacer />
                 </VStack>
                 <Spacer />
-                <DeleteFriendAlert
-                  friend={favorite}
-                  setFriends={setNewFriends}
-                />
+                {favorite.user ? null : <DeleteFriendAlert friend={favorite} />}
               </HStack>
             </Box>
           );
@@ -339,7 +364,9 @@ export default function Participants() {
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
                               } else {
-                                participants[participants.indexOf(friend)] = {};
+                                participants = participants.filter((person) => {
+                                  return person != friend;
+                                });
                               }
                             }
                             return (
@@ -369,10 +396,9 @@ export default function Participants() {
                           </Text>
                           <Spacer />
                         </VStack>
-                        <DeleteFriendAlert
-                          friend={friend}
-                          setFriends={setNewFriends}
-                        />
+                        {friend.user ? null : (
+                          <DeleteFriendAlert friend={friend} />
+                        )}
                       </HStack>
                     </Box>
                   );
@@ -404,6 +430,7 @@ export default function Participants() {
     <>
       <VStack flex={1} space="3" pt="5">
         <AddFriendForm />
+        <ConfirmButton participants={participants} />
         <HStack flex={1}>
           <ScrollView>
             <VStack space="4" pl="3">
@@ -419,9 +446,6 @@ export default function Participants() {
               ) : null}
             </VStack>
           </ScrollView>
-          <VStack w="5%">
-            <AlphabeticalSideBar alphabet={alphabet} />
-          </VStack>
         </HStack>
       </VStack>
     </>
