@@ -20,7 +20,17 @@ import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import NavBar from "./NavBar";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue, remove } from "firebase/database";
+import {
+  ref,
+  set,
+  onValue,
+  remove,
+  push,
+  query,
+  equalTo,
+  orderByChild,
+  orderByKey,
+} from "firebase/database";
 import uuid from "react-native-uuid";
 
 export default function Participants() {
@@ -67,6 +77,7 @@ export default function Participants() {
     "Z",
   ];
 
+  //fix if input one if just have first name
   function getInitials(firstName, lastName) {
     const fInitial = firstName[0];
     const lInitial = lastName[0];
@@ -74,6 +85,7 @@ export default function Participants() {
     return fInitial.concat(lInitial);
   }
 
+  //fix for if theres only one name
   function joinName(firstName, lastName) {
     return firstName + " " + lastName;
   }
@@ -82,7 +94,11 @@ export default function Participants() {
     const fullName = joinName(firstName, lastName);
     const initials = getInitials(firstName, lastName);
 
-    set(ref(db, "users/" + userId + "/friends/" + fullName), {
+    const friendRef = ref(db, "users/" + userId + "/friends");
+    const newFriendRef = push(friendRef);
+
+    set(newFriendRef, {
+      userId: newFriendRef.key,
       initials: initials,
       name: fullName,
       email: email,
@@ -93,12 +109,11 @@ export default function Participants() {
   }
 
   function DeleteFriendAlert(props) {
-    const { setNewFriends } = props;
     const [isOpen, setIsOpen] = useState(false);
     const friend = props.friend;
     const onClose = () => setIsOpen(false);
-    let newFriends = [];
     const cancelRef = useRef(null);
+
     return (
       <Center>
         <Button bg="white" onPress={() => setIsOpen(!isOpen)}>
@@ -139,7 +154,7 @@ export default function Participants() {
                     onClose;
                     const friendRef = ref(
                       db,
-                      "users/" + userId + "/friends/" + friend.name
+                      "users/" + userId + "/friends/" + friend.userId
                     );
                     remove(friendRef);
                   }}
