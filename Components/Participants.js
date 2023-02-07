@@ -20,10 +20,12 @@ import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import NavBar from "./NavBar";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue, remove, push } from "firebase/database";
+import { ref, set, onValue, remove, push, update } from "firebase/database";
 import uuid from "react-native-uuid";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Participants() {
+  const navigation = useNavigation();
   let [newFriends, setNewFriends] = useState([]);
 
   const userId = auth.currentUser.uid;
@@ -96,6 +98,32 @@ export default function Participants() {
       avatarColor: randomColor(),
       selected: false,
     });
+  }
+
+  function addUserToParticipants(friends) {
+    friends.forEach((friend) => {
+      if (friend.selected) {
+        participants.push(friend);
+      }
+    });
+  }
+
+  addUserToParticipants(newFriends);
+
+  function ConfirmButton() {
+    return (
+      <VStack space={8} alignItems="center">
+        <Button
+          w="50%"
+          bg="violet.800"
+          onPress={() => {
+            navigation.navigate("AssignItems", { participants: participants });
+          }}
+        >
+          Confirm
+        </Button>
+      </VStack>
+    );
   }
 
   function DeleteFriendAlert(props) {
@@ -273,7 +301,9 @@ export default function Participants() {
                       if (!participants.includes(favorite)) {
                         participants.push(favorite);
                       } else {
-                        participants[participants.indexOf(favorite)] = {};
+                        participants = participants.filter((friend) => {
+                          return friend != favorite;
+                        });
                       }
                     }
                     return (
@@ -319,6 +349,9 @@ export default function Participants() {
               <Divider w="100%" alignSelf="center" />
               {/* The map below renders the friends array alphabetically  */}
               {friends.map((friend) => {
+                {
+                  /** changed friend.name => friend.name[0] **/
+                }
                 if (friend.name[0] === letter && !favorites.includes(friend)) {
                   return (
                     <Box key={uuid.v4()}>
@@ -331,7 +364,9 @@ export default function Participants() {
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
                               } else {
-                                participants[participants.indexOf(friend)] = {};
+                                participants = participants.filter((friend) => {
+                                  return friend != favorite;
+                                });
                               }
                             }
                             return (
@@ -361,7 +396,7 @@ export default function Participants() {
                           </Text>
                           <Spacer />
                         </VStack>
-                        {favorite.user ? null : (
+                        {friend.user ? null : (
                           <DeleteFriendAlert friend={friend} />
                         )}
                       </HStack>
@@ -396,6 +431,7 @@ export default function Participants() {
       <VStack flex={1} space="3">
         <NavBar />
         <AddFriendForm />
+        <ConfirmButton participants={participants} />
         <HStack flex={1}>
           <ScrollView>
             <VStack space="4" pl="3">
@@ -411,9 +447,6 @@ export default function Participants() {
               ) : null}
             </VStack>
           </ScrollView>
-          <VStack w="5%">
-            <AlphabeticalSideBar alphabet={alphabet} />
-          </VStack>
         </HStack>
       </VStack>
     </>
