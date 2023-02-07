@@ -299,7 +299,7 @@ export default function Participants() {
                   <Spacer />
                 </VStack>
                 <Spacer />
-                <DeleteFriendAlert friend={favorite} />
+                {favorite.user ? null : <DeleteFriendAlert friend={favorite} />}
               </HStack>
             </Box>
           );
@@ -361,7 +361,9 @@ export default function Participants() {
                           </Text>
                           <Spacer />
                         </VStack>
-                        <DeleteFriendAlert friend={friend} />
+                        {favorite.user ? null : (
+                          <DeleteFriendAlert friend={friend} />
+                        )}
                       </HStack>
                     </Box>
                   );
