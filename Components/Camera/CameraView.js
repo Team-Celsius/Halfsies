@@ -24,7 +24,7 @@ import { useState, useRef } from "react";
 import { Camera } from "expo-camera";
 import NavBar from "./../NavBar.js";
 import { useNavigation } from "@react-navigation/native";
-import callGoogleVisionAsync from "../../OCR/GCV.js";
+import processOcrRequest from "../../OCR/GCV.js";
 
 export default function CameraView() {
   
@@ -70,18 +70,19 @@ export default function CameraView() {
     if (cameraRef.current) {
       const options = { quality: 1, base64: true };
       const data = await cameraRef.current.takePictureAsync(options);
-      console.log(data);
+      data.isUserTaken = false;
       setCapturedImage(data);
     }
   }
 
   async function pickImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.ALL,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       base64: true,
     });
 
     if (!result.canceled) {
+      result.isUserTaken = true;
       setCapturedImage(result);
       setUserUploaded = true;
     }
@@ -91,17 +92,13 @@ export default function CameraView() {
     setCapturedImage(null);
   }
 
-  function confirmPhoto() {
-    let test = callGoogleVisionAsync(capturedImage, true);
-    console.log(test);
+  async function confirmPhoto () {
+    let ocrResults = await processOcrRequest(capturedImage);
     setCapturedImage(null);
-    // if image is confirmed, run the OCR/parse fns
-    // navigate to assignItems w/ parsed data.
-    // navigate('Profile', { names: ['Brent', 'Satya', 'Michaś'] })
-    // name - A destination name of the route that has been defined somewhere
-    // params - Params to pass to the destination route.
-
-    // navigation.navigate("AssignItems");
+    if (ocrResults.items[0]) {
+      navigation.navigate("Participants", {ocrResults: ocrResults}) // nav to participants
+    }
+      // Else, retake the image, prompt w/ a message 'please try again' ?
   }
 
   return capturedImage ? (

@@ -31,7 +31,9 @@ export default function AssignItems(props) {
   const navigation = useNavigation();
   let [ participants, setParticipants ] = useState(props.route.params.participants);
 
-  const data = [
+  const data = props.route.params.ocrResults.items;
+
+  const testData = [
     {
       key: 1,
       qty: 1,

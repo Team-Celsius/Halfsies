@@ -1,7 +1,7 @@
 let thresholdNum = 20; // This variable is super important for picking up prices on slanted receipts.
 
 
-let badWords = ['tel', 'fax', 'tax', 'vat', 'subtotal', 'sub total', 'items', 'tendered', 'cash tendered', 'ticket', 'discount', 'gratuity', 'credit card', 'credit', 'debit', 'saved', 'you saved', 'you', 'promotion', 'delivery', 'surcharge', 'change', 'service']
+let badWords = ['tel', 'fax', 'tax', 'vat', 'subtotal', 'sub total', 'items', 'cash tendered', 'ticket', 'discount', 'gratuity', 'credit card', 'credit', 'debit', 'saved', 'you saved', 'promotion', 'delivery', 'surcharge', 'change', 'service']
 // badwords - potential adds: credit card, saved, gratuity/tip??, 
 
 const getPrice = (item) => {
@@ -25,8 +25,6 @@ const itemizeList = (list) => {
         // list[i] = '1 Hamburger $8.00'
 
         let item = list[i];
-
-        console.log(item);
 
         let badStrCheck = item.toLowerCase();
 
@@ -54,14 +52,21 @@ const itemizeList = (list) => {
 
         let itemObj = {
             qty: parseInt(qty),
-            item: itemDetails,
+            description: itemDetails,
             price: parseFloat(price),
+            selected: false,
+            users: []
         };
         order.items.push(itemObj);
     }
+    
     if (typeof order.total !== 'number') {
         let newTotal = order.total.replace(/[A-Za-z$]+/g, ' '); // Replaces all text w/ whitespace.
         order.total = parseFloat(newTotal.trim()); // Should provide a full decimal (88.62) for total. If not, look here first.
+    }
+
+    for (let i = 0; i < order.items.length; i++) {
+        order.items[i].key = i;
     }
     return order
 };
@@ -92,12 +97,9 @@ const parser = (json, isUserUploaded) => {
         coordToCheck = 'y';
     }
 
-    console.log(json);
-
     let array = json.responses[0].textAnnotations;
 
     if (json.responses[0].fullTextAnnotation.pages[0].confidence < .95) thresholdNum = 15;
-    // default value is 20, so lets see if this works!
 
     // if json.fullTextAnnotation.pages[0].confidence is less than .95, decrease threshold by 5.
     
@@ -120,7 +122,6 @@ const parser = (json, isUserUploaded) => {
         obj[checkCoordvalue] += char + ' ';
     } // ******* Somewhere around here, sort the list by X-val so all words are in order. Is this even needed still? Regex handles all of this.
 
-    console.log(obj);
     const parsedResults = removeLinesWithoutPrice(Object.values(obj));
     let results = itemizeList(parsedResults);
 
