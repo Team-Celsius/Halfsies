@@ -372,7 +372,6 @@ export default function Participants() {
                               friend.selected = !friend.selected;
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
-                                console.log(participants);
                               } else {
                                 participants = participants.filter((person) => {
                                   return person != friend;
