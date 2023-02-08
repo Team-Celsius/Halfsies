@@ -11,6 +11,7 @@ import { useState } from "react";
 export default function SignUpForm() {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const {
     control,
@@ -62,7 +63,7 @@ export default function SignUpForm() {
   }
 
   const onSubmit = (data) => {
-    createUserWithEmailAndPassword(auth, data.email, data.password)
+    createUserWithEmailAndPassword(auth, data.email.trim(), data.password)
       .then((userCredential) => {
         const user = userCredential.user;
         writeUserData(user.uid, user.email);
@@ -74,11 +75,19 @@ export default function SignUpForm() {
         const errorMessage = error.message;
         if (errorCode) {
           console.log(errorCode);
+          setErrorText(errorTextCreator(errorCode));
           setModalVisible(true);
-          //add handler for invalid email
         }
       });
   };
+
+  function errorTextCreator(errorCode) {
+    if (errorCode === "auth/invalid-email") {
+      return "Email invalid";
+    } else if (errorCode === "auth/email-already-in-use") {
+      return "Sorry email already in use";
+    }
+  }
 
   function SignUpError() {
     return (
@@ -89,7 +98,7 @@ export default function SignUpForm() {
             <Modal.Header>Error</Modal.Header>
             <Modal.Body>
               <ScrollView>
-                <Text>This Email is already in use</Text>
+                <Text>{errorText}</Text>
               </ScrollView>
             </Modal.Body>
             <Modal.Footer>
