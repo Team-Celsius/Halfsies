@@ -1,14 +1,17 @@
-import { Input, Pressable, Text } from "native-base";
+import { Input, Pressable, Text, Modal, Button, ScrollView } from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import randomColor from "randomcolor";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 
 export default function SignUpForm() {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const {
     control,
@@ -25,7 +28,7 @@ export default function SignUpForm() {
 
   function writeUserData(userId, email) {
     set(ref(db, "users/" + userId), {
-      email: email,
+      email: email.trim(),
     });
   }
 
@@ -51,7 +54,7 @@ export default function SignUpForm() {
       userId: newUserRef.key,
       initials: initials,
       name: fullName,
-      email: email,
+      email: email.trim(),
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: true,
@@ -60,7 +63,7 @@ export default function SignUpForm() {
   }
 
   const onSubmit = (data) => {
-    createUserWithEmailAndPassword(auth, data.email, data.password)
+    createUserWithEmailAndPassword(auth, data.email.trim(), data.password)
       .then((userCredential) => {
         const user = userCredential.user;
         writeUserData(user.uid, user.email);
@@ -68,16 +71,57 @@ export default function SignUpForm() {
         navigation.navigate("Participants");
       })
       .catch((error) => {
-        /******** add something to happen on error **********/
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log("errorCode: ", errorCode);
-        console.log("errorMessage: ", errorMessage);
+        if (errorCode) {
+          console.log(errorCode);
+          setErrorText(errorTextCreator(errorCode));
+          setModalVisible(true);
+        }
       });
   };
 
+  function errorTextCreator(errorCode) {
+    if (errorCode === "auth/invalid-email") {
+      return "Email invalid";
+    } else if (errorCode === "auth/email-already-in-use") {
+      return "Sorry email already in use";
+    }
+  }
+
+  function SignUpError() {
+    return (
+      <>
+        <Modal isOpen={modalVisible} onClose={setModalVisible} size="sm">
+          <Modal.Content maxH="212">
+            <Modal.CloseButton />
+            <Modal.Header>Error</Modal.Header>
+            <Modal.Body>
+              <ScrollView>
+                <Text>{errorText}</Text>
+              </ScrollView>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  backgroundColor="violet.800"
+                  onPress={() => {
+                    setModalVisible(false);
+                  }}
+                >
+                  Close
+                </Button>
+              </Button.Group>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </>
+    );
+  }
+
   return (
     <View>
+      <SignUpError />
       <Controller
         control={control}
         rules={{
@@ -102,7 +146,11 @@ export default function SignUpForm() {
         )}
         name="firstName"
       />
-      {errors.firstName && <Text>Please add a first name</Text>}
+      {errors.firstName && (
+        <Text textAlign="center" color="danger.700" fontSize="md">
+          Please add a first name
+        </Text>
+      )}
 
       <Controller
         control={control}
@@ -128,7 +176,7 @@ export default function SignUpForm() {
         control={control}
         rules={{
           required: true,
-          pattern: /^\S+@\S+$/i,
+          pattern: /^\S+@\S+/i,
         }}
         render={({ field: { onChange, value } }) => (
           <Input
@@ -147,7 +195,11 @@ export default function SignUpForm() {
         )}
         name="email"
       />
-      {errors.email && <Text>Email is required.</Text>}
+      {errors.email && (
+        <Text textAlign="center" color="danger.700" fontSize="md">
+          Please enter a valid email
+        </Text>
+      )}
 
       <Controller
         control={control}
@@ -173,7 +225,11 @@ export default function SignUpForm() {
         )}
         name="password"
       />
-      {errors.password && <Text>Password is required.</Text>}
+      {errors.password && (
+        <Text textAlign="center" color="danger.700" fontSize="md">
+          Please enter a password
+        </Text>
+      )}
       <Text textAlign="center" color="white">
         Password must be over 6 characters
       </Text>

@@ -33,7 +33,15 @@ export default function Participants() {
   useEffect(() => {
     onValue(userFriendsRef, (snapshot) => {
       const data = snapshot.val();
-      setNewFriends(Object.values(data));
+      if (
+        Object.values(data).some((e) =>
+          Object.keys(e).some((e) => e === "name")
+        )
+      ) {
+        setNewFriends(Object.values(data));
+      } else {
+        setNewFriends([data]);
+      }
     });
   }, []);
 
@@ -350,6 +358,9 @@ export default function Participants() {
               <Divider w="100%" alignSelf="center" />
               {/* The map below renders the friends array alphabetically  */}
               {friends.map((friend) => {
+                {
+                  /**** change friend.name[0] ****/
+                }
                 if (friend.name[0] === letter && !favorites.includes(friend)) {
                   return (
                     <Box key={uuid.v4()}>
