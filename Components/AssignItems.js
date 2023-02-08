@@ -15,37 +15,38 @@ import {
   Button,
   Select,
   CheckIcon,
-  Flex,
   ZStack,
 } from "native-base";
 import { MaterialCommunityIcons, AntDesign, Feather } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { ref, set, onValue, remove, push } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
+import uuid from "react-native-uuid";
 
 export default function AssignItems(props) {
   let currentItem = {};
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  const userFriendsRef = ref(db, "users/" + userId + "/friends/");
 
   let [participants, setParticipants] = useState(
     props.route.params.participants
   );
 
-  function addItemsData(userId, listData) {
+  function addItemsData(userId, listData, uuid) {
     const itemRef = ref(db, "users/" + userId + "/items");
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
-      data.users = Object.assign({}, data.users);
-      console.log(data.users);
-      // const newItemRef = push(itemRef);
-      // set(newItemRef, {
-      //   data,
-      //   itemUid: newItemRef.key,
-      // });
+      data.users = data.users.reduce((accumulator, value) => {
+        const newUuid = uuid.v4();
+        return { ...accumulator, [newUuid]: value };
+      }, {});
+      const newItemRef = push(itemRef);
+      set(newItemRef, {
+        data,
+        itemUid: newItemRef.key,
+      });
     });
   }
 
@@ -359,13 +360,13 @@ export default function AssignItems(props) {
             </Heading>
             <HStack space="5">
               <AddItemManually />
-              {/******************** write call to db to add *******************/}
               <Button
                 bg="violet.800"
                 onPress={() => {
-                  //console.log(listData);
-                  addItemsData(userId, listData);
-                  //navigation.navigate("BalancePage", { participants: participants });
+                  addItemsData(userId, listData, uuid);
+                  navigation.navigate("BalancePage", {
+                    participants: participants,
+                  });
                 }}
               >
                 Confirm
