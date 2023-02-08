@@ -23,8 +23,14 @@ import { ref, set, onValue, remove, push } from "firebase/database";
 import uuid from "react-native-uuid";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Participants() {
+export default function Participants(props) {
   const navigation = useNavigation();
+  let ocrResults = null;
+
+  if (props.route?.params?.ocrResults) { // equiv of (props.route.params && props.route.params.ocrResults)
+    ocrResults = props.route.params.ocrResults;
+  }
+
   let [newFriends, setNewFriends] = useState([]);
 
   const userId = auth.currentUser.uid;
@@ -127,7 +133,7 @@ export default function Participants() {
         <Button
           bg="violet.800"
           onPress={() => {
-            navigation.navigate("AssignItems", { participants: participants });
+            navigation.navigate("AssignItems", { participants: participants, ocrResults: ocrResults });
           }}
         >
           Confirm

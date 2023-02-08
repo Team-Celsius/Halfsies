@@ -24,10 +24,13 @@ import { useState, useRef } from "react";
 import { Camera } from "expo-camera";
 import NavBar from "./../NavBar.js";
 import { useNavigation } from "@react-navigation/native";
+import processOcrRequest from "../../OCR/GCV.js";
 
 export default function CameraView() {
+  
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState(null);
+  const [userUploaded, setUserUploaded] = useState(false);
   const cameraRef = useRef(null);
   const ExpoCamera = Factory(Camera);
   const navigation = useNavigation();
@@ -39,6 +42,8 @@ export default function CameraView() {
 
   if (!permission.granted) {
     // Camera permissions are not granted yet
+    // requestPermission(); automatically requests permissions
+    // for some reason, pressing the btn doesnt work on my end :(
     return (
       <VStack h="100%">
         <NavBar />
@@ -65,15 +70,21 @@ export default function CameraView() {
     if (cameraRef.current) {
       const options = { quality: 1, base64: true };
       const data = await cameraRef.current.takePictureAsync(options);
+      data.isUserTaken = false;
       setCapturedImage(data);
     }
   }
 
   async function pickImage() {
-    let result = await ImagePicker.launchImageLibraryAsync();
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      base64: true,
+    });
 
     if (!result.canceled) {
+      result.isUserTaken = true;
       setCapturedImage(result);
+      setUserUploaded = true;
     }
   }
 
@@ -81,9 +92,13 @@ export default function CameraView() {
     setCapturedImage(null);
   }
 
-  function confirmPhoto() {
+  async function confirmPhoto () {
+    let ocrResults = await processOcrRequest(capturedImage);
     setCapturedImage(null);
-    navigation.navigate("Participants");
+    if (ocrResults.items[0]) {
+      navigation.navigate("Participants", {ocrResults: ocrResults}) // nav to participants
+    }
+      // Else, retake the image, prompt w/ a message 'please try again' ?
   }
 
   return capturedImage ? (
