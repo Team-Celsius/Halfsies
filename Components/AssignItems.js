@@ -16,66 +16,90 @@ import {
   Select,
   CheckIcon,
   Flex,
+  ZStack,
 } from "native-base";
 import { MaterialCommunityIcons, AntDesign, Feather } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useState } from "react";
 import NavBar from "./NavBar";
 import randomColor from "randomcolor";
+import { useNavigation } from "@react-navigation/native";
+import { update } from "firebase/database";
 
 export default function AssignItems(props) {
-  let participants = props.route.params.participants;
+  let currentItem = {}
+  const navigation = useNavigation();
+  let [ participants, setParticipants ] = useState(props.route.params.participants);
+
   const data = [
     {
       key: 1,
       qty: 1,
       description: "Chicken Sandwich",
       price: "$14",
+      selected: false,
+      users: []
     },
     {
       key: 2,
       qty: 2,
       description: "Cheeseburger",
       price: "$12",
+      selected: false,
+      users: []
     },
     {
       key: 3,
       qty: 1,
       description: "Steak",
       price: "$40",
+      selected: false,
+      users: []
     },
     {
       key: 4,
       qty: 2,
       description: "Salad",
       price: "$12",
+      selected: false,
+      users: []
     },
     {
       key: 5,
       qty: 6,
       description: "Ice Cream",
       price: "$10",
+      selected: false,
+      users: []
     },
     {
       key: 6,
       qty: 6,
       description: "Ice Cream",
       price: "$10",
+      selected: false,
+      users: []
     },
     {
       key: 7,
       qty: 6,
       description: "Ice Cream",
       price: "$10",
+      selected: false,
+      users: []
     },
     {
       key: 8,
       qty: 6,
       description: "Ice Cream",
       price: "$10",
+      selected: false,
+      users: []
     },
   ];
+
   const [listData, setListData] = useState(data);
+  //eventually want to make it so that it does not scroll up after deleting an item
   function SwipeableScrollableMenu() {
     function closeRow(rowMap, rowKey) {
       if (rowMap[rowKey]) {
@@ -90,9 +114,26 @@ export default function AssignItems(props) {
       setListData(newData);
     }
     function renderItem({ item }) {
+      let newData = [...listData]
+      let newParticipants = [...participants]
       return (
         <Box>
-          <Pressable _dark={{ bg: "coolGray.800" }} _light={{ bg: "white" }}>
+          <Pressable bgColor="white" onPress={() => {
+            participants.map((participant) => {
+            newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected
+
+              if((participant.selected === true) && (!item.users.includes(participant))) {
+                newData[newData.indexOf(item)].users.push(participant)
+                newParticipants[newParticipants.indexOf(participant)].selected = false
+                setParticipants(newParticipants)
+              }
+              else if((participant.selected === true) && (item.users.includes(participant))) {
+                newParticipants[newParticipants.indexOf(participant)].selected = false
+                setParticipants(newParticipants)
+              }
+            })
+            setListData(newData)
+          }}>
             <VStack m="4">
               <HStack p="3">
                 <Text>{item.qty}</Text>
@@ -101,12 +142,23 @@ export default function AssignItems(props) {
                 <Spacer />
                 <Text>{item.price}</Text>
               </HStack>
-              <HStack space="1" alignSelf="center">
-                <Avatar size="sm" bg="yellow.500">
-                  JW
-                </Avatar>
+              <HStack flexWrap="wrap" space="1" alignSelf="center">
+                {participants.map((participant) => {
+                  if(item.users.includes(participant)) {
+                    return <Pressable onPress={() => {
+                      newData = [...listData]
+                      newData[newData.indexOf(item)].users[item.users.indexOf(participant)] = {}
+                      //need to find a way to filter out empty objects after removing from array
+                      setListData(newData)
+                    }}>
+                      <Avatar size="sm" bg={participant.avatarColor}>
+                        {participant.initials}
+                      </Avatar> 
+                    </Pressable>
+                  }
+                })}
               </HStack>
-              <Divider />
+              <Divider bgColor="violet.800"/>
             </VStack>
           </Pressable>
         </Box>
@@ -136,7 +188,7 @@ export default function AssignItems(props) {
     }
     return (
       <>
-        <SwipeListView
+        <SwipeListView 
           data={listData}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
@@ -254,6 +306,8 @@ export default function AssignItems(props) {
                           qty: inputQty,
                           description: inputDescription,
                           price: "$" + inputPrice,
+                          selected: false,
+                          users: []
                         },
                       ]);
                     }, 1000);
@@ -290,26 +344,50 @@ export default function AssignItems(props) {
   }
   return (
     <>
-      <VStack h="100%">
-        <NavBar />
-        <VStack mt="5">
-          <Heading alignSelf="center" size="lg">
-            Items
-          </Heading>
-          <AddItemManually />
-        </VStack>
-        <SwipeableScrollableMenu />
+      <VStack bgColor="white" h="100%">
+
+        <HStack mt="5" mb="5">
+          <Spacer />
+          <VStack alignSelf="center">
+            <Heading alignSelf="center" size="lg" mb="5">
+              Items
+            </Heading>
+            <HStack space="5">
+              <AddItemManually />
+              <Button bg="violet.800"
+                onPress={() => {
+                  navigation.navigate("BalancePage", { participants: participants });
+                }}
+              >
+                Confirm
+              </Button>
+            </HStack>
+          </VStack>
+          <Spacer />
+        </HStack>
+
+        <SwipeableScrollableMenu  />
         {/* Avatar and checkbox section */}
         <VStack>
-          <HStack space="1" alignSelf="center">
+          <HStack flexWrap="wrap" space="1" alignSelf="center">
             {participants.map((participant) => {
+              
               return (
-                <Avatar key={participant.name} bg={participant.avatarColor}>
-                  {participant.initials}
-                </Avatar>
+                <Pressable onPress={() => {
+                  let newData = [...participants]
+                  newData[newData.indexOf(participant)].selected = !newData[newData.indexOf(participant)].selected
+                  setParticipants(newData)
+                }}>
+                  {participant.selected === true ? 
+                    <ZStack><AntDesign name="checkcircle" size={50} color="green" /><Text alignSelf="center" color="white">{participant.initials}</Text></ZStack> 
+                    : 
+                    <Avatar key={participant.name} bg={participant.avatarColor}>
+                      {participant.initials}
+                    </Avatar>}
+                </Pressable>
               );
             })}
-            <Avatar bg="orange.500">
+            <Avatar bg="violet.800">
               <VStack alignItems="center">
                 <MaterialCommunityIcons
                   name="account-group"
@@ -320,9 +398,6 @@ export default function AssignItems(props) {
               </VStack>
             </Avatar>
             <Avatar bg="violet.800">+</Avatar>
-          </HStack>
-          <HStack alignSelf="center" p="5">
-            <AntDesign name="checkcircle" size={50} color="black" />
           </HStack>
         </VStack>
       </VStack>

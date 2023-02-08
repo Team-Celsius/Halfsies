@@ -19,7 +19,7 @@ import { AntDesign } from "@expo/vector-icons";
 import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue, remove, push, update } from "firebase/database";
+import { ref, set, onValue, remove, push } from "firebase/database";
 import uuid from "react-native-uuid";
 import { useNavigation } from "@react-navigation/native";
 
@@ -361,7 +361,6 @@ export default function Participants() {
                               friend.selected = !friend.selected;
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
-                                console.log(participants)
                               } else {
                                 participants = participants.filter((person) => {
                                   return person != friend;
