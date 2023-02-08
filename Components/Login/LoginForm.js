@@ -20,7 +20,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = (data) => {
-    signInWithEmailAndPassword(auth, data.email, data.password)
+    signInWithEmailAndPassword(auth, data.email.trim(), data.password)
       .then((userCredential) => {
         const user = userCredential.user;
         navigation.navigate("Participants");
@@ -28,6 +28,7 @@ export default function LoginForm() {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        console.log(errorCode);
       });
   };
 
@@ -37,7 +38,7 @@ export default function LoginForm() {
         control={control}
         rules={{
           required: true,
-          pattern: /^\S+@\S+$/i,
+          pattern: /^\S+@\S+/i,
         }}
         render={({ field: { onChange, value } }) => (
           <Input
