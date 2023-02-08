@@ -37,13 +37,15 @@ export default function AssignItems(props) {
 
   function addItemsData(userId, listData) {
     const itemRef = ref(db, "users/" + userId + "/items");
-
-    listData.forEach((data) => {
-      const newItemRef = push(itemRef);
-      set(newItemRef, {
-        data,
-        itemUid: newItemRef.key,
-      });
+    const newList = JSON.parse(JSON.stringify(listData));
+    newList.forEach((data) => {
+      data.users = Object.assign({}, data.users);
+      console.log(data.users);
+      // const newItemRef = push(itemRef);
+      // set(newItemRef, {
+      //   data,
+      //   itemUid: newItemRef.key,
+      // });
     });
   }
 
@@ -361,7 +363,7 @@ export default function AssignItems(props) {
               <Button
                 bg="violet.800"
                 onPress={() => {
-                  console.log(listData);
+                  //console.log(listData);
                   addItemsData(userId, listData);
                   //navigation.navigate("BalancePage", { participants: participants });
                 }}
