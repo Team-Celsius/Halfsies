@@ -42,6 +42,7 @@ export default function AssignItems(props) {
       const newItemRef = push(itemRef);
       set(newItemRef, {
         data,
+        itemUid: newItemRef.key,
       });
     });
   }
@@ -53,7 +54,7 @@ export default function AssignItems(props) {
       description: "Chicken Sandwich",
       price: "$14",
       selected: false,
-      users: {},
+      users: [],
     },
     {
       key: 2,
@@ -61,7 +62,7 @@ export default function AssignItems(props) {
       description: "Cheeseburger",
       price: "$12",
       selected: false,
-      users: {},
+      users: [],
     },
     {
       key: 3,
@@ -69,7 +70,7 @@ export default function AssignItems(props) {
       description: "Steak",
       price: "$40",
       selected: false,
-      users: {},
+      users: [],
     },
     {
       key: 4,
@@ -77,39 +78,7 @@ export default function AssignItems(props) {
       description: "Salad",
       price: "$12",
       selected: false,
-      users: {},
-    },
-    {
-      key: 5,
-      qty: 6,
-      description: "Ice Cream",
-      price: "$10",
-      selected: false,
-      users: {},
-    },
-    {
-      key: 6,
-      qty: 6,
-      description: "Ice Cream",
-      price: "$10",
-      selected: false,
-      users: {},
-    },
-    {
-      key: 7,
-      qty: 6,
-      description: "Ice Cream",
-      price: "$10",
-      selected: false,
-      users: {},
-    },
-    {
-      key: 8,
-      qty: 6,
-      description: "Ice Cream",
-      price: "$10",
-      selected: false,
-      users: {},
+      users: [],
     },
   ];
 
