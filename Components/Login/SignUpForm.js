@@ -1,4 +1,4 @@
-import { Input, Pressable, Text } from "native-base";
+import { Input, Pressable, Text, Modal, Button, ScrollView } from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -6,9 +6,11 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import randomColor from "randomcolor";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 
 export default function SignUpForm() {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const {
     control,
@@ -68,16 +70,49 @@ export default function SignUpForm() {
         navigation.navigate("Participants");
       })
       .catch((error) => {
-        /******** add something to happen on error **********/
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log("errorCode: ", errorCode);
-        console.log("errorMessage: ", errorMessage);
+        if (errorCode) {
+          console.log(errorCode);
+          setModalVisible(true);
+          //add handler for invalid email
+        }
       });
   };
 
+  function SignUpError() {
+    return (
+      <>
+        <Modal isOpen={modalVisible} onClose={setModalVisible} size="sm">
+          <Modal.Content maxH="212">
+            <Modal.CloseButton />
+            <Modal.Header>Error</Modal.Header>
+            <Modal.Body>
+              <ScrollView>
+                <Text>This Email is already in use</Text>
+              </ScrollView>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  backgroundColor="violet.800"
+                  onPress={() => {
+                    setModalVisible(false);
+                  }}
+                >
+                  Close
+                </Button>
+              </Button.Group>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </>
+    );
+  }
+
   return (
     <View>
+      <SignUpError />
       <Controller
         control={control}
         rules={{
@@ -102,7 +137,11 @@ export default function SignUpForm() {
         )}
         name="firstName"
       />
-      {errors.firstName && <Text>Please add a first name</Text>}
+      {errors.firstName && (
+        <Text textAlign="center" color="danger.700" fontSize="md">
+          Please add a first name
+        </Text>
+      )}
 
       <Controller
         control={control}
@@ -147,7 +186,11 @@ export default function SignUpForm() {
         )}
         name="email"
       />
-      {errors.email && <Text>Email is required.</Text>}
+      {errors.email && (
+        <Text textAlign="center" color="danger.700" fontSize="md">
+          Please enter a valid email
+        </Text>
+      )}
 
       <Controller
         control={control}
@@ -173,7 +216,11 @@ export default function SignUpForm() {
         )}
         name="password"
       />
-      {errors.password && <Text>Password is required.</Text>}
+      {errors.password && (
+        <Text textAlign="center" color="danger.700" fontSize="md">
+          Please enter a password
+        </Text>
+      )}
       <Text textAlign="center" color="white">
         Password must be over 6 characters
       </Text>
