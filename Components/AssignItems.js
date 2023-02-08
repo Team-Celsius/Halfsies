@@ -21,15 +21,30 @@ import {
 import { MaterialCommunityIcons, AntDesign, Feather } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useState } from "react";
-import NavBar from "./NavBar";
-import randomColor from "randomcolor";
 import { useNavigation } from "@react-navigation/native";
-import { update } from "firebase/database";
+import { ref, set, onValue, remove, push } from "firebase/database";
+import { auth, db } from "../Firebase/firebaseConfig";
 
 export default function AssignItems(props) {
-  let currentItem = {}
+  let currentItem = {};
   const navigation = useNavigation();
-  let [ participants, setParticipants ] = useState(props.route.params.participants);
+  const userId = auth.currentUser.uid;
+  const userFriendsRef = ref(db, "users/" + userId + "/friends/");
+
+  let [participants, setParticipants] = useState(
+    props.route.params.participants
+  );
+
+  function addItemsData(userId, listData) {
+    const itemRef = ref(db, "users/" + userId + "/items");
+
+    listData.forEach((data) => {
+      const newItemRef = push(itemRef);
+      set(newItemRef, {
+        data,
+      });
+    });
+  }
 
   const data = [
     {
@@ -38,7 +53,7 @@ export default function AssignItems(props) {
       description: "Chicken Sandwich",
       price: "$14",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 2,
@@ -46,7 +61,7 @@ export default function AssignItems(props) {
       description: "Cheeseburger",
       price: "$12",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 3,
@@ -54,7 +69,7 @@ export default function AssignItems(props) {
       description: "Steak",
       price: "$40",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 4,
@@ -62,7 +77,7 @@ export default function AssignItems(props) {
       description: "Salad",
       price: "$12",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 5,
@@ -70,7 +85,7 @@ export default function AssignItems(props) {
       description: "Ice Cream",
       price: "$10",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 6,
@@ -78,7 +93,7 @@ export default function AssignItems(props) {
       description: "Ice Cream",
       price: "$10",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 7,
@@ -86,7 +101,7 @@ export default function AssignItems(props) {
       description: "Ice Cream",
       price: "$10",
       selected: false,
-      users: []
+      users: {},
     },
     {
       key: 8,
@@ -94,7 +109,7 @@ export default function AssignItems(props) {
       description: "Ice Cream",
       price: "$10",
       selected: false,
-      users: []
+      users: {},
     },
   ];
 
@@ -114,26 +129,39 @@ export default function AssignItems(props) {
       setListData(newData);
     }
     function renderItem({ item }) {
-      let newData = [...listData]
-      let newParticipants = [...participants]
+      let newData = [...listData];
+      let newParticipants = [...participants];
       return (
         <Box>
-          <Pressable bgColor="white" onPress={() => {
-            participants.map((participant) => {
-            newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected
+          <Pressable
+            bgColor="white"
+            onPress={() => {
+              participants.map((participant) => {
+                newData[newData.indexOf(item)].selected =
+                  !newData[newData.indexOf(item)].selected;
 
-              if((participant.selected === true) && (!item.users.includes(participant))) {
-                newData[newData.indexOf(item)].users.push(participant)
-                newParticipants[newParticipants.indexOf(participant)].selected = false
-                setParticipants(newParticipants)
-              }
-              else if((participant.selected === true) && (item.users.includes(participant))) {
-                newParticipants[newParticipants.indexOf(participant)].selected = false
-                setParticipants(newParticipants)
-              }
-            })
-            setListData(newData)
-          }}>
+                if (
+                  participant.selected === true &&
+                  !item.users.includes(participant)
+                ) {
+                  newData[newData.indexOf(item)].users.push(participant);
+                  newParticipants[
+                    newParticipants.indexOf(participant)
+                  ].selected = false;
+                  setParticipants(newParticipants);
+                } else if (
+                  participant.selected === true &&
+                  item.users.includes(participant)
+                ) {
+                  newParticipants[
+                    newParticipants.indexOf(participant)
+                  ].selected = false;
+                  setParticipants(newParticipants);
+                }
+              });
+              setListData(newData);
+            }}
+          >
             <VStack m="4">
               <HStack p="3">
                 <Text>{item.qty}</Text>
@@ -144,21 +172,27 @@ export default function AssignItems(props) {
               </HStack>
               <HStack flexWrap="wrap" space="1" alignSelf="center">
                 {participants.map((participant) => {
-                  if(item.users.includes(participant)) {
-                    return <Pressable onPress={() => {
-                      newData = [...listData]
-                      newData[newData.indexOf(item)].users[item.users.indexOf(participant)] = {}
-                      //need to find a way to filter out empty objects after removing from array
-                      setListData(newData)
-                    }}>
-                      <Avatar size="sm" bg={participant.avatarColor}>
-                        {participant.initials}
-                      </Avatar> 
-                    </Pressable>
+                  if (item.users.includes(participant)) {
+                    return (
+                      <Pressable
+                        onPress={() => {
+                          newData = [...listData];
+                          newData[newData.indexOf(item)].users[
+                            item.users.indexOf(participant)
+                          ] = {};
+                          //need to find a way to filter out empty objects after removing from array
+                          setListData(newData);
+                        }}
+                      >
+                        <Avatar size="sm" bg={participant.avatarColor}>
+                          {participant.initials}
+                        </Avatar>
+                      </Pressable>
+                    );
                   }
                 })}
               </HStack>
-              <Divider bgColor="violet.800"/>
+              <Divider bgColor="violet.800" />
             </VStack>
           </Pressable>
         </Box>
@@ -188,7 +222,7 @@ export default function AssignItems(props) {
     }
     return (
       <>
-        <SwipeListView 
+        <SwipeListView
           data={listData}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
@@ -307,7 +341,7 @@ export default function AssignItems(props) {
                           description: inputDescription,
                           price: "$" + inputPrice,
                           selected: false,
-                          users: []
+                          users: [],
                         },
                       ]);
                     }, 1000);
@@ -342,10 +376,10 @@ export default function AssignItems(props) {
       </>
     );
   }
+
   return (
     <>
       <VStack bgColor="white" h="100%">
-
         <HStack mt="5" mb="5">
           <Spacer />
           <VStack alignSelf="center">
@@ -354,9 +388,13 @@ export default function AssignItems(props) {
             </Heading>
             <HStack space="5">
               <AddItemManually />
-              <Button bg="violet.800"
+              {/******************** write call to db to add *******************/}
+              <Button
+                bg="violet.800"
                 onPress={() => {
-                  navigation.navigate("BalancePage", { participants: participants });
+                  console.log(listData);
+                  addItemsData(userId, listData);
+                  //navigation.navigate("BalancePage", { participants: participants });
                 }}
               >
                 Confirm
@@ -366,24 +404,32 @@ export default function AssignItems(props) {
           <Spacer />
         </HStack>
 
-        <SwipeableScrollableMenu  />
+        <SwipeableScrollableMenu />
         {/* Avatar and checkbox section */}
         <VStack>
           <HStack flexWrap="wrap" space="1" alignSelf="center">
             {participants.map((participant) => {
-              
               return (
-                <Pressable onPress={() => {
-                  let newData = [...participants]
-                  newData[newData.indexOf(participant)].selected = !newData[newData.indexOf(participant)].selected
-                  setParticipants(newData)
-                }}>
-                  {participant.selected === true ? 
-                    <ZStack><AntDesign name="checkcircle" size={50} color="green" /><Text alignSelf="center" color="white">{participant.initials}</Text></ZStack> 
-                    : 
+                <Pressable
+                  onPress={() => {
+                    let newData = [...participants];
+                    newData[newData.indexOf(participant)].selected =
+                      !newData[newData.indexOf(participant)].selected;
+                    setParticipants(newData);
+                  }}
+                >
+                  {participant.selected === true ? (
+                    <ZStack>
+                      <AntDesign name="checkcircle" size={50} color="green" />
+                      <Text alignSelf="center" color="white">
+                        {participant.initials}
+                      </Text>
+                    </ZStack>
+                  ) : (
                     <Avatar key={participant.name} bg={participant.avatarColor}>
                       {participant.initials}
-                    </Avatar>}
+                    </Avatar>
+                  )}
                 </Pressable>
               );
             })}
