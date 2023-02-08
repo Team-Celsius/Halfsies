@@ -1,12 +1,18 @@
-import { Alert, Input, Pressable, Text } from "native-base";
+import { Input, Pressable, Text, Modal, Button, ScrollView } from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../Firebase/firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 
 export default function LoginForm() {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [show, setShow] = useState(false);
+
+  const handleClick = () => setShow(!show);
 
   const {
     control,
@@ -29,11 +35,52 @@ export default function LoginForm() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode);
+        setErrorText(errorTextCreator(errorCode));
+        setModalVisible(true);
       });
   };
 
+  function errorTextCreator(errorCode) {
+    if (errorCode === "auth/invalid-email") {
+      return "Email invalid";
+    } else if (errorCode === "auth/user-not-found") {
+      return "Sorry User not found please try again";
+    }
+  }
+
+  function LogInError() {
+    return (
+      <>
+        <Modal isOpen={modalVisible} onClose={setModalVisible} size="sm">
+          <Modal.Content maxH="212">
+            <Modal.CloseButton />
+            <Modal.Header>Error</Modal.Header>
+            <Modal.Body>
+              <ScrollView>
+                <Text>{errorText}</Text>
+              </ScrollView>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  backgroundColor="violet.800"
+                  onPress={() => {
+                    setModalVisible(false);
+                  }}
+                >
+                  Close
+                </Button>
+              </Button.Group>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </>
+    );
+  }
+
   return (
     <View>
+      <LogInError />
       <Controller
         control={control}
         rules={{
@@ -79,6 +126,19 @@ export default function LoginForm() {
             placeholder="Password"
             onChangeText={onChange}
             value={value}
+            type={show ? "text" : "password"}
+            InputRightElement={
+              <Button
+                size="xs"
+                rounded="none"
+                w="1/6"
+                h="full"
+                backgroundColor="white"
+                onPress={handleClick}
+              >
+                <Text color="black">{show ? "Hide" : "Show"}</Text>
+              </Button>
+            }
           />
         )}
         name="password"
