@@ -212,6 +212,7 @@ export default function Participants() {
           onClose={() => setModalVisible(false)}
           avoidKeyboard="true"
           justifyContent="space-around"
+          mt="1/5"
           bottom="4"
           size="lg"
         >
