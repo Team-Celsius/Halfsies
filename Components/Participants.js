@@ -203,6 +203,7 @@ export default function Participants() {
     const [newFriendLastName, setNewFriendLastName] = useState("");
     const [newFriendEmail, setNewFriendEmail] = useState("");
     const userUid = auth.currentUser.uid;
+    const emailReg = /^\S+@\S+/i;
 
     return (
       <>
@@ -219,13 +220,14 @@ export default function Participants() {
             <Modal.Header>Don't let them skip out on the bill!</Modal.Header>
             <Modal.Body>
               <FormControl mt="3">
-                <FormControl.Label>Name</FormControl.Label>
-                {/* make first name required */}
+                <FormControl.Label>First Name</FormControl.Label>
                 <Input
+                  placeholder="First name is required"
                   onChangeText={(firstName) => {
                     setNewFriendFirstName(firstName);
                   }}
                 />
+                <FormControl.Label>Last Name</FormControl.Label>
                 <Input
                   onChangeText={(lastName) => {
                     setNewFriendLastName(lastName);
@@ -233,6 +235,7 @@ export default function Participants() {
                 />
                 <FormControl.Label>Email</FormControl.Label>
                 <Input
+                  placeholder="Valid email is required"
                   onChangeText={(email) => {
                     setNewFriendEmail(email);
                   }}
@@ -241,15 +244,19 @@ export default function Participants() {
             </Modal.Body>
             <Modal.Footer>
               <Button
+                disabled={
+                  newFriendFirstName.length > 0 && emailReg.test(newFriendEmail)
+                    ? false
+                    : true
+                }
                 flex="1"
                 onPress={() => {
                   setModalVisible(false);
-                  //******* Create new friend in data base ******* */
                   addfriendData(
                     userUid,
                     newFriendFirstName,
                     newFriendLastName,
-                    newFriendEmail
+                    newFriendEmail.trim()
                   );
                 }}
               >
