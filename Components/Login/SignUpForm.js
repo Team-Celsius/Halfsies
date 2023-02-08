@@ -2,7 +2,7 @@ import { Input, Pressable, Text } from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import randomColor from "randomcolor";
 import { useNavigation } from "@react-navigation/native";
@@ -25,7 +25,7 @@ export default function SignUpForm() {
 
   function writeUserData(userId, email) {
     set(ref(db, "users/" + userId), {
-      email: email,
+      email: email.trim(),
     });
   }
 
@@ -51,7 +51,7 @@ export default function SignUpForm() {
       userId: newUserRef.key,
       initials: initials,
       name: fullName,
-      email: email,
+      email: email.trim(),
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: true,
@@ -128,7 +128,7 @@ export default function SignUpForm() {
         control={control}
         rules={{
           required: true,
-          pattern: /^\S+@\S+$/i,
+          pattern: /^\S+@\S+/i,
         }}
         render={({ field: { onChange, value } }) => (
           <Input
