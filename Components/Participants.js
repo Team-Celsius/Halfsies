@@ -19,7 +19,7 @@ import { AntDesign } from "@expo/vector-icons";
 import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue, remove, push } from "firebase/database";
+import { ref, set, onValue, remove, push, update } from "firebase/database";
 import uuid from "react-native-uuid";
 import { useNavigation } from "@react-navigation/native";
 
@@ -209,6 +209,7 @@ export default function Participants(props) {
     const [newFriendLastName, setNewFriendLastName] = useState("");
     const [newFriendEmail, setNewFriendEmail] = useState("");
     const userUid = auth.currentUser.uid;
+    const emailReg = /^\S+@\S+/i;
 
     return (
       <>
@@ -217,6 +218,7 @@ export default function Participants(props) {
           onClose={() => setModalVisible(false)}
           avoidKeyboard="true"
           justifyContent="space-around"
+          mt="1/5"
           bottom="4"
           size="lg"
         >
@@ -225,13 +227,14 @@ export default function Participants(props) {
             <Modal.Header>Don't let them skip out on the bill!</Modal.Header>
             <Modal.Body>
               <FormControl mt="3">
-                <FormControl.Label>Name</FormControl.Label>
-                {/* make first name required */}
+                <FormControl.Label>First Name</FormControl.Label>
                 <Input
+                  placeholder="First name is required"
                   onChangeText={(firstName) => {
                     setNewFriendFirstName(firstName);
                   }}
                 />
+                <FormControl.Label>Last Name</FormControl.Label>
                 <Input
                   onChangeText={(lastName) => {
                     setNewFriendLastName(lastName);
@@ -239,6 +242,7 @@ export default function Participants(props) {
                 />
                 <FormControl.Label>Email</FormControl.Label>
                 <Input
+                  placeholder="Valid email is required"
                   onChangeText={(email) => {
                     setNewFriendEmail(email);
                   }}
@@ -247,15 +251,19 @@ export default function Participants(props) {
             </Modal.Body>
             <Modal.Footer>
               <Button
+                disabled={
+                  newFriendFirstName.length > 0 && emailReg.test(newFriendEmail)
+                    ? false
+                    : true
+                }
                 flex="1"
                 onPress={() => {
                   setModalVisible(false);
-                  //******* Create new friend in data base ******* */
                   addfriendData(
                     userUid,
                     newFriendFirstName,
                     newFriendLastName,
-                    newFriendEmail
+                    newFriendEmail.trim()
                   );
                 }}
               >
@@ -364,9 +372,6 @@ export default function Participants(props) {
               <Divider w="100%" alignSelf="center" />
               {/* The map below renders the friends array alphabetically  */}
               {friends.map((friend) => {
-                {
-                  /**** change friend.name[0] ****/
-                }
                 if (friend.name[0] === letter && !favorites.includes(friend)) {
                   return (
                     <Box key={uuid.v4()}>

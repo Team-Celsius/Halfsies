@@ -50,7 +50,7 @@ export default function SignUpForm() {
     const userRef = ref(db, "users/" + userId + "/friends");
     const newUserRef = push(userRef);
 
-    set(ref(db, "users/" + userId + "/friends"), {
+    set(newUserRef, {
       userId: newUserRef.key,
       initials: initials,
       name: fullName,
