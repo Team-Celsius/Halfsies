@@ -83,8 +83,14 @@ function removeLinesWithoutPrice(lines) {
     })
 }
   
-const parser = (json) => {
+const parser = (json, isUserUploaded) => {
     let obj = {};
+
+    let coordToCheck = 'x';
+
+    if (isUserUploaded) {
+        coordToCheck = 'y';
+    }
 
     console.log(json);
 
@@ -105,12 +111,13 @@ const parser = (json) => {
     for (let i = 1; i < array.length; i++) { // start at 1 to avoid all-text/all-coords element
         let char = array[i].description;
         let vertices = array[i].boundingPoly.vertices;
-        let xValue = vertices[0].x;
-        let checkXvalue = thresholdCheck(obj, xValue);
-        if (obj[checkXvalue] === undefined) {
-            obj[checkXvalue] = '';
+        // let xValue = vertices[0].x;
+        let coordValue = vertices[0][coordToCheck];
+        let checkCoordvalue = thresholdCheck(obj, coordValue);
+        if (obj[checkCoordvalue] === undefined) {
+            obj[checkCoordvalue] = '';
         } 
-        obj[checkXvalue] += char + ' ';
+        obj[checkCoordvalue] += char + ' ';
     } // ******* Somewhere around here, sort the list by X-val so all words are in order. Is this even needed still? Regex handles all of this.
 
     console.log(obj);

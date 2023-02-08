@@ -34,7 +34,7 @@ function generateBody(image) {
     return body;
 }
 
-async function callGoogleVisionAsync (image) {
+async function callGoogleVisionAsync (image, isUserUploaded) {
     // console.log(image);
     const body = generateBody(image.base64); // passes in our img for payload
     const response = await fetch(API_URL, {
@@ -47,8 +47,10 @@ async function callGoogleVisionAsync (image) {
     });
     const json = await response.json();
     // console.log(result);
+    
+    let result = parser(json, isUserUploaded);
 
-    let result = parser(json);
+    // let result = parser(json);
 
     console.log(result);
 

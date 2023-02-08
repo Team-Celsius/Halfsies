@@ -24,10 +24,13 @@ import { useState, useRef } from "react";
 import { Camera } from "expo-camera";
 import NavBar from "./../NavBar.js";
 import { useNavigation } from "@react-navigation/native";
+import callGoogleVisionAsync from "../../OCR/GCV.js";
 
 export default function CameraView() {
+  
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState(null);
+  const [userUploaded, setUserUploaded] = useState(false);
   const cameraRef = useRef(null);
   const ExpoCamera = Factory(Camera);
   const navigation = useNavigation();
@@ -39,6 +42,8 @@ export default function CameraView() {
 
   if (!permission.granted) {
     // Camera permissions are not granted yet
+    // requestPermission(); automatically requests permissions
+    // for some reason, pressing the btn doesnt work on my end :(
     return (
       <VStack h="100%">
         <NavBar />
@@ -65,15 +70,20 @@ export default function CameraView() {
     if (cameraRef.current) {
       const options = { quality: 1, base64: true };
       const data = await cameraRef.current.takePictureAsync(options);
+      console.log(data);
       setCapturedImage(data);
     }
   }
 
   async function pickImage() {
-    let result = await ImagePicker.launchImageLibraryAsync();
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.ALL,
+      base64: true,
+    });
 
     if (!result.canceled) {
       setCapturedImage(result);
+      setUserUploaded = true;
     }
   }
 
@@ -82,8 +92,16 @@ export default function CameraView() {
   }
 
   function confirmPhoto() {
+    let test = callGoogleVisionAsync(capturedImage, true);
+    console.log(test);
     setCapturedImage(null);
-    navigation.navigate("Participants");
+    // if image is confirmed, run the OCR/parse fns
+    // navigate to assignItems w/ parsed data.
+    // navigate('Profile', { names: ['Brent', 'Satya', 'Michaś'] })
+    // name - A destination name of the route that has been defined somewhere
+    // params - Params to pass to the destination route.
+
+    // navigation.navigate("AssignItems");
   }
 
   return capturedImage ? (
