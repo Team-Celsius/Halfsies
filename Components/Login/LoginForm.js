@@ -151,7 +151,7 @@ export default function LoginForm() {
           )}
           name="password"
         />
-        {errors.password && <Text>Password is required.</Text>}
+        {errors.password && <Text>Please enter password</Text>}
       </View>
 
       <Pressable
