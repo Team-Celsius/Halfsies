@@ -28,15 +28,17 @@ export default function App() {
   });
 
   const [participants, setParticipants] = useState([
-    {userId: '',
-    initials: '',
-    name: '',
-    email: '',
-    numPaymentRequests: 0,
-    avatarColor: randomColor(),
-    selected: false,
-    items: []}
-  ])
+    {
+      userId: "",
+      initials: "",
+      name: "",
+      email: "",
+      numPaymentRequests: 0,
+      avatarColor: randomColor(),
+      selected: false,
+      items: [],
+    },
+  ]);
 
   return (
     <NavigationContainer>
