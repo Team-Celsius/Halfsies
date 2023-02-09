@@ -40,20 +40,6 @@ export default function LoginForm() {
 				setModalVisible(true);
 			});
 	};
-  const onSubmit = (data) => {
-    signInWithEmailAndPassword(auth, data.email.trim(), data.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        navigation.navigate("Camera");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        setErrorText(errorTextCreator(errorCode));
-        setModalVisible(true);
-      });
-  };
 
 	function errorTextCreator(errorCode) {
 		if (errorCode === "auth/invalid-email") {
