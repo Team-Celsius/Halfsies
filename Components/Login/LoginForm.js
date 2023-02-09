@@ -113,7 +113,7 @@ export default function LoginForm() {
           control={control}
           rules={{
             required: true,
-            minLength: 6,
+            minLength: 1,
             maxLength: 100,
           }}
           render={({ field: { onChange, value } }) => (
