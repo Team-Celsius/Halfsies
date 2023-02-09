@@ -36,30 +36,30 @@ export default function CameraView() {
 		return <Flex />;
 	}
 
-	if (!permission.granted) {
-		// Camera permissions are not granted yet
-		// requestPermission(); automatically requests permissions
-		// for some reason, pressing the btn doesnt work on my end :(
-		return (
-			<VStack h="100%">
-				<Spacer />
-				<Text alignSelf="center">
-					Click the icon below to allow camera access.
-				</Text>
-				<IconButton
-					icon={
-						<SimpleLineIcons
-							name="camera"
-							size={25}
-							color="black"
-							onPress={requestPermission}
-						/>
-					}
-				/>
-				<Spacer />
-			</VStack>
-		);
-	}
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    // requestPermission(); automatically requests permissions
+    // for some reason, pressing the btn doesnt work on my end :(
+    return (
+      <VStack h="100%">
+        <Spacer />
+        <Text alignSelf="center">
+          Click the icon below to allow Camera access
+        </Text>
+        <IconButton
+          icon={
+            <SimpleLineIcons
+              name="camera"
+              size={25}
+              color="black"
+              onPress={requestPermission}
+            />
+          }
+        />
+        <Spacer />
+      </VStack>
+    );
+  }
 
 	async function takePhoto() {
 		if (cameraRef.current) {

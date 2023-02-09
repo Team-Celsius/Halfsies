@@ -17,27 +17,14 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 	const [isLoggedIn, setLoggedIn] = useState(false);
 
-	onAuthStateChanged(auth, (user) => {
-		if (user) {
-			setLoggedIn(true);
-			const uid = user.uid;
-		} else {
-			setLoggedIn(false);
-		}
-	});
-
-	const [participants, setParticipants] = useState([
-		{
-			userId: "",
-			initials: "",
-			name: "",
-			email: "",
-			numPaymentRequests: 0,
-			avatarColor: randomColor(),
-			selected: false,
-			items: [],
-		},
-	]);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+      const uid = user.uid;
+    } else {
+      setLoggedIn(false);
+    }
+  });
 
 	return (
 		<NavigationContainer>

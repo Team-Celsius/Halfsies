@@ -25,14 +25,17 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
 import uuid from "react-native-uuid";
 
+//bugs
+//every avatar starts as a green check mark instead of an avatar, check selected property
 export default function AssignItems(props) {
-  let currentItem = {};
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-
-  let [participants, setParticipants] = useState(
-    props.route.params.participants
-  );
+  // console.log(props.route.params, 'props')
+  let [participants, setParticipants] = useState(props.route.params.participants
+    );
+  
+  const data = props.route.params.ocrResults.items;
+  const [listData, setListData] = useState(data);
 
   function addItemsData(userId, listData, uuid) {
     const itemRef = ref(db, "users/" + userId + "/items");
@@ -50,164 +53,6 @@ export default function AssignItems(props) {
     });
   }
 
-  const data = props.route.params.ocrResults.items;
-
-  const testData = [
-    {
-      key: 1,
-      qty: 1,
-      description: "Chicken Sandwich",
-      price: "$14",
-      selected: false,
-      users: [],
-    },
-    {
-      key: 2,
-      qty: 2,
-      description: "Cheeseburger",
-      price: "$12",
-      selected: false,
-      users: [],
-    },
-    {
-      key: 3,
-      qty: 1,
-      description: "Steak",
-      price: "$40",
-      selected: false,
-      users: [],
-    },
-    {
-      key: 4,
-      qty: 2,
-      description: "Salad",
-      price: "$12",
-      selected: false,
-      users: [],
-    },
-  ];
-
-  const [listData, setListData] = useState(data);
-  //eventually want to make it so that it does not scroll up after deleting an item
-  function SwipeableScrollableMenu() {
-    function closeRow(rowMap, rowKey) {
-      if (rowMap[rowKey]) {
-        rowMap[rowKey].closeRow();
-      }
-    }
-    function deleteRow(rowMap, rowKey) {
-      closeRow(rowMap, rowKey);
-      const newData = [...listData];
-      const prevIndex = listData.findIndex((item) => item.key === rowKey);
-      newData.splice(prevIndex, 1);
-      setListData(newData);
-    }
-    function renderItem({ item }) {
-      let newData = [...listData];
-      let newParticipants = [...participants];
-      return (
-        <Box>
-          <Pressable
-            bgColor="white"
-            onPress={() => {
-              participants.map((participant) => {
-                newData[newData.indexOf(item)].selected =
-                  !newData[newData.indexOf(item)].selected;
-
-                if (
-                  participant.selected === true &&
-                  !item.users.includes(participant)
-                ) {
-                  newData[newData.indexOf(item)].users.push(participant);
-                  newParticipants[
-                    newParticipants.indexOf(participant)
-                  ].selected = false;
-                  setParticipants(newParticipants);
-                } else if (
-                  participant.selected === true &&
-                  item.users.includes(participant)
-                ) {
-                  newParticipants[
-                    newParticipants.indexOf(participant)
-                  ].selected = false;
-                  setParticipants(newParticipants);
-                }
-              });
-              setListData(newData);
-            }}
-          >
-            <VStack m="4">
-              <HStack p="3">
-                <Text>{item.qty}</Text>
-                <Spacer />
-                <Text>{item.description}</Text>
-                <Spacer />
-                <Text>{item.price}</Text>
-              </HStack>
-              <HStack flexWrap="wrap" space="1" alignSelf="center">
-                {participants.map((participant) => {
-                  if (item.users.includes(participant)) {
-                    return (
-                      <Pressable
-                        onPress={() => {
-                          newData = [...listData];
-                          newData[newData.indexOf(item)].users[
-                            item.users.indexOf(participant)
-                          ] = {};
-                          //need to find a way to filter out empty objects after removing from array
-                          setListData(newData);
-                        }}
-                      >
-                        <Avatar size="sm" bg={participant.avatarColor}>
-                          {participant.initials}
-                        </Avatar>
-                      </Pressable>
-                    );
-                  }
-                })}
-              </HStack>
-              <Divider bgColor="violet.800" />
-            </VStack>
-          </Pressable>
-        </Box>
-      );
-    }
-    function renderHiddenItem(data, rowMap) {
-      return (
-        <HStack flex="1" pl="2">
-          <Spacer />
-          <Pressable
-            w="70"
-            cursor="pointer"
-            bg="red.500"
-            justifyContent="center"
-            onPress={() => deleteRow(rowMap, data.item.key)}
-            _pressed={{ opacity: 0.5 }}
-          >
-            <VStack alignItems="center" space={2}>
-              <Icon as={<Feather name="delete" />} color="white" size="xs" />
-              <Text color="white" fontSize="xs" fontWeight="medium">
-                Delete
-              </Text>
-            </VStack>
-          </Pressable>
-        </HStack>
-      );
-    }
-    return (
-      <>
-        <SwipeListView
-          data={listData}
-          renderItem={renderItem}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-70}
-          previewRowKey={"0"}
-          previewOpenValue={-40}
-          previewOpenDelay={3000}
-        />
-      </>
-    );
-  }
   function AddItemManually() {
     const [modalVisible, setModalVisible] = useState(false);
     const [inputQty, setInputQty] = useState();
@@ -350,6 +195,145 @@ export default function AssignItems(props) {
       </>
     );
   }
+  //eventually want to make it so that it does not scroll up after deleting an item
+  function SwipeableScrollableMenu() {
+    function closeRow(rowMap, rowKey) {
+      if (rowMap[rowKey]) {
+        rowMap[rowKey].closeRow();
+      }
+    }
+    function deleteRow(rowMap, rowKey) {
+      closeRow(rowMap, rowKey);
+      const newData = [...listData];
+      const prevIndex = listData.findIndex((item) => item.key === rowKey);
+      newData.splice(prevIndex, 1);
+      setListData(newData);
+    }
+    function renderItem({ item }) {
+      let newData = [...listData]
+      let newParticipants = [...participants];
+      return (
+        <Box>
+          <Pressable
+            bgColor="white"
+            onPress={() => {
+              participants.map((participant) => {
+                
+                
+                
+                //press an item and toggle if it is selected
+                newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected;
+                
+                //if participant selected when you touch item, and participant is not assigned to the item yet
+                //also means that since it is the first item that it can not be in their balance
+                if (participant.selected === true && !item.users.includes(participant)) {
+                  console.log(item.users, 'added to item.users')
+                  //add them to item's users array and update state
+                  newData[newData.indexOf(item)].users.push(participant);
+                  setListData(newData)
+                  
+                  //set the participants selected property to false, add item to their balance, and update state
+                  newParticipants[newParticipants.indexOf(participant)].selected = false;
+
+
+
+
+
+                  //the issue is that there is no balance property still on the participants
+                  // console.log(newParticipants[newParticipants.indexOf(participant)], 'balance')
+                  // newParticipants[newParticipants.indexOf(participant)].balance.push(item);
+                  setParticipants(newParticipants)
+                  // console.log(participants, 'added first item to balance')
+                  
+                  //also check to make sure you havent already assigned more qty than the item says it has
+                  
+                  
+                  //if they already have the item, update qty in their balance and update state
+                } else if (participant.selected === true && item.users.includes(participant)) {
+                  // let newParticipants = [...participants];
+                  newParticipants[newParticipants.indexOf(participant)].selected = false;
+
+                  // let index = newParticipants[newParticipants.indexOf(participant)].balance.indexOf(item)
+                  // ++newParticipants[newParticipants.indexOf(participant)].balance[index].qty
+                  setParticipants(newParticipants)
+
+                  // console.log(participants, 'added more items to balance should update qty')
+                }
+              });
+            }}
+          >
+            <VStack m="4">
+              <HStack p="3">
+                <Text>{item.qty}</Text>
+                <Spacer />
+                <Text>{item.description}</Text>
+                <Spacer />
+                <Text>{item.price}</Text>
+              </HStack>
+              <HStack flexWrap="wrap" space="1" alignSelf="center">
+                {participants.map((participant) => {
+                  if (item.users.includes(participant)) {
+                    return (
+                      <Pressable
+                        onPress={() => { 
+                          newData = [...listData];
+                          newData[newData.indexOf(item)].users[item.users.indexOf(participant)] = {};
+                          newData = listData[listData.indexOf(item)].users.filter((user) => {
+                            return user != {}
+                          })
+                          setListData(newData);
+                        }}
+                      >
+                        <Avatar size="sm" bg={participant.avatarColor}>
+                          {participant.initials}
+                        </Avatar>
+                      </Pressable>
+                    );
+                  }
+                })}
+              </HStack>
+              <Divider bgColor="violet.800" />
+            </VStack>
+          </Pressable>
+        </Box>
+      );
+    }
+    function renderHiddenItem(data, rowMap) {
+      return (
+        <HStack flex="1" pl="2">
+          <Spacer />
+          <Pressable
+            w="70"
+            cursor="pointer"
+            bg="red.500"
+            justifyContent="center"
+            onPress={() => deleteRow(rowMap, data.item.key)}
+            _pressed={{ opacity: 0.5 }}
+          >
+            <VStack alignItems="center" space={2}>
+              <Icon as={<Feather name="delete" />} color="white" size="xs" />
+              <Text color="white" fontSize="xs" fontWeight="medium">
+                Delete
+              </Text>
+            </VStack>
+          </Pressable>
+        </HStack>
+      );
+    }
+    return (
+      <>
+        <SwipeListView
+          data={listData}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-70}
+          previewRowKey={"0"}
+          previewOpenValue={-40}
+          previewOpenDelay={3000}
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -387,8 +371,7 @@ export default function AssignItems(props) {
                 <Pressable
                   onPress={() => {
                     let newData = [...participants];
-                    newData[newData.indexOf(participant)].selected =
-                      !newData[newData.indexOf(participant)].selected;
+                    newData[newData.indexOf(participant)].selected = !newData[newData.indexOf(participant)].selected;
                     setParticipants(newData);
                   }}
                 >

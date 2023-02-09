@@ -24,8 +24,11 @@ import uuid from "react-native-uuid";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Participants(props) {
+  const [participants, setParticipants] = useState([])
   const navigation = useNavigation();
   let ocrResults = null;
+
+  console.log(participants)
 
   if (props.route?.params?.ocrResults) { // equiv of (props.route.params && props.route.params.ocrResults)
     ocrResults = props.route.params.ocrResults;
@@ -51,7 +54,6 @@ export default function Participants(props) {
     });
   }, []);
 
-  let participants = [];
   let favorites = [];
   const alphabet = [
     "A",
@@ -114,12 +116,13 @@ export default function Participants(props) {
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false,
+      balance: []
     });
   }
 
   function addUserToParticipants(friends) {
     friends.forEach((friend) => {
-      if (friend.selected) {
+      if (friend.selected && !participants.includes(friend)) {
         participants.push(friend);
       }
     });
@@ -133,6 +136,7 @@ export default function Participants(props) {
         <Button
           bg="violet.800"
           onPress={() => {
+            
             navigation.navigate("AssignItems", { participants: participants, ocrResults: ocrResults });
           }}
         >
@@ -294,6 +298,7 @@ export default function Participants(props) {
 
   function FavoriteFriendsSection(props) {
     const friends = props.friends;
+    let newParticipants
 
     const createFavorites = (friends) => {
       const sortedFriends = friends.sort(
@@ -321,12 +326,20 @@ export default function Participants(props) {
                   {({ isPressed }) => {
                     if (isPressed) {
                       favorite.selected = !favorite.selected;
-                      if (!participants.includes(favorite)) {
-                        participants.push(favorite);
-                      } else {
-                        participants = participants.filter((friend) => {
-                          return friend != favorite;
+                      
+
+
+
+                      //Bug issue here is that when i populate from favorites, which populates from friends db, it doesnt have balance property on each friend
+                      //Jason added the balance property so when he implements that, it should fix this i believe.
+                      if (!participants.includes(favorite) && favorite.selected) {
+                        setParticipants([...participants, favorite])
+                      } 
+                      else if (participants.includes(favorite)) {
+                        let newParticipants = participants.filter((participant) => {
+                          return participant.selected === true
                         });
+                        setParticipants(newParticipants)
                       }
                     }
                     return (
@@ -431,21 +444,6 @@ export default function Participants(props) {
     );
   }
 
-  function AlphabeticalSideBar(props) {
-    const alphabet = props.alphabet;
-    return (
-      <>
-        {alphabet.map((letter) => {
-          return (
-            <Text fontSize="11" key={uuid.v4()}>
-              {" "}
-              {letter}{" "}
-            </Text>
-          );
-        })}
-      </>
-    );
-  }
   return (
     <>
       <VStack flex={1} space="3" pt="5">
