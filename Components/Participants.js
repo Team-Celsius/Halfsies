@@ -376,60 +376,60 @@ export default function Participants(props) {
               <Divider w="100%" alignSelf="center" />
               {/* The map below renders the friends array alphabetically  */}
               {friends.map((friend) => {
-                {
-                  console.log("this is from friend.name[0]", friend);
-                }
-                if (friend.name[0] === letter && !favorites.includes(friend)) {
-                  return (
-                    <Box key={uuid.v4()}>
-                      {/* The pressable code below keeps track of who is selected */}
-                      <HStack space="3" m="1">
-                        <Pressable>
-                          {({ isPressed }) => {
-                            if (isPressed) {
-                              friend.selected = !friend.selected;
-                              if (!participants.includes(friend)) {
-                                participants.push(friend);
-                              } else {
-                                participants = participants.filter((person) => {
-                                  return person != friend;
-                                });
-                              }
-                            }
-                            return (
-                              <>
-                                {friend.selected ? (
-                                  <AntDesign
-                                    name="checkcircle"
-                                    size={47}
-                                    color="green"
-                                  />
-                                ) : (
-                                  <Avatar
-                                    bg={friend.avatarColor}
-                                    justify="center"
-                                  >
-                                    {friend.initials}
-                                  </Avatar>
-                                )}
-                              </>
-                            );
-                          }}
-                        </Pressable>
-                        <VStack flex={1}>
-                          <Spacer />
-                          <Text justify="center" pl="3">
-                            {friend.name}
-                          </Text>
-                          <Spacer />
-                        </VStack>
-                        {friend.user ? null : (
-                          <DeleteFriendAlert friend={friend} />
-                        )}
-                      </HStack>
-                    </Box>
-                  );
-                }
+                // {
+                //   console.log("this is from friend.name[0]", friend);
+                // }
+                // if (friend.name[0] === letter && !favorites.includes(friend)) {
+                //   return (
+                //     <Box key={uuid.v4()}>
+                //       {/* The pressable code below keeps track of who is selected */}
+                //       <HStack space="3" m="1">
+                //         <Pressable>
+                //           {({ isPressed }) => {
+                //             if (isPressed) {
+                //               friend.selected = !friend.selected;
+                //               if (!participants.includes(friend)) {
+                //                 participants.push(friend);
+                //               } else {
+                //                 participants = participants.filter((person) => {
+                //                   return person != friend;
+                //                 });
+                //               }
+                //             }
+                //             return (
+                //               <>
+                //                 {friend.selected ? (
+                //                   <AntDesign
+                //                     name="checkcircle"
+                //                     size={47}
+                //                     color="green"
+                //                   />
+                //                 ) : (
+                //                   <Avatar
+                //                     bg={friend.avatarColor}
+                //                     justify="center"
+                //                   >
+                //                     {friend.initials}
+                //                   </Avatar>
+                //                 )}
+                //               </>
+                //             );
+                //           }}
+                //         </Pressable>
+                //         <VStack flex={1}>
+                //           <Spacer />
+                //           <Text justify="center" pl="3">
+                //             {friend.name}
+                //           </Text>
+                //           <Spacer />
+                //         </VStack>
+                //         {friend.user ? null : (
+                //           <DeleteFriendAlert friend={friend} />
+                //         )}
+                //       </HStack>
+                //     </Box>
+                //   );
+                // }
               })}
             </Box>
           );
