@@ -9,7 +9,6 @@ import {
 	ZStack,
 	Image,
 	Flex,
-	Box,
 } from "native-base";
 import {
 	MaterialCommunityIcons,
@@ -45,7 +44,7 @@ export default function CameraView() {
 			<VStack h="100%">
 				<Spacer />
 				<Text alignSelf="center">
-					Click the icon below to allow Camera access
+					Click the icon below to allow camera access.
 				</Text>
 				<IconButton
 					icon={
@@ -116,7 +115,6 @@ export default function CameraView() {
 							icon={<FontAwesome5 name="redo" size={50} color="red" />}
 						/>
 						<Spacer />
-						{/* when we build the next step of the user flow, this will go there */}
 						<IconButton
 							onPress={confirmPhoto}
 							icon={<FontAwesome5 name="check" size={50} color="green" />}
