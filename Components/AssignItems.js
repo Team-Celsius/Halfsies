@@ -42,7 +42,6 @@ export default function AssignItems(props) {
       }, {});
       const { description, key, price, qty, selected } = data;
       for (const user in data.users) {
-        console.log("im the user", user);
         const friendRef = ref(
           db,
           "users/" + userId + "/friends/" + user + "/balance"
