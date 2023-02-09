@@ -1,4 +1,11 @@
-import { FlatList, IconButton, Box, Icon, MaterialIcons } from "native-base";
+import {
+  FlatList,
+  IconButton,
+  Box,
+  Icon,
+  MaterialIcons,
+  Text,
+} from "native-base";
 import { useEffect, useState } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
 import { ref, set, onValue, remove, push, update } from "firebase/database";
@@ -9,10 +16,10 @@ export default function AppDrawer() {
   const userId = auth.currentUser.uid;
   const userFriendsRef = ref(db, "users/" + userId + "/friends/");
 
-  onValue(userFriendsRef, (snapshot) => {
-    const data = snapshot.val();
-    setFriendData(Object.values(data));
-  });
+  // onValue(userFriendsRef, (snapshot) => {
+  //   const data = snapshot.val();
+  //   setFriendData(Object.values(data));
+  // });
 
   const icons = [
     {
