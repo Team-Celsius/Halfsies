@@ -22,7 +22,6 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useState, useRef } from "react";
 import { Camera } from "expo-camera";
-import NavBar from "./../NavBar.js";
 import { useNavigation } from "@react-navigation/native";
 import processOcrRequest from "../../OCR/GCV.js";
 
@@ -46,7 +45,6 @@ export default function CameraView() {
     // for some reason, pressing the btn doesnt work on my end :(
     return (
       <VStack h="100%">
-        <NavBar />
         <Spacer />
         <Text alignSelf="center">
           Click the icon below to allow Camera access
@@ -112,7 +110,6 @@ export default function CameraView() {
           />
         </>
         <VStack w="100%" h="100%">
-          <NavBar />
           <Spacer />
           <HStack alignSelf="center" mb="10">
             <Spacer />
@@ -134,7 +131,6 @@ export default function CameraView() {
   ) : (
     <>
       <ExpoCamera h="100%" w="100%" ref={cameraRef} flashMode="on">
-        <NavBar />
         <Spacer />
         <HStack mb="5">
           <Spacer />

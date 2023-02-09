@@ -29,7 +29,7 @@ export default function LoginForm() {
     signInWithEmailAndPassword(auth, data.email.trim(), data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        navigation.navigate("Participants");
+        navigation.navigate("Camera");
       })
       .catch((error) => {
         const errorCode = error.code;
