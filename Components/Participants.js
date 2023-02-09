@@ -406,9 +406,11 @@ export default function Participants(props) {
                               if (!participants.includes(friend)) {
                                 participants.push(friend);
                               } else {
-                                participants = participants.filter((person) => {
-                                  return person != friend;
-                                });
+                                setParticipants(
+                                  participants.filter((person) => {
+                                    return person != friend;
+                                  })
+                                );
                               }
                             }
                             return (
