@@ -38,13 +38,13 @@ export default function AssignItems(props) {
   const data = props.route.params.ocrResults.items;
   const [listData, setListData] = useState(data);
 
-  function addItemsData(userId, listData, uuid) {
-    const itemRef = ref(db, "users/" + userId + "/items");
+  function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
       data.users = data.users.reduce((accumulator, value) => {
         return { ...accumulator, [value.userId]: value };
       }, {});
+      6;
       const { description, key, price, qty, selected } = data;
       for (const user in data.users) {
         const friendRef = ref(
@@ -241,7 +241,7 @@ export default function AssignItems(props) {
                   participant.selected === true &&
                   !item.users.includes(participant)
                 ) {
-                  console.log(item.users, "added to item.users");
+                  //console.log(item.users, "added to item.users");
                   //add them to item's users array and update state
                   newData[newData.indexOf(item)].users.push(participant);
                   setListData(newData);
@@ -291,6 +291,7 @@ export default function AssignItems(props) {
                   if (item.users.includes(participant)) {
                     return (
                       <Pressable
+                        key={uuid.v4()}
                         onPress={() => {
                           newData = [...listData];
                           newData[newData.indexOf(item)].users[
@@ -389,6 +390,7 @@ export default function AssignItems(props) {
             {participants.map((participant) => {
               return (
                 <Pressable
+                  key={uuid.v4()}
                   onPress={() => {
                     let newData = [...participants];
                     newData[newData.indexOf(participant)].selected =
