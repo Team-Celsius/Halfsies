@@ -34,7 +34,7 @@ export default function AssignItems(props) {
     props.route.params.participants
   );
 
-  function addItemsData(userId, listData, uuid) {
+  function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
       data.users = data.users.reduce((accumulator, value) => {
@@ -55,6 +55,7 @@ export default function AssignItems(props) {
           price: price,
           qty: qty,
           selected: selected,
+          payed: false,
         });
       }
     });
