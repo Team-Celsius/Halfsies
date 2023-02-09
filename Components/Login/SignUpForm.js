@@ -7,6 +7,7 @@ import { auth, db } from "../../Firebase/firebaseConfig";
 import randomColor from "randomcolor";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { Foundation } from "@expo/vector-icons";
 
 export default function SignUpForm() {
 	const navigation = useNavigation();
@@ -83,16 +84,16 @@ export default function SignUpForm() {
 
 	function errorTextCreator(errorCode) {
 		if (errorCode === "auth/invalid-email") {
-			return "Email invalid";
+			return "Email invalid. Please try again.";
 		} else if (errorCode === "auth/email-already-in-use") {
-			return "Sorry email already in use";
+			return "Sorry, email already in use.";
 		}
 	}
 
 	function SignUpError() {
 		return (
 			<>
-				<Modal isOpen={modalVisible} onClose={setModalVisible} size="sm">
+				<Modal isOpen={modalVisible} onClose={setModalVisible(false)} size="sm">
 					<Modal.Content maxH="212">
 						<Modal.CloseButton />
 						<Modal.Header>Error</Modal.Header>
@@ -104,7 +105,7 @@ export default function SignUpForm() {
 						<Modal.Footer>
 							<Button.Group space={2}>
 								<Button
-									backgroundColor="violet.800"
+									backgroundColor="violet.900"
 									onPress={() => {
 										setModalVisible(false);
 									}}
@@ -133,10 +134,10 @@ export default function SignUpForm() {
 					<Input
 						textAlign="center"
 						borderWidth="3"
-						borderColor="violet.800"
+						borderColor="violet.900"
 						variant="rounded"
 						backgroundColor="white"
-						color="violet.800"
+						color="violet.900"
 						p="5"
 						m="2"
 						placeholder="First Name *"
@@ -147,8 +148,9 @@ export default function SignUpForm() {
 				name="firstName"
 			/>
 			{errors.firstName && (
-				<Text textAlign="center" color="danger.700" fontSize="md">
-					First name is required.
+				<Text textAlign="center" color="white" fontSize="md">
+					<Foundation name="alert" size={20} color="maroon" /> First name is
+					required.
 				</Text>
 			)}
 
@@ -158,10 +160,10 @@ export default function SignUpForm() {
 					<Input
 						textAlign="center"
 						borderWidth="3"
-						borderColor="violet.800"
+						borderColor="violet.900"
 						variant="rounded"
 						backgroundColor="white"
-						color="violet.800"
+						color="violet.900"
 						p="5"
 						m="2"
 						placeholder="Last Name"
@@ -182,10 +184,10 @@ export default function SignUpForm() {
 					<Input
 						textAlign="center"
 						borderWidth="3"
-						borderColor="violet.800"
+						borderColor="violet.900"
 						variant="rounded"
 						backgroundColor="white"
-						color="violet.800"
+						color="violet.900"
 						p="5"
 						m="2"
 						placeholder="Email *"
@@ -196,8 +198,9 @@ export default function SignUpForm() {
 				name="email"
 			/>
 			{errors.email && (
-				<Text textAlign="center" color="danger.700" fontSize="md">
-					The email you entered is invalid. Please try again.
+				<Text textAlign="center" color="white" fontSize="md">
+					<Foundation name="alert" size={20} color="maroon" /> The email you
+					entered is invalid. Please try again.
 				</Text>
 			)}
 
@@ -212,10 +215,10 @@ export default function SignUpForm() {
 					<Input
 						textAlign="center"
 						borderWidth="3"
-						borderColor="violet.800"
+						borderColor="violet.900"
 						variant="rounded"
 						backgroundColor="white"
-						color="violet.800"
+						color="violet.900"
 						p="5"
 						m="2"
 						placeholder="Password *"
@@ -226,21 +229,22 @@ export default function SignUpForm() {
 				name="password"
 			/>
 			{errors.password && (
-				<Text textAlign="center" color="danger.700" fontSize="md">
-					Please enter a password.
+				<Text textAlign="center" color="white" fontSize="md">
+					<Foundation name="alert" size={20} color="maroon" /> Please enter a
+					password.
 				</Text>
 			)}
 			<Text textAlign="center" color="white">
-				Password must be over 6 characters.
+				Password must at least 7 characters.
 			</Text>
 
 			<Pressable
 				textAlign="center"
 				borderWidth="3"
-				borderColor="violet.800"
+				borderColor="violet.900"
 				variant="rounded"
-				backgroundColor="violet.800"
-				color="violet.800"
+				backgroundColor="violet.900"
+				color="violet.900"
 				p="5"
 				m="2"
 				onPress={handleSubmit(onSubmit)}

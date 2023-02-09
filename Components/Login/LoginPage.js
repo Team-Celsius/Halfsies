@@ -25,7 +25,7 @@ export default function LoginPage() {
 					fontFamily="monospace"
 					fontSize="65"
 					fontWeight="bold"
-					color="violet.800"
+					color="violet.900"
 				>
 					Halfsies
 				</Text>
@@ -38,7 +38,7 @@ export default function LoginPage() {
 					borderColor="rgba(255, 122, 89, 0)"
 					variant="rounded"
 					background="rgba(255, 122, 89, 0)"
-					color="violet.800"
+					color="violet.900"
 					m="2"
 					onPress={toggleSignIn}
 				>
