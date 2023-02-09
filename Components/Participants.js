@@ -126,7 +126,7 @@ export default function Participants(props) {
   function addUserToParticipants(friends) {
     friends.forEach((friend) => {
       if (friend.selected && !participants.includes(friend)) {
-        participants.push(friend);
+        setParticipants([friend]);
       }
     });
   }
