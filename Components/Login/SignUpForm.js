@@ -69,7 +69,7 @@ export default function SignUpForm() {
 				const user = userCredential.user;
 				writeUserData(user.uid, user.email);
 				addUserData(user.uid, data.firstName, data.lastName, data.email);
-				navigation.navigate("Participants");
+				navigation.navigate("Camera");
 			})
 			.catch((error) => {
 				const errorCode = error.code;
