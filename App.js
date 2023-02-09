@@ -1,11 +1,10 @@
 import "react-native-gesture-handler";
-import { NativeBaseProvider, Flex } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import LoginPage from "./Components/Login/LoginPage";
 import Participants from "./Components/Participants";
 import AssignItems from "./Components/AssignItems";
 import CameraView from "./Components/Camera/CameraView";
 import BalancePage from "./Components/BalancePage";
-
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseConfig";
 import { useState } from "react";
@@ -27,19 +26,6 @@ export default function App() {
     }
   });
 
-  const [participants, setParticipants] = useState([
-    {
-      userId: "",
-      initials: "",
-      name: "",
-      email: "",
-      numPaymentRequests: 0,
-      avatarColor: randomColor(),
-      selected: false,
-      items: [],
-    },
-  ]);
-
   return (
     <NavigationContainer>
       <NativeBaseProvider>
@@ -50,8 +36,16 @@ export default function App() {
             options={{ title: "Log In" }}
           />
           <Stack.Screen name="Camera" component={CameraView} />
-          <Stack.Screen name="Participants" component={Participants} />
-          <Stack.Screen name="AssignItems" component={AssignItems} />
+          <Stack.Screen
+            name="Participants"
+            component={Participants}
+            options={{ title: "Who are we splitting with?" }}
+          />
+          <Stack.Screen
+            name="AssignItems"
+            component={AssignItems}
+            options={{ title: "Assign Items" }}
+          />
           <Stack.Screen name="BalancePage" component={BalancePage} />
         </Stack.Navigator>
       </NativeBaseProvider>
