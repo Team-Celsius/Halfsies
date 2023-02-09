@@ -9,7 +9,7 @@ import {
 } from "native-base";
 import { useEffect, useState } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, onValue, remove } from "firebase/database";
+import { ref, onValue, remove, update } from "firebase/database";
 
 export default function AppDrawer() {
   let [friendData, setFriendData] = useState([]);
@@ -38,6 +38,15 @@ export default function AppDrawer() {
     );
 
     remove(itemRef);
+  };
+
+  const updatePayed = (userUid, friendUid, itemUid, payed) => {
+    const payedRef = ref(
+      db,
+      "users/" + userUid + "/friends/" + friendUid + "/balance/" + itemUid
+    );
+
+    update(payedRef, { payed: !payed });
   };
 
   const icons = [
@@ -128,10 +137,11 @@ export default function AppDrawer() {
       <Button
         colorScheme="danger"
         onPress={() => {
-          deleteItem(
+          updatePayed(
             "7ccnsAHMivR0ApJZDW6APZXnXZ82",
             "-NNnZ0D7ENK5c_kvVKWr",
-            "-NNqqZsoLnri_pXetoj8"
+            "-NNs5c2EGle03WxV4CYr",
+            true
           );
         }}
       >
