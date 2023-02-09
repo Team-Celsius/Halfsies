@@ -5,10 +5,11 @@ import {
   Icon,
   MaterialIcons,
   Text,
+  Button,
 } from "native-base";
 import { useEffect, useState } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
-import { ref, set, onValue, remove, push, update } from "firebase/database";
+import { ref, onValue, remove } from "firebase/database";
 
 export default function AppDrawer() {
   let [friendData, setFriendData] = useState([]);
@@ -16,10 +17,28 @@ export default function AppDrawer() {
   const userId = auth.currentUser.uid;
   const userFriendsRef = ref(db, "users/" + userId + "/friends/");
 
-  // onValue(userFriendsRef, (snapshot) => {
-  //   const data = snapshot.val();
-  //   setFriendData(Object.values(data));
+  useEffect(() => {
+    return onValue(userFriendsRef, (snap) => {
+      const data = snap.val();
+      setFriendData(Object.values(data));
+    });
+  }, []);
+
+  // use to get balance as array
+  // friendData.forEach((e) => {
+  //   if (e.balance) {
+  //     console.log(Object.values(e.balance));
+  //   }
   // });
+
+  const deleteItem = (userUid, friendUid, itemUid) => {
+    const itemRef = ref(
+      db,
+      "users/" + userUid + "/friends/" + friendUid + "/balance/" + itemUid
+    );
+
+    remove(itemRef);
+  };
 
   const icons = [
     {
@@ -103,11 +122,21 @@ export default function AppDrawer() {
       bg: "indigo.600",
     },
   ];
+
   return (
     <Box>
-      {friendData.map((friend) => {
-        return <Text>{friend.name}</Text>;
-      })}
+      <Button
+        colorScheme="danger"
+        onPress={() => {
+          deleteItem(
+            "7ccnsAHMivR0ApJZDW6APZXnXZ82",
+            "-NNnZ0D7ENK5c_kvVKWr",
+            "-NNqqZsoLnri_pXetoj8"
+          );
+        }}
+      >
+        Delete
+      </Button>
       <FlatList
         numColumns={4}
         m={"-8px"}
