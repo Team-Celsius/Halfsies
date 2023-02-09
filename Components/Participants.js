@@ -27,7 +27,8 @@ export default function Participants(props) {
   const navigation = useNavigation();
   let ocrResults = null;
 
-  if (props.route?.params?.ocrResults) { // equiv of (props.route.params && props.route.params.ocrResults)
+  if (props.route?.params?.ocrResults) {
+    // equiv of (props.route.params && props.route.params.ocrResults)
     ocrResults = props.route.params.ocrResults;
   }
 
@@ -133,7 +134,10 @@ export default function Participants(props) {
         <Button
           bg="violet.800"
           onPress={() => {
-            navigation.navigate("AssignItems", { participants: participants, ocrResults: ocrResults });
+            navigation.navigate("AssignItems", {
+              participants: participants,
+              ocrResults: ocrResults,
+            });
           }}
         >
           Confirm
@@ -372,6 +376,9 @@ export default function Participants(props) {
               <Divider w="100%" alignSelf="center" />
               {/* The map below renders the friends array alphabetically  */}
               {friends.map((friend) => {
+                {
+                  console.log("this is from friend.name[0]", friend);
+                }
                 if (friend.name[0] === letter && !favorites.includes(friend)) {
                   return (
                     <Box key={uuid.v4()}>
