@@ -35,22 +35,34 @@ export default function AssignItems(props) {
   );
 
   function addItemsData(userId, listData, uuid) {
-    const itemRef = ref(db, "users/" + userId + "/items");
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
       data.users = data.users.reduce((accumulator, value) => {
-        const newUuid = uuid.v4();
-        return { ...accumulator, [newUuid]: value };
+        return { ...accumulator, [value.userId]: value };
       }, {});
-      const newItemRef = push(itemRef);
-      set(newItemRef, {
-        data,
-        itemUid: newItemRef.key,
-      });
+      const { description, key, price, qty, selected } = data;
+      for (const user in data.users) {
+        console.log("im the user", user);
+        const friendRef = ref(
+          db,
+          "users/" + userId + "/friends/" + user + "/balance"
+        );
+        const newFriendRef = push(friendRef);
+
+        set(newFriendRef, {
+          itemUid: newFriendRef.key,
+          description: description,
+          key: key,
+          price: price,
+          qty: qty,
+          selected: selected,
+        });
+      }
     });
   }
 
-  const data = props.route.params.ocrResults.items;
+  //data coming in from ocr
+  //const data = props.route.params.ocrResults.items;
 
   const testData = [
     {
@@ -87,7 +99,8 @@ export default function AssignItems(props) {
     },
   ];
 
-  const [listData, setListData] = useState(data);
+  //switch useState back to data
+  const [listData, setListData] = useState(testData);
   //eventually want to make it so that it does not scroll up after deleting an item
   function SwipeableScrollableMenu() {
     function closeRow(rowMap, rowKey) {
