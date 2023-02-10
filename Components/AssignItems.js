@@ -29,25 +29,39 @@ import uuid from "react-native-uuid";
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  let [participants, setParticipants] = useState(props.route.params.participants
-    );
-  
+  // console.log(props.route.params, 'props')
+  let [participants, setParticipants] = useState(
+    props.route.params.participants
+  );
+
   const data = props.route.params.ocrResults.items;
   const [listData, setListData] = useState(data);
 
-  function addItemsData(userId, listData, uuid) {
-    const itemRef = ref(db, "users/" + userId + "/items");
+  function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
       data.users = data.users.reduce((accumulator, value) => {
-        const newUuid = uuid.v4();
-        return { ...accumulator, [newUuid]: value };
+        return { ...accumulator, [value.userId]: value };
       }, {});
-      const newItemRef = push(itemRef);
-      set(newItemRef, {
-        data,
-        itemUid: newItemRef.key,
-      });
+      6;
+      const { description, key, price, qty, selected } = data;
+      for (const user in data.users) {
+        const friendRef = ref(
+          db,
+          "users/" + userId + "/friends/" + user + "/balance"
+        );
+        const newFriendRef = push(friendRef);
+
+        set(newFriendRef, {
+          itemUid: newFriendRef.key,
+          description: description,
+          key: key,
+          price: price,
+          qty: qty,
+          selected: selected,
+          payed: false,
+        });
+      }
     });
   }
 
@@ -205,7 +219,7 @@ export default function AssignItems(props) {
       setListData(newData);
     }
     function renderItem({ item }) {
-      let newData = [...listData]
+      let newData = [...listData];
       let newParticipants = [...participants];
       return (
         <Box>
@@ -213,44 +227,47 @@ export default function AssignItems(props) {
             bgColor="white"
             onPress={() => {
               participants.map((participant) => {
-                
-                
-                
                 //press an item and toggle if it is selected
-                newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected;
-                
+                newData[newData.indexOf(item)].selected =
+                  !newData[newData.indexOf(item)].selected;
+
                 //if participant selected when you touch item, and participant is not assigned to the item yet
                 //also means that since it is the first item that it can not be in their balance
-                if (participant.selected === true && !item.users.includes(participant)) {
-                  console.log(item.users, 'added to item.users')
+                if (
+                  participant.selected === true &&
+                  !item.users.includes(participant)
+                ) {
+                  //console.log(item.users, "added to item.users");
                   //add them to item's users array and update state
                   newData[newData.indexOf(item)].users.push(participant);
-                  setListData(newData)
-                  
+                  setListData(newData);
+
                   //set the participants selected property to false, add item to their balance, and update state
-                  newParticipants[newParticipants.indexOf(participant)].selected = false;
-
-
-
-
+                  newParticipants[
+                    newParticipants.indexOf(participant)
+                  ].selected = false;
 
                   //the issue is that there is no balance property still on the participants
                   // console.log(newParticipants[newParticipants.indexOf(participant)], 'balance')
                   // newParticipants[newParticipants.indexOf(participant)].balance.push(item);
-                  setParticipants(newParticipants)
+                  setParticipants(newParticipants);
                   // console.log(participants, 'added first item to balance')
-                  
+
                   //also check to make sure you havent already assigned more qty than the item says it has
-                  
-                  
+
                   //if they already have the item, update qty in their balance and update state
-                } else if (participant.selected === true && item.users.includes(participant)) {
+                } else if (
+                  participant.selected === true &&
+                  item.users.includes(participant)
+                ) {
                   // let newParticipants = [...participants];
-                  newParticipants[newParticipants.indexOf(participant)].selected = false;
+                  newParticipants[
+                    newParticipants.indexOf(participant)
+                  ].selected = false;
 
                   // let index = newParticipants[newParticipants.indexOf(participant)].balance.indexOf(item)
                   // ++newParticipants[newParticipants.indexOf(participant)].balance[index].qty
-                  setParticipants(newParticipants)
+                  setParticipants(newParticipants);
 
                   // console.log(participants, 'added more items to balance should update qty')
                 }
@@ -270,12 +287,17 @@ export default function AssignItems(props) {
                   if (item.users.includes(participant)) {
                     return (
                       <Pressable
-                        onPress={() => { 
+                        key={uuid.v4()}
+                        onPress={() => {
                           newData = [...listData];
-                          newData[newData.indexOf(item)].users[item.users.indexOf(participant)] = {};
-                          newData = listData[listData.indexOf(item)].users.filter((user) => {
-                            return user != {}
-                          })
+                          newData[newData.indexOf(item)].users[
+                            item.users.indexOf(participant)
+                          ] = {};
+                          newData = listData[
+                            listData.indexOf(item)
+                          ].users.filter((user) => {
+                            return user != {};
+                          });
                           setListData(newData);
                         }}
                       >
@@ -364,9 +386,11 @@ export default function AssignItems(props) {
             {participants.map((participant) => {
               return (
                 <Pressable
+                  key={uuid.v4()}
                   onPress={() => {
                     let newData = [...participants];
-                    newData[newData.indexOf(participant)].selected = !newData[newData.indexOf(participant)].selected;
+                    newData[newData.indexOf(participant)].selected =
+                      !newData[newData.indexOf(participant)].selected;
                     setParticipants(newData);
                   }}
                 >
