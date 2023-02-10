@@ -68,7 +68,7 @@ export default function AssignItems(props) {
 
   function AddItemManually() {
     const [modalVisible, setModalVisible] = useState(false);
-    const [inputQty, setInputQty] = useState();
+    const [inputQty, setInputQty] = useState(1);
     const [inputDescription, setInputDescription] = useState();
     const [inputPrice, setInputPrice] = useState();
     const [errors, setErrors] = useState(false);
@@ -95,14 +95,14 @@ export default function AssignItems(props) {
       ];
       return (
         <Select
-          selectedValue={inputQty}
+          selectedValue={inputQty.toString()}
           _selectedItem={{
             bgColor: "violet.800",
             endIcon: <CheckIcon size="5" />,
           }}
           mt={1}
           onValueChange={(quantity) => {
-            setInputQty(quantity);
+            setInputQty(Number(quantity));
           }}
         >
           {numbers.map((number) => {
@@ -110,8 +110,8 @@ export default function AssignItems(props) {
               <Select.Item
                 key={numbers + 20}
                 alignItems="center"
-                label={number}
-                value={number}
+                label={number.toString()}
+                value={number.toString()}
               />
             );
           })}
