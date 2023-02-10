@@ -22,7 +22,7 @@ export default function LoginPage() {
 				<Spacer />
 				<Text
 					alignSelf="center"
-					fontFamily="monospace"
+					// fontFamily="monospace"
 					fontSize="65"
 					fontWeight="bold"
 					color="violet.900"

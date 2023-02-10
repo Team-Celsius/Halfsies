@@ -4,11 +4,11 @@ import LoginPage from "./Components/Login/LoginPage";
 import Participants from "./Components/Participants";
 import AssignItems from "./Components/AssignItems";
 import CameraView from "./Components/Camera/CameraView";
-import BalancePage from "./Components/BalancePage";
+import Summary from "./Components/Summary";
+
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseConfig";
 import { useState } from "react";
-import randomColor from "randomcolor";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -46,7 +46,7 @@ export default function App() {
 						component={AssignItems}
 						options={{ title: "Assign Items" }}
 					/>
-					<Stack.Screen name="BalancePage" component={BalancePage} />
+					<Stack.Screen name="Summary" component={Summary} />
 				</Stack.Navigator>
 			</NativeBaseProvider>
 		</NavigationContainer>

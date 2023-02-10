@@ -25,12 +25,10 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
 import uuid from "react-native-uuid";
 
-//bugs
-//every avatar starts as a green check mark instead of an avatar, check selected property
+
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  // console.log(props.route.params, 'props')
   let [participants, setParticipants] = useState(props.route.params.participants
     );
   
@@ -136,10 +134,6 @@ export default function AssignItems(props) {
                   {" "}
                   Price must be a number. Do not include "$"
                 </FormControl.HelperText>
-                {/* this error message will not display, even when it was part of a ternary */}
-                {/* <FormControl.ErrorMessage _text={{
-        fontSize: 'xs'
-      }}>Error. Price must be a number. Do not include "$"</FormControl.ErrorMessage> */}
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
@@ -195,6 +189,7 @@ export default function AssignItems(props) {
       </>
     );
   }
+  
   //eventually want to make it so that it does not scroll up after deleting an item
   function SwipeableScrollableMenu() {
     function closeRow(rowMap, rowKey) {
@@ -338,7 +333,7 @@ export default function AssignItems(props) {
   return (
     <>
       <VStack bgColor="white" h="100%">
-        <HStack mt="5" mb="5">
+        <HStack  mt="5" mb="5">
           <Spacer />
           <VStack alignSelf="center">
             <Heading alignSelf="center" size="lg" mb="5">
@@ -350,7 +345,7 @@ export default function AssignItems(props) {
                 bg="violet.800"
                 onPress={() => {
                   addItemsData(userId, listData, uuid);
-                  navigation.navigate("BalancePage", {
+                  navigation.navigate("Summary", {
                     participants: participants,
                   });
                 }}
