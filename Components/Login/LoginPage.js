@@ -1,7 +1,9 @@
 import { Image, Text, ZStack, VStack, Spacer, Pressable } from "native-base";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
 import { useState } from "react";
+
 
 export default function LoginPage() {
 	const [signIn, setSignIn] = useState(false);
@@ -9,14 +11,16 @@ export default function LoginPage() {
 	const toggleSignIn = () => {
 		setSignIn(!signIn);
 	};
+
 	return (
-		<ZStack>
+	<KeyboardAwareScrollView contentContainerStyle={{flex: 1}} >
+			<ZStack>
 			<>
 				<Image
 					source={require("../../assets/loginPage.jpg")}
 					alt="A yellow background with a hand full of fries with ketchup on then with one fry being taken by another hand"
 					style={{ width: "100%", height: "100%" }}
-				/>
+					/>
 			</>
 			<VStack w="100%" h="100%" p="5">
 				<Spacer />
@@ -72,5 +76,6 @@ export default function LoginPage() {
 				</Pressable>
 			</VStack>
 		</ZStack>
+	</KeyboardAwareScrollView>
 	);
 }
