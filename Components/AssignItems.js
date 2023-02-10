@@ -76,11 +76,10 @@ export default function AssignItems(props) {
     const validate = () => {
       //this validation for inputPrice does not work. The form returns a string,
       // and if i force it with Number() then string input gets validated as a number
-      // if (typeof(inputPrice) !== "number") {
-      //   setErrors(true)
-      //   return false
-      // }
-      if (typeof inputQty !== "number") {
+      if (isNaN(inputPrice)) {
+        setErrors(true);
+        return false;
+      } else if (typeof inputQty !== "number") {
         setErrors(true);
         return false;
       } else if (typeof inputDescription !== "string") {
@@ -143,7 +142,10 @@ export default function AssignItems(props) {
                   }
                 />
                 <FormControl.Label>Price per item</FormControl.Label>
-                <Input onChangeText={(itemPrice) => setInputPrice(itemPrice)} />
+                <Input
+                  InputLeftElement={<Text ml="1.5">$</Text>}
+                  onChangeText={(itemPrice) => setInputPrice(Number(itemPrice))}
+                />
                 <FormControl.HelperText>
                   {" "}
                   Price must be a number. Do not include "$"
@@ -170,7 +172,8 @@ export default function AssignItems(props) {
                           key: <>{inputQty + inputPrice}</>,
                           qty: inputQty,
                           description: inputDescription,
-                          price: "$" + inputPrice,
+                          //removed $ from input
+                          price: inputPrice,
                           selected: false,
                           users: [],
                         },
@@ -283,7 +286,12 @@ export default function AssignItems(props) {
                 <Spacer />
                 <Text>{item.description}</Text>
                 <Spacer />
-                <Text>{item.price}</Text>
+                <Text>
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format(item.price)}
+                </Text>
               </HStack>
               <HStack flexWrap="wrap" space="1" alignSelf="center">
                 {participants.map((participant) => {
