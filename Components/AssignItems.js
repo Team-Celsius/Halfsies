@@ -172,7 +172,6 @@ export default function AssignItems(props) {
                           key: <>{inputQty + inputPrice}</>,
                           qty: inputQty,
                           description: inputDescription,
-                          //removed $ from input
                           price: inputPrice,
                           selected: false,
                           users: [],
