@@ -11,6 +11,8 @@ import { useState } from "react";
 import randomColor from "randomcolor";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 const Stack = createNativeStackNavigator();
 

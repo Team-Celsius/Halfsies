@@ -68,7 +68,7 @@ export default function AssignItems(props) {
 
   function AddItemManually() {
     const [modalVisible, setModalVisible] = useState(false);
-    const [inputQty, setInputQty] = useState();
+    const [inputQty, setInputQty] = useState(1);
     const [inputDescription, setInputDescription] = useState();
     const [inputPrice, setInputPrice] = useState();
     const [errors, setErrors] = useState(false);
@@ -76,11 +76,10 @@ export default function AssignItems(props) {
     const validate = () => {
       //this validation for inputPrice does not work. The form returns a string,
       // and if i force it with Number() then string input gets validated as a number
-      // if (typeof(inputPrice) !== "number") {
-      //   setErrors(true)
-      //   return false
-      // }
-      if (typeof inputQty !== "number") {
+      if (isNaN(inputPrice)) {
+        setErrors(true);
+        return false;
+      } else if (typeof inputQty !== "number") {
         setErrors(true);
         return false;
       } else if (typeof inputDescription !== "string") {
@@ -95,14 +94,14 @@ export default function AssignItems(props) {
       ];
       return (
         <Select
-          selectedValue={inputQty}
+          selectedValue={inputQty.toString()}
           _selectedItem={{
             bgColor: "violet.800",
             endIcon: <CheckIcon size="5" />,
           }}
           mt={1}
           onValueChange={(quantity) => {
-            setInputQty(quantity);
+            setInputQty(Number(quantity));
           }}
         >
           {numbers.map((number) => {
@@ -110,8 +109,8 @@ export default function AssignItems(props) {
               <Select.Item
                 key={numbers + 20}
                 alignItems="center"
-                label={number}
-                value={number}
+                label={number.toString()}
+                value={number.toString()}
               />
             );
           })}
@@ -135,7 +134,6 @@ export default function AssignItems(props) {
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Qty</FormControl.Label>
-                {/* Cannot get quantity to display when selected */}
                 <SelectDropdownMenu />
                 <FormControl.Label>Description</FormControl.Label>
                 <Input
@@ -144,7 +142,10 @@ export default function AssignItems(props) {
                   }
                 />
                 <FormControl.Label>Price per item</FormControl.Label>
-                <Input onChangeText={(itemPrice) => setInputPrice(itemPrice)} />
+                <Input
+                  InputLeftElement={<Text ml="1.5">$</Text>}
+                  onChangeText={(itemPrice) => setInputPrice(Number(itemPrice))}
+                />
                 <FormControl.HelperText>
                   {" "}
                   Price must be a number. Do not include "$"
@@ -171,7 +172,7 @@ export default function AssignItems(props) {
                           key: <>{inputQty + inputPrice}</>,
                           qty: inputQty,
                           description: inputDescription,
-                          price: "$" + inputPrice,
+                          price: inputPrice,
                           selected: false,
                           users: [],
                         },
@@ -284,7 +285,12 @@ export default function AssignItems(props) {
                 <Spacer />
                 <Text>{item.description}</Text>
                 <Spacer />
-                <Text>{item.price}</Text>
+                <Text>
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format(item.price)}
+                </Text>
               </HStack>
               <HStack flexWrap="wrap" space="1" alignSelf="center">
                 {participants.map((participant) => {
@@ -294,14 +300,10 @@ export default function AssignItems(props) {
                         key={uuid.v4()}
                         onPress={() => {
                           newData = [...listData];
-                          newData[newData.indexOf(item)].users[
-                            item.users.indexOf(participant)
-                          ] = {};
-                          newData = listData[
-                            listData.indexOf(item)
-                          ].users.filter((user) => {
-                            return user != {};
-                          });
+                          newData[newData.indexOf(item)].users.splice(
+                            item.users.indexOf(participant),
+                            1
+                          );
                           setListData(newData);
                         }}
                       >
