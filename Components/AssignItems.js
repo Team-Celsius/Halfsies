@@ -294,14 +294,10 @@ export default function AssignItems(props) {
                         key={uuid.v4()}
                         onPress={() => {
                           newData = [...listData];
-                          newData[newData.indexOf(item)].users[
-                            item.users.indexOf(participant)
-                          ] = {};
-                          newData = listData[
-                            listData.indexOf(item)
-                          ].users.filter((user) => {
-                            return user != {};
-                          });
+                          newData[newData.indexOf(item)].users.splice(
+                            item.users.indexOf(participant),
+                            1
+                          );
                           setListData(newData);
                         }}
                       >
