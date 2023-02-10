@@ -135,7 +135,6 @@ export default function AssignItems(props) {
             <Modal.Body>
               <FormControl mt="3">
                 <FormControl.Label>Qty</FormControl.Label>
-                {/* Cannot get quantity to display when selected */}
                 <SelectDropdownMenu />
                 <FormControl.Label>Description</FormControl.Label>
                 <Input
