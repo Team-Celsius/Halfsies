@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import { MaterialCommunityIcons, AntDesign, Feather } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
@@ -37,6 +37,7 @@ export default function AssignItems(props) {
 
   const data = props.route.params.ocrResults.items;
   const [listData, setListData] = useState(data);
+  const scrollContainerRef = useRef(null);
 
   function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
@@ -74,27 +75,37 @@ export default function AssignItems(props) {
     const [errors, setErrors] = useState(false);
     const [buttonColor, setButtonColor] = useState("violet.800");
     const validate = () => {
-      //this validation for inputPrice does not work. The form returns a string,
-      // and if i force it with Number() then string input gets validated as a number
-      if (isNaN(inputPrice)) {
+      const inputPriceAsFloat = parseFloat(inputPrice);
+      if (isNaN(inputPriceAsFloat)) {
         setErrors(true);
         return false;
       } else if (typeof inputQty !== "number") {
         setErrors(true);
         return false;
-      } else if (typeof inputDescription !== "string") {
+      } else if (
+        typeof inputDescription !== "string" ||
+        inputDescription.trim().length === 0
+      ) {
+        // this length check will make sure the desc isn't empty, or contains only whitespace characters
+        setErrors(true);
+        return false;
+      } else if (inputQty <= 0 || Math.floor(inputQty) !== inputQty) {
+        // makes sure the number is positive, and not a decimal
         setErrors(true);
         return false;
       }
       return true;
     };
+
     function SelectDropdownMenu() {
       const numbers = [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
       ];
       return (
         <Select
-          selectedValue={inputQty.toString()}
+          selectedValue={inputQty}
+          // this was being toString'ed, but the validate function is making sure it's a number
+          // so validation should have permanently failed qty
           _selectedItem={{
             bgColor: "violet.800",
             endIcon: <CheckIcon size="5" />,
@@ -216,18 +227,22 @@ export default function AssignItems(props) {
         rowMap[rowKey].closeRow();
       }
     }
-    function deleteRow(rowMap, rowKey) {
+    function deleteRow(evt, rowMap, rowKey) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      const scrollTop = scrollContainerRef.current.scrollTop;
       closeRow(rowMap, rowKey);
       const newData = [...listData];
       const prevIndex = listData.findIndex((item) => item.key === rowKey);
       newData.splice(prevIndex, 1);
       setListData(newData);
+      scrollContainerRef.current.scrollTop = scrollTop;
     }
     function renderItem({ item }) {
       let newData = [...listData];
       let newParticipants = [...participants];
       return (
-        <Box>
+        <Box ref={scrollContainerRef}>
           <Pressable
             bgColor="white"
             onPress={() => {
@@ -330,7 +345,10 @@ export default function AssignItems(props) {
             cursor="pointer"
             bg="red.500"
             justifyContent="center"
-            onPress={() => deleteRow(rowMap, data.item.key)}
+            onPress={(evt) => {
+              evt.preventDefault();
+              deleteRow(evt, rowMap, data.item.key);
+            }}
             _pressed={{ opacity: 0.5 }}
           >
             <VStack alignItems="center" space={2}>
@@ -343,6 +361,7 @@ export default function AssignItems(props) {
         </HStack>
       );
     }
+
     return (
       <>
         <SwipeListView

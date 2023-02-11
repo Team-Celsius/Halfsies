@@ -43,11 +43,11 @@ export default function LoginForm() {
 
   function errorTextCreator(errorCode) {
     if (errorCode === "auth/invalid-email") {
-      return "Email invalid";
+      return "Email invalid.";
     } else if (errorCode === "auth/user-not-found") {
-      return "Sorry User not found please try again";
+      return "Sorry, user not found. Please try again";
     } else if (errorCode === "auth/wrong-password") {
-      return "Wrong password please try again";
+      return "Wrong password, please try again.";
     }
   }
 
