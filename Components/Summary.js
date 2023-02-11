@@ -10,45 +10,43 @@ import {
   Button,
   Spacer,
   Icon,
-  Feather,
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
 import { ref, onValue} from "firebase/database";
 import uuid from "react-native-uuid";
 import { useNavigation } from "@react-navigation/native";
-import { SwipeListView } from "react-native-swipe-list-view";
 
-export default function Summary(props) {
-console.log(props)
+
+export default function Summary() {
   const [bgColorUnpaid, setBgColorUnpaid] = useState("green.800")
   const [bgColorPaid, setBgColorPaid] = useState("violet.800")
   const [renderPaid, setRenderPaid] = useState(false)
 
+
   const navigation = useNavigation();
-
+ 
   let [newFriends, setNewFriends] = useState([]);
-
   const userId = auth.currentUser.uid;
   const userFriendsRef = ref(db, "users/" + userId + "/friends/");
-
+  
   useEffect(() => {
     onValue(userFriendsRef, (snapshot) => {
       const data = snapshot.val();
       if (
         Object.values(data).some((e) =>
-          Object.keys(e).some((e) => e === "name")
+        Object.keys(e).some((e) => e === "name")
         )
-      ) {
-        setNewFriends(Object.values(data));
-      } else {
-        setNewFriends([data]);
-      }
-    });
-  }, []);
+        ) {
+          setNewFriends(Object.values(data));
+        } else {
+          setNewFriends([data]);
+        }
+      });
+    }, []);
 
-  let favorites = [];
+   const [favorites, setFavorites] = useState([]);
   const alphabet = [
     "A",
     "B",
@@ -132,75 +130,97 @@ console.log(props)
 
   function FavoriteFriendsSection(props) {
     const friends = props.friends;
-
     const createFavorites = (friends) => {
       const sortedFriends = friends.sort(
         (a, b) => b.numPaymentRequests - a.numPaymentRequests
-      );
-
-      for (let i = 0; i < 4; i++) {
-        if (sortedFriends[i]) {
-          favorites.push(sortedFriends[i]);
+        );
+        
+        for (let i = 0; i < 4; i++) {
+          if (sortedFriends[i] && !favorites.includes(sortedFriends[i])) {
+            sortedFriends[i].selected = false
+            favorites.push(sortedFriends[i]);
+          }
         }
-      }
-    };
-
-    createFavorites(friends);
-
-    return (
-      <>
+      };
+      
+      createFavorites(friends);
+      
+      return (
+        <>
         {/* The map below renders the sorted favorites array  */}
         {favorites.map((favorite) => {
           return (
             <Box key={uuid.v4()}>
               {/* The pressable code below keeps track of who is selected */}
-              <VStack>
-                
-              </VStack>
-                <HStack space="3" m="1">
-                  <Pressable>
-                    {({ isPressed }) => {
-                      if (isPressed) {
-                        favorite.selected = !favorite.selected;
-                      }
-                      return (
+                <HStack>
                         <>
-                          {favorite.selected ? (
-                            <AntDesign
-                              name="checkcircle"
-                              size={47}
-                              color="green"
-                            />
-                          ) : (
-                            <Avatar bg={favorite.avatarColor} justify="center">
-                              {favorite.initials}
-                            </Avatar>
+                          {(favorite.selected && !renderPaid) ? 
+                          (
+                            <VStack>
+                                  <HStack alignItems="center" mb="3" mr="3" > 
+                                  <Button bgColor="transparent" onPress={() => {
+                                    let newFavorites = [...favorites]
+                                    newFavorites[newFavorites.indexOf(favorite)].selected = !newFavorites[newFavorites.indexOf(favorite)].selected
+                                    setFavorites(newFavorites)
+                                  }}>
+                                    <AntDesign
+                                    name="checkcircle"
+                                    size={47}
+                                    color="green"
+                                    />
+                                  </Button>
+                                    <Text pl="3">{favorite.name}</Text>
+                                    <Spacer />
+                                    <Text>$totalBalance</Text>
+                                  </HStack> 
+                                  {Object.values(favorite.balance).map((item) => {
+                                    const [bgColor, setBgColor] = useState("red.500")
+                                    const [lineThrough, setLineThrough] = useState("")
+                                    if(!item.payed) {
+                                      return (
+                                        <VStack flex={1}>
+                                          <HStack space="5" mb="3" mr="3">
+                                            <Button size="md" bgColor={bgColor} onPress={() => {
+                                          
+                                                setBgColor('green.500')
+                                                setLineThrough("line-through")
+                                                setTimeout(() => {
+                                                  //jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
+                                                  item.payed = true
+                                                }, 2000)
+                                              
+                                            }}>
+                                              <FontAwesome5 name="money-bill-alt" size={20} color="black" />
+                                            </Button>
+                                            <Text textDecorationLine={lineThrough}>{item.qty}</Text>
+                                            <Text textDecorationLine={lineThrough} >{item.description}</Text>
+                                            <Spacer />
+                                            <Text textDecorationLine={lineThrough}>{item.price}</Text>
+                                          </HStack>
+                                        </VStack>
+                                      )
+                                    }
+                                  })}
+                                </VStack>
+                          ) 
+                          : 
+                          ( 
+                            <HStack alignItems="center"> 
+                              <Button bgColor="transparent" onPress={() => { 
+                                  let newFavorites = [...favorites]
+                                    newFavorites[newFavorites.indexOf(favorite)].selected = !newFavorites[newFavorites.indexOf(favorite)].selected
+                                    setFavorites(newFavorites)}}>
+                                <Avatar bg={favorite.avatarColor} justify="center">
+                                  {favorite.initials}
+                                </Avatar>
+                              </Button>
+                              <Text pl="3">{favorite.name}</Text>
+                              <Spacer />
+                              <Text  pr="3">$totalBalance</Text>
+                            </HStack> 
                           )}
                         </>
-                      );
-                    }}
-                  </Pressable>
-                  <VStack>
-                    <Spacer />
-                    <Text pl="3">{favorite.name}</Text>
-                    <Spacer />
-                  </VStack>
-                  <Spacer />
-                  <VStack>
-                    <Spacer />
-                    <Text pr="3">$balance</Text>
-                    <Spacer />
-                  </VStack>
                 </HStack>
-                {favorite.selected ? (
-                  <VStack>
-                    <SwipeableScrollableMenu />
-                  </VStack> 
-                            
-                ) 
-                : 
-                  null
-                }
               <VStack />
             </Box>
           );
@@ -279,87 +299,15 @@ console.log(props)
     );
   } 
 
-  function SwipeableScrollableMenu() {
-    function closeRow(rowMap, rowKey) {
-      if (rowMap[rowKey]) {
-        rowMap[rowKey].closeRow();
-      }
-    }
-    function deleteRow(rowMap, rowKey) {
-      closeRow(rowMap, rowKey);
-      const newData = [...listData];
-      const prevIndex = listData.findIndex((item) => item.key === rowKey);
-      newData.splice(prevIndex, 1);
-      setListData(newData);
-    }
-    function renderItem({ friend }) {
-      console.log(friend)
-      return (
-        <Box>
-          <Pressable
-            bgColor="white"
-            onPress={() => {
-            }}
-          >email@
-            <VStack m="4">
-              <HStack p="3">
-                {/* <Text>{item.qty}</Text> */}
-                <Spacer />
-                {/* <Text>{item.description}</Text> */}
-                <Spacer />
-                {/* <Text>{item.price}</Text> */}
-              </HStack>
-              <Divider bgColor="violet.800" />
-            </VStack>
-          </Pressable>
-        </Box>
-      );
-    }
-    function renderHiddenItem(data, rowMap) {
-      return (
-        <HStack flex="1" pl="2">
-          <Spacer />
-          <Pressable
-            w="70"
-            cursor="pointer"
-            bg="red.500"
-            justifyContent="center"
-            onPress={() => deleteRow(rowMap, data.item.key)}
-            _pressed={{ opacity: 0.5 }}
-          >
-            <VStack alignItems="center" space={2}>
-              <Icon as={<Feather name="delete" />} color="white" size="xs" />
-              <Text color="white" fontSize="xs" fontWeight="medium">
-                Delete
-              </Text>
-            </VStack>
-          </Pressable>
-        </HStack>
-      );
-    }
-    return (
-      <>
-        <SwipeListView
-          data={newFriends}
-          renderItem={renderItem}
-          renderHiddenItem={renderHiddenItem}
-          rightOpenValue={-70}
-          previewRowKey={"0"}
-          previewOpenValue={-40}
-          previewOpenDelay={3000}
-        />
-      </>
-    );
-  }
 
   return (
     <>
       <VStack flex={1} space="3" pt="5">
         <HStack>
           <Spacer />
-          <UnpaidButton friends={newFriends} />
+          <UnpaidButton />
           <Spacer />
-          <PaidButton friends={newFriends} />
+          <PaidButton />
           <Spacer />
         </HStack>
         <HStack flex={1}>

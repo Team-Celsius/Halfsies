@@ -29,7 +29,7 @@ import uuid from "react-native-uuid";
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  // console.log(props.route.params, 'props')
+
   let [participants, setParticipants] = useState(
     props.route.params.participants
   );
@@ -227,6 +227,7 @@ export default function AssignItems(props) {
             bgColor="white"
             onPress={() => {
               participants.map((participant) => {
+                participant.balance = []
                 //press an item and toggle if it is selected
                 newData[newData.indexOf(item)].selected =
                   !newData[newData.indexOf(item)].selected;

@@ -27,7 +27,6 @@ export default function Participants(props) {
   const [participants, setParticipants] = useState([]);
   const navigation = useNavigation();
   let ocrResults = null;
-
   if (props.route?.params?.ocrResults) {
     // equiv of (props.route.params && props.route.params.ocrResults)
     ocrResults = props.route.params.ocrResults;

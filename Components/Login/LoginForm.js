@@ -26,25 +26,11 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (data) => {
-    signInWithEmailAndPassword(auth, data.email.trim(), data.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        navigation.navigate("Camera");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        setErrorText(errorTextCreator(errorCode));
-        setModalVisible(true);
-      });
-  };
 	const onSubmit = (data) => {
 		signInWithEmailAndPassword(auth, data.email.trim(), data.password)
 			.then((userCredential) => {
 				const user = userCredential.user;
-				navigation.navigate("Camera");
+				navigation.navigate("Summary");
 			})
 			.catch((error) => {
 				const errorCode = error.code;
