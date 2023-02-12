@@ -8,7 +8,6 @@ import BalancePage from "./Components/BalancePage";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseConfig";
 import { useState } from "react";
-import randomColor from "randomcolor";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import "intl";
@@ -35,9 +34,13 @@ export default function App() {
           <Stack.Screen
             name="LogIn"
             component={LoginPage}
-            options={{ title: "Log In" }}
+            options={{ title: "Log In", headerShown: false }}
           />
-          <Stack.Screen name="Camera" component={CameraView} />
+          <Stack.Screen
+            name="Camera"
+            component={CameraView}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Participants"
             component={Participants}
