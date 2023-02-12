@@ -167,10 +167,6 @@ export default function AssignItems(props) {
                   {" "}
                   Price must be a number. Do not include "$"
                 </FormControl.HelperText>
-                {/* this error message will not display, even when it was part of a ternary */}
-                {/* <FormControl.ErrorMessage _text={{
-        fontSize: 'xs'
-      }}>Error. Price must be a number. Do not include "$"</FormControl.ErrorMessage> */}
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
@@ -226,6 +222,7 @@ export default function AssignItems(props) {
       </>
     );
   }
+
   //eventually want to make it so that it does not scroll up after deleting an item
   function SwipeableScrollableMenu() {
     function closeRow(rowMap, rowKey) {
@@ -249,6 +246,7 @@ export default function AssignItems(props) {
             bgColor="white"
             onPress={() => {
               participants.map((participant) => {
+                participant.balance = [];
                 //press an item and toggle if it is selected
                 newData[newData.indexOf(item)].selected =
                   !newData[newData.indexOf(item)].selected;
@@ -393,9 +391,7 @@ export default function AssignItems(props) {
                 bg="violet.900"
                 onPress={() => {
                   addItemsData(userId, listData, uuid);
-                  console.log("participants", participants);
-                  console.log("listData", listData);
-                  navigation.navigate("BalancePage", {
+                  navigation.navigate("Summary", {
                     participants: participants,
                   });
                 }}

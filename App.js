@@ -12,7 +12,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import "intl";
 import "intl/locale-data/jsonp/en";
-
+import Summary from "./Components/Summary";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -51,7 +51,7 @@ export default function App() {
             component={AssignItems}
             options={{ title: "Assign Items" }}
           />
-          <Stack.Screen name="BalancePage" component={BalancePage} />
+          <Stack.Screen name="Summary" component={Summary} />
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>
