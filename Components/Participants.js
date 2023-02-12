@@ -26,12 +26,14 @@ import { useNavigation } from "@react-navigation/native";
 export default function Participants(props) {
   const [participants, setParticipants] = useState([]);
   const navigation = useNavigation();
-  let ocrResults = null;
+  //let ocrResults = null;
+  const [ocrResults, setOcrResults] = useState({});
 
   useEffect(() => {
     if (props.route?.params?.ocrResults) {
       // equiv of (props.route.params && props.route.params.ocrResults)
-      ocrResults = props.route.params.ocrResults;
+      // ocrResults = props.route.params.ocrResults;
+      setOcrResults(props.route.params.ocrResults);
     }
   }, []);
 
