@@ -28,7 +28,7 @@ import uuid from "react-native-uuid";
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  // console.log(props.route.params, 'props')
+
   let [participants, setParticipants] = useState(
     props.route.params.participants
   );
@@ -60,15 +60,15 @@ export default function AssignItems(props) {
         );
         const newFriendRef = push(friendRef);
 
-        // set(newFriendRef, {
-        //   itemUid: newFriendRef.key,
-        //   description: description,
-        //   key: key,
-        //   price: price,
-        //   qty: splitQuantity(qty, data.users),
-        //   selected: selected,
-        //   payed: false,
-        // });
+        set(newFriendRef, {
+          itemUid: newFriendRef.key,
+          description: description,
+          key: key,
+          price: price,
+          qty: splitQuantity(qty, data.users),
+          selected: selected,
+          payed: false,
+        });
       }
     });
   }
@@ -81,8 +81,6 @@ export default function AssignItems(props) {
     const [errors, setErrors] = useState(false);
     const [buttonColor, setButtonColor] = useState("violet.800");
     const validate = () => {
-      //this validation for inputPrice does not work. The form returns a string,
-      // and if i force it with Number() then string input gets validated as a number
       if (isNaN(inputPrice)) {
         setErrors(true);
         return false;
@@ -382,9 +380,9 @@ export default function AssignItems(props) {
                   addItemsData(userId, listData, uuid);
                   console.log("participants", participants);
                   console.log("listData", listData);
-                  // navigation.navigate("BalancePage", {
-                  //   participants: participants,
-                  // });
+                  navigation.navigate("BalancePage", {
+                    participants: participants,
+                  });
                 }}
               >
                 Confirm
