@@ -36,14 +36,18 @@ export default function SignUpForm() {
   }
 
   function getInitials(firstName, lastName) {
-    const fInitial = firstName[0];
-    const lInitial = lastName[0];
+    if (lastName) {
+      const fInitial = firstName[0];
+      const lInitial = lastName[0];
 
-    return fInitial.concat(lInitial);
+      return fInitial.concat(lInitial);
+    } else {
+      return firstName[0];
+    }
   }
 
   function joinName(firstName, lastName) {
-    return firstName + " " + lastName;
+    return (firstName + " " + lastName).trim();
   }
 
   function addUserData(userId, firstName, lastName, email) {
