@@ -127,7 +127,7 @@ export default function LoginForm() {
 				{errors.password && <Text>Please enter password</Text>}
 			</View>
 
-			<Pressable textAlign='center' borderWidth='3' borderColor='violet.900' variant='rounded' backgroundColor='violet.900' color='violet.900' p='5' m='2' onPress={handleSubmit(onSubmit)}>
+			<Pressable textAlign='center' borderWidth='3' borderColor='violet.800' variant='rounded' backgroundColor='violet.800' color='violet.800' p='5' m='2' onPress={handleSubmit(onSubmit)}>
 				<Text textAlign='center' color='white'>
 					Log In
 				</Text>
