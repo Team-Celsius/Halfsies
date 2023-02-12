@@ -6,12 +6,12 @@ import { auth } from "../../Firebase/firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
+import { errorModal } from "./ErrorModal";
 
 export default function LoginForm() {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [errorText, setErrorText] = useState("");
   const [show, setShow] = useState(false);
+  const [modalVisible, errorText, showErrorModal] = errorModal(false);
 
   const handleClick = () => setShow(!show);
 
@@ -34,61 +34,18 @@ export default function LoginForm() {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        setErrorText(errorTextCreator(errorCode));
-        setModalVisible(true);
+        showErrorModal(errorCode);
       });
   };
 
-  function errorTextCreator(errorCode) {
-    if (errorCode === "auth/invalid-email") {
-      return "Email invalid.";
-    } else if (errorCode === "auth/user-not-found") {
-      return "Sorry, user not found. Please try again";
-    } else if (errorCode === "auth/wrong-password") {
-      return "Wrong password, please try again.";
-    }
-  }
-
-  function LogInError() {
-    return (
-      <>
-        <Modal isOpen={modalVisible} onClose={setModalVisible} size="sm">
-          <Modal.Content maxH="212">
-            <Modal.CloseButton />
-            <Modal.Header>Error</Modal.Header>
-            <Modal.Body>
-              <ScrollView>
-                <Text>{errorText}</Text>
-              </ScrollView>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
-                  backgroundColor="violet.900"
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  Close
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-      </>
-    );
-  }
-
   return (
     <View>
-      <LogInError />
       <Controller
         control={control}
         rules={{
           required: true,
-          pattern: /^\S+@\S+/i,
+          pattern:
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         }}
         render={({ field: { onChange, value } }) => (
           <Input
