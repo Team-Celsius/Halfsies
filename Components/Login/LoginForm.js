@@ -157,10 +157,10 @@ export default function LoginForm() {
       <Pressable
         textAlign="center"
         borderWidth="3"
-        borderColor="violet.800"
+        borderColor="violet.900"
         variant="rounded"
-        backgroundColor="violet.800"
-        color="violet.800"
+        backgroundColor="violet.900"
+        color="violet.900"
         p="5"
         m="2"
         onPress={handleSubmit(onSubmit)}
