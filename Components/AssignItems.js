@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import { MaterialCommunityIcons, AntDesign, Feather } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
@@ -37,7 +37,6 @@ export default function AssignItems(props) {
 
   const data = props.route.params.ocrResults.items;
   const [listData, setListData] = useState(data);
-  const scrollContainerRef = useRef(null);
 
   function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
@@ -227,22 +226,18 @@ export default function AssignItems(props) {
         rowMap[rowKey].closeRow();
       }
     }
-    function deleteRow(evt, rowMap, rowKey) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      const scrollTop = scrollContainerRef.current.scrollTop;
+    function deleteRow(rowMap, rowKey) {
       closeRow(rowMap, rowKey);
       const newData = [...listData];
       const prevIndex = listData.findIndex((item) => item.key === rowKey);
       newData.splice(prevIndex, 1);
       setListData(newData);
-      scrollContainerRef.current.scrollTop = scrollTop;
     }
     function renderItem({ item }) {
       let newData = [...listData];
       let newParticipants = [...participants];
       return (
-        <Box ref={scrollContainerRef}>
+        <Box>
           <Pressable
             bgColor="white"
             onPress={() => {
@@ -345,9 +340,8 @@ export default function AssignItems(props) {
             cursor="pointer"
             bg="red.500"
             justifyContent="center"
-            onPress={(evt) => {
-              evt.preventDefault();
-              deleteRow(evt, rowMap, data.item.key);
+            onPress={() => {
+              deleteRow(rowMap, data.item.key);
             }}
             _pressed={{ opacity: 0.5 }}
           >
