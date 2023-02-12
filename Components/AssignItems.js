@@ -191,39 +191,17 @@ export default function AssignItems(props) {
 						bgColor='white'
 						onPress={() => {
 							participants.map((participant) => {
-								participant.balance = []
-								//press an item and toggle if it is selected
 								newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected
 
-								//if participant selected when you touch item, and participant is not assigned to the item yet
-								//also means that since it is the first item that it can not be in their balance
 								if (participant.selected === true && !item.users.includes(participant)) {
-									//console.log(item.users, "added to item.users");
-									//add them to item's users array and update state
 									newData[newData.indexOf(item)].users.push(participant)
 									setListData(newData)
-
-									//set the participants selected property to false, add item to their balance, and update state
 									newParticipants[newParticipants.indexOf(participant)].selected = false
-
-									//the issue is that there is no balance property still on the participants
-									// console.log(newParticipants[newParticipants.indexOf(participant)], 'balance')
-									// newParticipants[newParticipants.indexOf(participant)].balance.push(item);
 									setParticipants(newParticipants)
-									// console.log(participants, 'added first item to balance')
-
-									//also check to make sure you havent already assigned more qty than the item says it has
-
-									//if they already have the item, update qty in their balance and update state
 								} else if (participant.selected === true && item.users.includes(participant)) {
-									// let newParticipants = [...participants];
+									let newParticipants = [...participants]
 									newParticipants[newParticipants.indexOf(participant)].selected = false
-
-									// let index = newParticipants[newParticipants.indexOf(participant)].balance.indexOf(item)
-									// ++newParticipants[newParticipants.indexOf(participant)].balance[index].qty
 									setParticipants(newParticipants)
-
-									// console.log(participants, 'added more items to balance should update qty')
 								}
 							})
 						}}>
@@ -297,69 +275,68 @@ export default function AssignItems(props) {
 	}
 
 	return (
-		<>
-			<VStack bgColor='white' h='100%'>
-				<HStack mt='5' mb='5'>
-					<Spacer />
-					<VStack alignSelf='center'>
-						<Heading alignSelf='center' size='lg' mb='5'>
-							Items
-						</Heading>
-						<HStack space='5'>
-							<AddItemManually />
-							<Button
-								bg='violet.900'
-								onPress={() => {
-									addItemsData(userId, listData, uuid)
-									navigation.navigate('Summary', {
-										participants: participants,
-									})
-								}}>
-								Confirm
-							</Button>
-						</HStack>
-					</VStack>
-					<Spacer />
-				</HStack>
+		<VStack bgColor='white' h='100%'>
+			<HStack mt='5' mb='5'>
+				<Spacer />
+				<VStack alignSelf='center'>
+					<Heading alignSelf='center' size='lg' mb='5'>
+						Items
+					</Heading>
+					<HStack space='5'>
+						<AddItemManually />
+						<Button
+							bg='violet.900'
+							onPress={() => {
+								addItemsData(userId, listData, uuid)
+								navigation.navigate('Summary', {
+									participants: participants,
+								})
+							}}>
+							Confirm
+						</Button>
+					</HStack>
+				</VStack>
+				<Spacer />
+			</HStack>
 
-				<SwipeableScrollableMenu />
-				{/* Avatar and checkbox section */}
-				<VStack>
-					<HStack flexWrap='wrap' space='1' alignSelf='center'>
-						{participants.map((participant) => {
-							return (
-								<Pressable
-									key={uuid.v4()}
-									onPress={() => {
-										let newData = [...participants]
-										newData[newData.indexOf(participant)].selected = !newData[newData.indexOf(participant)].selected
-										setParticipants(newData)
-									}}>
-									{participant.selected === true ? (
-										<ZStack>
-											<AntDesign name='checkcircle' size={50} color='green' />
-											<Text alignSelf='center' color='white'>
-												{participant.initials}
-											</Text>
-										</ZStack>
-									) : (
-										<Avatar key={participant.name} bg={participant.avatarColor}>
+			<SwipeableScrollableMenu />
+			{/* Avatar section */}
+			<VStack>
+				<HStack flexWrap='wrap' space='1' alignSelf='center'>
+					{participants.map((participant) => {
+						return (
+							<Pressable
+								key={uuid.v4()}
+								onPress={() => {
+									let newData = [...participants]
+									newData[newData.indexOf(participant)].selected = !newData[newData.indexOf(participant)].selected
+									setParticipants(newData)
+								}}>
+								{participant.selected === true ? (
+									<ZStack>
+										<AntDesign name='checkcircle' size={50} color='green' />
+										<Text alignSelf='center' color='white'>
 											{participant.initials}
-										</Avatar>
-									)}
-								</Pressable>
-							)
-						})}
-						<Avatar bg='violet.900'>
+										</Text>
+									</ZStack>
+								) : (
+									<Avatar key={participant.name} bg={participant.avatarColor}>
+										{participant.initials}
+									</Avatar>
+								)}
+							</Pressable>
+						)
+					})}
+					{/* These have no functionality at the moment
+            <Avatar bg='violet.900'>
 							<VStack alignItems='center'>
 								<MaterialCommunityIcons name='account-group' size={24} color='violet.900' />
 								<Text color='white'>All</Text>
 							</VStack>
 						</Avatar>
-						<Avatar bg='violet.900'>+</Avatar>
-					</HStack>
-				</VStack>
+						<Avatar bg='violet.900'>+</Avatar> */}
+				</HStack>
 			</VStack>
-		</>
+		</VStack>
 	)
 }
