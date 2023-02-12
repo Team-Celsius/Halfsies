@@ -25,12 +25,10 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
 import uuid from "react-native-uuid";
 
-//bugs
-//every avatar starts as a green check mark instead of an avatar, check selected property
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  // console.log(props.route.params, 'props')
+
   let [participants, setParticipants] = useState(
     props.route.params.participants
   );
@@ -38,14 +36,23 @@ export default function AssignItems(props) {
   const data = props.route.params.ocrResults.items;
   const [listData, setListData] = useState(data);
 
+  const splitQuantity = (qty, userArr) => {
+    const length = Object.keys(userArr).length;
+    return length === 0
+      ? 0
+      : //rounds to the nearest 100th will need reworking for precision
+        Math.ceil((qty / length) * 100) / 100;
+  };
+
   function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
       data.users = data.users.reduce((accumulator, value) => {
         return { ...accumulator, [value.userId]: value };
       }, {});
-      6;
+
       const { description, key, price, qty, selected } = data;
+
       for (const user in data.users) {
         const friendRef = ref(
           db,
@@ -58,7 +65,7 @@ export default function AssignItems(props) {
           description: description,
           key: key,
           price: price,
-          qty: qty,
+          qty: splitQuantity(qty, data.users),
           selected: selected,
           payed: false,
         });
@@ -179,7 +186,7 @@ export default function AssignItems(props) {
                       setListData([
                         ...listData,
                         {
-                          key: <>{inputQty + inputPrice}</>,
+                          key: uuid.v4(),
                           qty: inputQty,
                           description: inputDescription,
                           price: inputPrice,
@@ -386,6 +393,8 @@ export default function AssignItems(props) {
                 bg="violet.900"
                 onPress={() => {
                   addItemsData(userId, listData, uuid);
+                  console.log("participants", participants);
+                  console.log("listData", listData);
                   navigation.navigate("BalancePage", {
                     participants: participants,
                   });
