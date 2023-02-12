@@ -6,13 +6,15 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../../Firebase/firebaseConfig";
 import randomColor from "randomcolor";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Foundation } from "@expo/vector-icons";
 
 export default function SignUpForm() {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [errorText, setErrorText] = useState("");
+
+  useEffect(() => {}, []);
 
   const {
     control,
@@ -73,7 +75,6 @@ export default function SignUpForm() {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
         if (errorCode) {
           console.log(errorCode);
           setErrorText(errorTextCreator(errorCode));
@@ -93,7 +94,11 @@ export default function SignUpForm() {
   function SignUpError() {
     return (
       <>
-        <Modal isOpen={modalVisible} onClose={setModalVisible(false)} size="sm">
+        <Modal
+          isOpen={modalVisible}
+          onClose={() => setModalVisible(false)}
+          size="sm"
+        >
           <Modal.Content maxH="212">
             <Modal.CloseButton />
             <Modal.Header>Error</Modal.Header>
