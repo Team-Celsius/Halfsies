@@ -1,16 +1,16 @@
 import { Box, Avatar, HStack, VStack, Text, Divider, ScrollView, Button, Spacer } from 'native-base'
-import { AntDesign } from '@expo/vector-icons'
-import { useState, useEffect } from 'react'
 import { auth, db } from '../Firebase/firebaseConfig'
 import { ref, onValue } from 'firebase/database'
+import { AntDesign } from '@expo/vector-icons'
+import { useState, useEffect } from 'react'
 import uuid from 'react-native-uuid'
 
 export default function Summary() {
+	const [bgColorUnpaid, setBgColorUnpaid] = useState('green.800')
+	const [bgColorPaid, setBgColorPaid] = useState('violet.800')
 	const [renderPaid, setRenderPaid] = useState(false)
 	const [newFriends, setNewFriends] = useState([])
 	const [favorites, setFavorites] = useState([])
-	const [bgColorUnpaid, setBgColorUnpaid] = useState('green.800')
-	const [bgColorPaid, setBgColorPaid] = useState('violet.800')
 
 	const userId = auth.currentUser.uid
 	const userFriendsRef = ref(db, 'users/' + userId + '/friends/')
@@ -28,10 +28,11 @@ export default function Summary() {
 
 	const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-	function PaidButton() {
+	function TabButton(text) {
 		return (
 			<VStack space={8} alignItems='center'>
 				<Button
+					value={text}
 					bg={bgColorPaid}
 					onPress={() => {
 						if (renderPaid === true) {
@@ -43,30 +44,7 @@ export default function Summary() {
 							setBgColorUnpaid('violet.800')
 							setBgColorPaid('green.800')
 						}
-					}}>
-					Paid
-				</Button>
-			</VStack>
-		)
-	}
-	function UnpaidButton() {
-		return (
-			<VStack space={8} alignItems='center'>
-				<Button
-					bg={bgColorUnpaid}
-					onPress={() => {
-						if (renderPaid === false) {
-							setRenderPaid(true)
-							setBgColorUnpaid('violet.800')
-							setBgColorPaid('green.800')
-						} else {
-							setRenderPaid(false)
-							setBgColorUnpaid('green.800')
-							setBgColorPaid('violet.800')
-						}
-					}}>
-					Unpaid
-				</Button>
+					}}></Button>
 			</VStack>
 		)
 	}
@@ -116,7 +94,7 @@ export default function Summary() {
 										</Button>
 										<Text pl='3'>{favorite.name}</Text>
 										<Spacer />
-										{renderPaid ? null : <Text pr='3'>${Number.parseFloat(totalBalance).toFixed(2)}</Text>}
+										{renderPaid ? null : <Text>${Number.parseFloat(totalBalance).toFixed(2)}</Text>}
 									</HStack>
 									<HStack>
 										<Text pl='12'>Qty</Text>
@@ -156,7 +134,7 @@ export default function Summary() {
 									})}
 								</VStack>
 							) : favorite.selected && renderPaid ? (
-								<VStack>
+								<VStack flex={1}>
 									<HStack alignItems='center' mb='3' mr='3'>
 										<Button
 											bgColor='transparent'
@@ -395,9 +373,9 @@ export default function Summary() {
 			<VStack flex={1} space='3' pt='5'>
 				<HStack>
 					<Spacer />
-					<UnpaidButton />
+					<TabButton text={'Unpaid'} />
 					<Spacer />
-					<PaidButton />
+					<TabButton text={'Paid'} />
 					<Spacer />
 				</HStack>
 				<HStack flex={1}>
