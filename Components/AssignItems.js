@@ -72,7 +72,7 @@ export default function AssignItems(props) {
     const [inputDescription, setInputDescription] = useState();
     const [inputPrice, setInputPrice] = useState();
     const [errors, setErrors] = useState(false);
-    const [buttonColor, setButtonColor] = useState("violet.800");
+    const [buttonColor, setButtonColor] = useState("violet.900");
     const validate = () => {
       const inputPriceAsFloat = parseFloat(inputPrice);
       if (isNaN(inputPriceAsFloat)) {
@@ -106,7 +106,7 @@ export default function AssignItems(props) {
           // this was being toString'ed, but the validate function is making sure it's a number
           // so validation should have permanently failed qty
           _selectedItem={{
-            bgColor: "violet.800",
+            bgColor: "violet.900",
             endIcon: <CheckIcon size="5" />,
           }}
           mt={1}
@@ -175,7 +175,7 @@ export default function AssignItems(props) {
                   if (validate()) {
                     setButtonColor("green.500");
                     setTimeout(() => {
-                      setButtonColor("violet.800");
+                      setButtonColor("violet.900");
                       setListData([
                         ...listData,
                         {
@@ -191,7 +191,7 @@ export default function AssignItems(props) {
                   } else {
                     setButtonColor("red.500");
                     setTimeout(() => {
-                      setButtonColor("violet.800");
+                      setButtonColor("violet.900");
                     }, 1000);
                   }
                 }}
@@ -205,7 +205,7 @@ export default function AssignItems(props) {
           <Spacer />
         </Modal>
         <VStack alignSelf="center" space="1">
-          <Avatar bg="violet.800">
+          <Avatar bg="violet.900">
             <Button
               bg="transparent"
               onPress={() => {
@@ -325,7 +325,7 @@ export default function AssignItems(props) {
                   }
                 })}
               </HStack>
-              <Divider bgColor="violet.800" />
+              <Divider bgColor="violet.900" />
             </VStack>
           </Pressable>
         </Box>
@@ -383,7 +383,7 @@ export default function AssignItems(props) {
             <HStack space="5">
               <AddItemManually />
               <Button
-                bg="violet.800"
+                bg="violet.900"
                 onPress={() => {
                   addItemsData(userId, listData, uuid);
                   navigation.navigate("BalancePage", {
@@ -428,17 +428,17 @@ export default function AssignItems(props) {
                 </Pressable>
               );
             })}
-            <Avatar bg="violet.800">
+            <Avatar bg="violet.900">
               <VStack alignItems="center">
                 <MaterialCommunityIcons
                   name="account-group"
                   size={24}
-                  color="violet.800"
+                  color="violet.900"
                 />
                 <Text color="white">All</Text>
               </VStack>
             </Avatar>
-            <Avatar bg="violet.800">+</Avatar>
+            <Avatar bg="violet.900">+</Avatar>
           </HStack>
         </VStack>
       </VStack>

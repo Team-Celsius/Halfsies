@@ -34,9 +34,13 @@ export default function App() {
           <Stack.Screen
             name="LogIn"
             component={LoginPage}
-            options={{ title: "Log In" }}
+            options={{ title: "Log In", headerShown: false }}
           />
-          <Stack.Screen name="Camera" component={CameraView} />
+          <Stack.Screen
+            name="Camera"
+            component={CameraView}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Participants"
             component={Participants}

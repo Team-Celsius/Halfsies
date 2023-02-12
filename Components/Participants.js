@@ -15,7 +15,7 @@ import {
   Center,
   AlertDialog,
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 import randomColor from "randomcolor";
 import { useState, useRef, useEffect } from "react";
 import { auth, db } from "../Firebase/firebaseConfig";
@@ -28,10 +28,12 @@ export default function Participants(props) {
   const navigation = useNavigation();
   let ocrResults = null;
 
-  if (props.route?.params?.ocrResults) {
-    // equiv of (props.route.params && props.route.params.ocrResults)
-    ocrResults = props.route.params.ocrResults;
-  }
+  useEffect(() => {
+    if (props.route?.params?.ocrResults) {
+      // equiv of (props.route.params && props.route.params.ocrResults)
+      ocrResults = props.route.params.ocrResults;
+    }
+  }, []);
 
   let [newFriends, setNewFriends] = useState([]);
 
@@ -54,6 +56,7 @@ export default function Participants(props) {
   }, []);
 
   let favorites = [];
+
   const alphabet = [
     "A",
     "B",
@@ -133,13 +136,11 @@ export default function Participants(props) {
     });
   };
 
-  addUserToParticipants(newFriends);
-
   function ConfirmButton() {
     return (
       <VStack space={8} alignItems="center">
         <Button
-          bg="violet.800"
+          bg="violet.900"
           onPress={() => {
             unselectUsers(participants);
             navigation.navigate("AssignItems", {
@@ -148,7 +149,7 @@ export default function Participants(props) {
             });
           }}
         >
-          Confirm
+          Confirm Selections
         </Button>
       </VStack>
     );
@@ -156,8 +157,10 @@ export default function Participants(props) {
 
   function DeleteFriendAlert(props) {
     const [isOpen, setIsOpen] = useState(false);
+
     const friend = props.friend;
-    const onClose = () => setIsOpen(false);
+
+    // const onClose = () => setIsOpen(false);
     const cancelRef = useRef(null);
 
     return (
@@ -165,14 +168,14 @@ export default function Participants(props) {
         <Button bg="transparent" onPress={() => setIsOpen(!isOpen)}>
           <VStack>
             <Spacer />
-            <AntDesign name="deleteuser" size={20} color="black" />
+            <Feather name="user-x" size={24} color="black" />
             <Spacer />
           </VStack>
         </Button>
         <AlertDialog
           leastDestructiveRef={cancelRef}
           isOpen={isOpen}
-          onClose={onClose}
+          onClose={() => setIsOpen(false)}
         >
           <AlertDialog.Content>
             <AlertDialog.CloseButton />
@@ -189,7 +192,7 @@ export default function Participants(props) {
                 <Button
                   variant="unstyled"
                   colorScheme="coolGray"
-                  onPress={onClose}
+                  onPress={() => setIsOpen(false)}
                   ref={cancelRef}
                 >
                   Cancel
@@ -197,7 +200,7 @@ export default function Participants(props) {
                 <Button
                   colorScheme="danger"
                   onPress={() => {
-                    onClose;
+                    setIsOpen(false);
                     const friendRef = ref(
                       db,
                       "users/" + userId + "/friends/" + friend.userId
@@ -292,12 +295,12 @@ export default function Participants(props) {
         </Modal>
         <VStack space={8} alignItems="center">
           <Button
-            bg="violet.800"
+            bg="violet.900"
             onPress={() => {
               setModalVisible(!modalVisible);
             }}
           >
-            Add a friend!
+            Add New Friend
           </Button>
         </VStack>
       </>
@@ -306,7 +309,6 @@ export default function Participants(props) {
 
   function FavoriteFriendsSection(props) {
     const friends = props.friends;
-    let newParticipants;
 
     const createFavorites = (friends) => {
       const sortedFriends = friends.sort(
@@ -385,6 +387,7 @@ export default function Participants(props) {
 
   function AlphabeticalFriendsSection(props) {
     const { alphabet, friends } = props;
+
     return (
       <>
         {alphabet.map((letter) => {
@@ -401,18 +404,6 @@ export default function Participants(props) {
                       <HStack space="3" m="1">
                         <Pressable>
                           {({ isPressed }) => {
-                            if (isPressed) {
-                              friend.selected = !friend.selected;
-                              if (!participants.includes(friend)) {
-                                participants.push(friend);
-                              } else {
-                                setParticipants(
-                                  participants.filter((person) => {
-                                    return person != friend;
-                                  })
-                                );
-                              }
-                            }
                             return (
                               <>
                                 {friend.selected ? (
