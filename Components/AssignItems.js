@@ -25,17 +25,16 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
 import uuid from "react-native-uuid";
 
-//bugs
-//every avatar starts as a green check mark instead of an avatar, check selected property
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  // console.log(props.route.params, 'props')
+
   let [participants, setParticipants] = useState(
     props.route.params.participants
   );
 
   const data = props.route.params.ocrResults.items;
+
   const [listData, setListData] = useState(data);
 
   function addItemsData(userId, listData) {
@@ -102,7 +101,8 @@ export default function AssignItems(props) {
       ];
       return (
         <Select
-          selectedValue={inputQty}
+          selectedValue={inputQty.toString()}
+          // had to add back amount will not update on form if inputQty is not a string (validation still works)
           // this was being toString'ed, but the validate function is making sure it's a number
           // so validation should have permanently failed qty
           _selectedItem={{
@@ -117,7 +117,7 @@ export default function AssignItems(props) {
           {numbers.map((number) => {
             return (
               <Select.Item
-                key={numbers + 20}
+                key={uuid.v4()}
                 alignItems="center"
                 label={number.toString()}
                 value={number.toString()}
@@ -179,7 +179,7 @@ export default function AssignItems(props) {
                       setListData([
                         ...listData,
                         {
-                          key: <>{inputQty + inputPrice}</>,
+                          key: uuid.v4(),
                           qty: inputQty,
                           description: inputDescription,
                           price: inputPrice,
@@ -219,6 +219,7 @@ export default function AssignItems(props) {
       </>
     );
   }
+
   //eventually want to make it so that it does not scroll up after deleting an item
   function SwipeableScrollableMenu() {
     function closeRow(rowMap, rowKey) {
