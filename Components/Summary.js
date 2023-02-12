@@ -28,11 +28,10 @@ export default function Summary() {
 
 	const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-	function TabButton(text) {
+	function PaidButton() {
 		return (
 			<VStack space={8} alignItems='center'>
 				<Button
-					value={text}
 					bg={bgColorPaid}
 					onPress={() => {
 						if (renderPaid === true) {
@@ -44,7 +43,30 @@ export default function Summary() {
 							setBgColorUnpaid('violet.800')
 							setBgColorPaid('green.800')
 						}
-					}}></Button>
+					}}>
+					Paid
+				</Button>
+			</VStack>
+		)
+	}
+	function UnpaidButton() {
+		return (
+			<VStack space={8} alignItems='center'>
+				<Button
+					bg={bgColorUnpaid}
+					onPress={() => {
+						if (renderPaid === false) {
+							setRenderPaid(true)
+							setBgColorUnpaid('violet.800')
+							setBgColorPaid('green.800')
+						} else {
+							setRenderPaid(false)
+							setBgColorUnpaid('green.800')
+							setBgColorPaid('violet.800')
+						}
+					}}>
+					Unpaid
+				</Button>
 			</VStack>
 		)
 	}
@@ -373,9 +395,9 @@ export default function Summary() {
 			<VStack flex={1} space='3' pt='5'>
 				<HStack>
 					<Spacer />
-					<TabButton text={'Unpaid'} />
+					<UnpaidButton />
 					<Spacer />
-					<TabButton text={'Paid'} />
+					<PaidButton />
 					<Spacer />
 				</HStack>
 				<HStack flex={1}>
