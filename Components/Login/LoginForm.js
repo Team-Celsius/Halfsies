@@ -29,12 +29,10 @@ export default function LoginForm() {
 	const onSubmit = (data) => {
 		signInWithEmailAndPassword(auth, data.email.trim(), data.password)
 			.then((userCredential) => {
-				const user = userCredential.user
-				navigation.navigate('Summary')
+				navigation.navigate('Camera')
 			})
 			.catch((error) => {
 				const errorCode = error.code
-				const errorMessage = error.message
 				console.log(errorCode)
 				setErrorText(errorTextCreator(errorCode))
 				setModalVisible(true)
@@ -43,11 +41,11 @@ export default function LoginForm() {
 
 	function errorTextCreator(errorCode) {
 		if (errorCode === 'auth/invalid-email') {
-			return 'Email invalid'
+			return 'Email is invalid.'
 		} else if (errorCode === 'auth/user-not-found') {
-			return 'Sorry User not found please try again'
+			return 'User not found, please try again.'
 		} else if (errorCode === 'auth/wrong-password') {
-			return 'Wrong password please try again'
+			return 'Wrong password, please try again.'
 		}
 	}
 
@@ -92,7 +90,7 @@ export default function LoginForm() {
 				render={({ field: { onChange, value } }) => <Input textAlign='center' borderWidth='3' borderColor='violet.900' variant='rounded' backgroundColor='white' color='violet.900' p='5' m='2' placeholder='Email' onChangeText={onChange} value={value} />}
 				name='email'
 			/>
-			{errors.email && <Text>Email is required.</Text>}
+			{errors.email && <Text style={{ textAlign: 'center' }}>Email is required.</Text>}
 			<View style={{ width: '100%', alignItems: 'center' }}>
 				<Controller
 					control={control}
