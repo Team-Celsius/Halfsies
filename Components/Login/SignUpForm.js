@@ -133,7 +133,29 @@ export default function SignUpForm() {
 					minLength: 1,
 					maxLength: 100,
 				}}
-				render={({ field: { onChange, value } }) => <Input textAlign='center' borderWidth='3' borderColor='violet.800' variant='rounded' backgroundColor='white' color='violet.800' p='5' m='2' placeholder='First Name *' onChangeText={onChange} value={value} />}
+				render={({ field: { onChange, value } }) => (
+					<Input
+						textAlign='center'
+						borderWidth='3'
+						borderColor='violet.800'
+						variant='rounded'
+						backgroundColor='white'
+						color='violet.800'
+						p='5'
+						m='2'
+						placeholder={
+							errors.firstName ? (
+								<Text textAlign='center' color='white' fontSize='md'>
+									<Foundation name='alert' size={20} color='maroon' /> First name is required.
+								</Text>
+							) : (
+								<Text>First Name *</Text>
+							)
+						}
+						onChangeText={onChange}
+						value={value}
+					/>
+				)}
 				name='firstName'
 			/>
 			{errors.firstName && (
