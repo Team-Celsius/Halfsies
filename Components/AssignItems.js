@@ -79,7 +79,7 @@ export default function AssignItems(props) {
     const [inputDescription, setInputDescription] = useState();
     const [inputPrice, setInputPrice] = useState();
     const [errors, setErrors] = useState(false);
-    const [buttonColor, setButtonColor] = useState("violet.900");
+    const [buttonColor, setButtonColor] = useState("violet.800");
     const validate = () => {
       const inputPriceAsFloat = parseFloat(inputPrice);
       if (isNaN(inputPriceAsFloat)) {
@@ -110,11 +110,10 @@ export default function AssignItems(props) {
       return (
         <Select
           selectedValue={inputQty.toString()}
-          // had to add back amount will not update on form if inputQty is not a string (validation still works)
           // this was being toString'ed, but the validate function is making sure it's a number
           // so validation should have permanently failed qty
           _selectedItem={{
-            bgColor: "violet.900",
+            bgColor: "violet.800",
             endIcon: <CheckIcon size="5" />,
           }}
           mt={1}
@@ -125,7 +124,7 @@ export default function AssignItems(props) {
           {numbers.map((number) => {
             return (
               <Select.Item
-                key={uuid.v4()}
+                key={numbers + 20}
                 alignItems="center"
                 label={number.toString()}
                 value={number.toString()}
@@ -168,10 +167,6 @@ export default function AssignItems(props) {
                   {" "}
                   Price must be a number. Do not include "$"
                 </FormControl.HelperText>
-                {/* this error message will not display, even when it was part of a ternary */}
-                {/* <FormControl.ErrorMessage _text={{
-        fontSize: 'xs'
-      }}>Error. Price must be a number. Do not include "$"</FormControl.ErrorMessage> */}
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
@@ -183,7 +178,7 @@ export default function AssignItems(props) {
                   if (validate()) {
                     setButtonColor("green.500");
                     setTimeout(() => {
-                      setButtonColor("violet.900");
+                      setButtonColor("violet.800");
                       setListData([
                         ...listData,
                         {
@@ -314,7 +309,7 @@ export default function AssignItems(props) {
                   }
                 })}
               </HStack>
-              <Divider bgColor="violet.900" />
+              <Divider bgColor="violet.800" />
             </VStack>
           </Pressable>
         </Box>
@@ -371,7 +366,7 @@ export default function AssignItems(props) {
           <HStack space="5">
             <AddItemManually />
             <Button
-              bg="violet.900"
+              bg="violet.800"
               onPress={() => {
                 addItemsData(userId, listData, uuid);
                 navigation.navigate("Summary", {
@@ -417,13 +412,13 @@ export default function AssignItems(props) {
             );
           })}
           {/* These have no functionality at the moment
-            <Avatar bg='violet.900'>
+            <Avatar bg='violet.800'>
 							<VStack alignItems='center'>
-								<MaterialCommunityIcons name='account-group' size={24} color='violet.900' />
+								<MaterialCommunityIcons name='account-group' size={24} color='violet.800' />
 								<Text color='white'>All</Text>
 							</VStack>
 						</Avatar>
-						<Avatar bg='violet.900'>+</Avatar> */}
+						<Avatar bg='violet.800'>+</Avatar> */}
         </HStack>
       </VStack>
     </VStack>
