@@ -56,7 +56,7 @@ export default function AssignItems(props) {
 		const [inputDescription, setInputDescription] = useState()
 		const [inputPrice, setInputPrice] = useState()
 		const [errors, setErrors] = useState(false)
-		const [buttonColor, setButtonColor] = useState('violet.900')
+		const [buttonColor, setButtonColor] = useState('violet.800')
 		const validate = () => {
 			const inputPriceAsFloat = parseFloat(inputPrice)
 			if (isNaN(inputPriceAsFloat)) {
@@ -81,11 +81,11 @@ export default function AssignItems(props) {
 			const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 			return (
 				<Select
-					selectedValue={inputQty.toString()}
+					selectedValue={inputQty}
 					// this was being toString'ed, but the validate function is making sure it's a number
 					// so validation should have permanently failed qty
 					_selectedItem={{
-						bgColor: 'violet.900',
+						bgColor: 'violet.800',
 						endIcon: <CheckIcon size='5' />,
 					}}
 					mt={1}
@@ -125,7 +125,7 @@ export default function AssignItems(props) {
 									if (validate()) {
 										setButtonColor('green.500')
 										setTimeout(() => {
-											setButtonColor('violet.900')
+											setButtonColor('violet.800')
 											setListData([
 												...listData,
 												{
@@ -141,7 +141,7 @@ export default function AssignItems(props) {
 									} else {
 										setButtonColor('red.500')
 										setTimeout(() => {
-											setButtonColor('violet.900')
+											setButtonColor('violet.800')
 										}, 1000)
 									}
 								}}>
@@ -154,7 +154,7 @@ export default function AssignItems(props) {
 					<Spacer />
 				</Modal>
 				<VStack alignSelf='center' space='1'>
-					<Avatar bg='violet.900'>
+					<Avatar bg='violet.800'>
 						<Button
 							bg='transparent'
 							onPress={() => {
@@ -191,7 +191,6 @@ export default function AssignItems(props) {
 						bgColor='white'
 						onPress={() => {
 							participants.map((participant) => {
-								//press an item and toggle if it is selected
 								newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected
 
 								if (participant.selected === true && !item.users.includes(participant)) {
@@ -238,7 +237,7 @@ export default function AssignItems(props) {
 									}
 								})}
 							</HStack>
-							<Divider bgColor='violet.900' />
+							<Divider bgColor='violet.800' />
 						</VStack>
 					</Pressable>
 				</Box>
@@ -280,9 +279,6 @@ export default function AssignItems(props) {
 			<HStack mt='5' mb='5'>
 				<Spacer />
 				<VStack alignSelf='center'>
-					<Heading alignSelf='center' size='lg' mb='5'>
-						Items
-					</Heading>
 					<AddItemManually />
 				</VStack>
 				<Spacer />
@@ -317,9 +313,9 @@ export default function AssignItems(props) {
 						)
 					})}
 					{/* These have no functionality at the moment
-            <Avatar bg='violet.900'>
+            <Avatar bg='violet.800'>
 							<VStack alignItems='center'>
-								<MaterialCommunityIcons name='account-group' size={24} color='violet.900' />
+								<MaterialCommunityIcons name='account-group' size={24} color='violet.800' />
 								<Text color='white'>All</Text>
 							</VStack>
 						</Avatar>
@@ -329,7 +325,6 @@ export default function AssignItems(props) {
 					w='100%'
 					h='70'
 					bg='violet.800'
-					rounded='false'
 					onPress={() => {
 						addItemsData(userId, listData, uuid)
 						navigation.navigate('Summary', {
