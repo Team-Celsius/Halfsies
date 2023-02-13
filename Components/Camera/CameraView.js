@@ -108,16 +108,31 @@ export default function CameraView() {
         <VStack flex={1} w="100%" h="100%">
           <Spacer />
           <HStack alignSelf="center" mb="10">
-            <Spacer />
-            <FontAwesome5 onPress={retake} name="redo" size={52} color="red" />
-            <Spacer />
-            <FontAwesome5
-              onPress={confirmPhoto}
-              name="check"
-              size={52}
-              color="green"
-            />
-            <Spacer />
+            <View
+              style={{
+                backgroundColor: "rgba(90, 90, 90, 0.7)",
+                flexDirection: "row",
+                width: "100%",
+                padding: 8,
+              }}
+            >
+              <Spacer />
+
+              <FontAwesome5
+                onPress={retake}
+                name="redo"
+                size={52}
+                color="red"
+              />
+              <Spacer />
+              <FontAwesome5
+                onPress={confirmPhoto}
+                name="check"
+                size={52}
+                color="green"
+              />
+              <Spacer />
+            </View>
           </HStack>
         </VStack>
       </ZStack>
