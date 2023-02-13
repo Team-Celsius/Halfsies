@@ -96,6 +96,7 @@ export default function Participants(props) {
 				w='100%'
 				h='70'
 				bg='violet.800'
+				rounded='none'
 				onPress={() => {
 					unselectUsers(participants)
 					navigation.navigate('AssignItems', {
