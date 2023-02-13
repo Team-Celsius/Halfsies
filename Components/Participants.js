@@ -1,5 +1,5 @@
-import { Box, Avatar, HStack, VStack, Text, Input, Divider, ScrollView, Pressable, Modal, FormControl, Button, Spacer, Center, AlertDialog } from 'native-base'
-import { AntDesign, FontAwesome, Feather } from '@expo/vector-icons'
+import { Box, Avatar, HStack, VStack, Text, Input, Divider, ScrollView, Pressable, Modal, FormControl, Button, Spacer, Center, AlertDialog, View } from 'native-base'
+import { AntDesign, Feather } from '@expo/vector-icons'
 import randomColor from 'randomcolor'
 import { useState, useRef, useEffect } from 'react'
 import { auth, db } from '../Firebase/firebaseConfig'
@@ -218,7 +218,19 @@ export default function Participants(props) {
 					onPress={() => {
 						setModalVisible(!modalVisible)
 					}}>
-					<AntDesign name='adduser' size={47} color='#5B21B6' />
+					<View style={{ flexDirection: 'row' }}>
+						<AntDesign name='adduser' size={47} color='#5B21B6' />
+						<Text
+							style={{
+								marginTop: 12,
+								marginLeft: 5,
+								backgroundColor: 'green',
+								color: 'white',
+								padding: 5,
+							}}>
+							Add New Friend
+						</Text>
+					</View>
 				</Button>
 			</>
 		)
@@ -353,12 +365,12 @@ export default function Participants(props) {
 							<Spacer />
 							<Spacer />
 							<AddFriendForm />
-							<Text>Add a friend!</Text>
+
 							<Spacer />
 							<Spacer />
 							<Spacer />
 						</HStack>
-						<Text>Favorites</Text>
+
 						{newFriends.length > 0 ? (
 							<Box>
 								<FavoriteFriendsSection friends={newFriends} />
