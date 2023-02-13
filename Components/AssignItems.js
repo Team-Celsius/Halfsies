@@ -25,12 +25,10 @@ import { ref, set, push } from "firebase/database";
 import { auth, db } from "../Firebase/firebaseConfig";
 import uuid from "react-native-uuid";
 
-//bugs
-//every avatar starts as a green check mark instead of an avatar, check selected property
 export default function AssignItems(props) {
   const navigation = useNavigation();
   const userId = auth.currentUser.uid;
-  // console.log(props.route.params, 'props')
+
   let [participants, setParticipants] = useState(
     props.route.params.participants
   );
@@ -38,14 +36,23 @@ export default function AssignItems(props) {
   const data = props.route.params.ocrResults.items;
   const [listData, setListData] = useState(data);
 
+  const splitQuantity = (qty, userArr) => {
+    const length = Object.keys(userArr).length;
+    return length === 0
+      ? 0
+      : //rounds to the nearest 100th will need reworking for precision
+        Math.ceil((qty / length) * 100) / 100;
+  };
+
   function addItemsData(userId, listData) {
     const newList = JSON.parse(JSON.stringify(listData));
     newList.forEach((data) => {
       data.users = data.users.reduce((accumulator, value) => {
         return { ...accumulator, [value.userId]: value };
       }, {});
-      6;
+
       const { description, key, price, qty, selected } = data;
+
       for (const user in data.users) {
         const friendRef = ref(
           db,
@@ -58,7 +65,7 @@ export default function AssignItems(props) {
           description: description,
           key: key,
           price: price,
-          qty: qty,
+          qty: splitQuantity(qty, data.users),
           selected: selected,
           payed: false,
         });
@@ -74,20 +81,28 @@ export default function AssignItems(props) {
     const [errors, setErrors] = useState(false);
     const [buttonColor, setButtonColor] = useState("violet.800");
     const validate = () => {
-      //this validation for inputPrice does not work. The form returns a string,
-      // and if i force it with Number() then string input gets validated as a number
-      if (isNaN(inputPrice)) {
+      const inputPriceAsFloat = parseFloat(inputPrice);
+      if (isNaN(inputPriceAsFloat)) {
         setErrors(true);
         return false;
       } else if (typeof inputQty !== "number") {
         setErrors(true);
         return false;
-      } else if (typeof inputDescription !== "string") {
+      } else if (
+        typeof inputDescription !== "string" ||
+        inputDescription.trim().length === 0
+      ) {
+        // this length check will make sure the desc isn't empty, or contains only whitespace characters
+        setErrors(true);
+        return false;
+      } else if (inputQty <= 0 || Math.floor(inputQty) !== inputQty) {
+        // makes sure the number is positive, and not a decimal
         setErrors(true);
         return false;
       }
       return true;
     };
+
     function SelectDropdownMenu() {
       const numbers = [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -95,6 +110,8 @@ export default function AssignItems(props) {
       return (
         <Select
           selectedValue={inputQty.toString()}
+          // this was being toString'ed, but the validate function is making sure it's a number
+          // so validation should have permanently failed qty
           _selectedItem={{
             bgColor: "violet.800",
             endIcon: <CheckIcon size="5" />,
@@ -150,10 +167,6 @@ export default function AssignItems(props) {
                   {" "}
                   Price must be a number. Do not include "$"
                 </FormControl.HelperText>
-                {/* this error message will not display, even when it was part of a ternary */}
-                {/* <FormControl.ErrorMessage _text={{
-        fontSize: 'xs'
-      }}>Error. Price must be a number. Do not include "$"</FormControl.ErrorMessage> */}
               </FormControl>
             </Modal.Body>
             <Modal.Footer>
@@ -169,7 +182,7 @@ export default function AssignItems(props) {
                       setListData([
                         ...listData,
                         {
-                          key: <>{inputQty + inputPrice}</>,
+                          key: uuid.v4(),
                           qty: inputQty,
                           description: inputDescription,
                           price: inputPrice,
@@ -181,7 +194,7 @@ export default function AssignItems(props) {
                   } else {
                     setButtonColor("red.500");
                     setTimeout(() => {
-                      setButtonColor("violet.800");
+                      setButtonColor("violet.900");
                     }, 1000);
                   }
                 }}
@@ -195,7 +208,7 @@ export default function AssignItems(props) {
           <Spacer />
         </Modal>
         <VStack alignSelf="center" space="1">
-          <Avatar bg="violet.800">
+          <Avatar bg="violet.900">
             <Button
               bg="transparent"
               onPress={() => {
@@ -209,6 +222,7 @@ export default function AssignItems(props) {
       </>
     );
   }
+
   //eventually want to make it so that it does not scroll up after deleting an item
   function SwipeableScrollableMenu() {
     function closeRow(rowMap, rowKey) {
@@ -236,45 +250,25 @@ export default function AssignItems(props) {
                 newData[newData.indexOf(item)].selected =
                   !newData[newData.indexOf(item)].selected;
 
-                //if participant selected when you touch item, and participant is not assigned to the item yet
-                //also means that since it is the first item that it can not be in their balance
                 if (
                   participant.selected === true &&
                   !item.users.includes(participant)
                 ) {
-                  //console.log(item.users, "added to item.users");
-                  //add them to item's users array and update state
                   newData[newData.indexOf(item)].users.push(participant);
                   setListData(newData);
-
-                  //set the participants selected property to false, add item to their balance, and update state
                   newParticipants[
                     newParticipants.indexOf(participant)
                   ].selected = false;
-
-                  //the issue is that there is no balance property still on the participants
-                  // console.log(newParticipants[newParticipants.indexOf(participant)], 'balance')
-                  // newParticipants[newParticipants.indexOf(participant)].balance.push(item);
                   setParticipants(newParticipants);
-                  // console.log(participants, 'added first item to balance')
-
-                  //also check to make sure you havent already assigned more qty than the item says it has
-
-                  //if they already have the item, update qty in their balance and update state
                 } else if (
                   participant.selected === true &&
                   item.users.includes(participant)
                 ) {
-                  // let newParticipants = [...participants];
+                  let newParticipants = [...participants];
                   newParticipants[
                     newParticipants.indexOf(participant)
                   ].selected = false;
-
-                  // let index = newParticipants[newParticipants.indexOf(participant)].balance.indexOf(item)
-                  // ++newParticipants[newParticipants.indexOf(participant)].balance[index].qty
                   setParticipants(newParticipants);
-
-                  // console.log(participants, 'added more items to balance should update qty')
                 }
               });
             }}
@@ -330,7 +324,9 @@ export default function AssignItems(props) {
             cursor="pointer"
             bg="red.500"
             justifyContent="center"
-            onPress={() => deleteRow(rowMap, data.item.key)}
+            onPress={() => {
+              deleteRow(rowMap, data.item.key);
+            }}
             _pressed={{ opacity: 0.5 }}
           >
             <VStack alignItems="center" space={2}>
@@ -343,6 +339,7 @@ export default function AssignItems(props) {
         </HStack>
       );
     }
+
     return (
       <>
         <SwipeListView
@@ -359,76 +356,71 @@ export default function AssignItems(props) {
   }
 
   return (
-    <>
-      <VStack bgColor="white" h="100%">
-        <HStack mt="5" mb="5">
-          <Spacer />
-          <VStack alignSelf="center">
-            <Heading alignSelf="center" size="lg" mb="5">
-              Items
-            </Heading>
-            <HStack space="5">
-              <AddItemManually />
-              <Button
-                bg="violet.800"
-                onPress={() => {
-                  addItemsData(userId, listData, uuid);
-                  navigation.navigate("BalancePage", {
-                    participants: participants,
-                  });
-                }}
-              >
-                Confirm
-              </Button>
-            </HStack>
-          </VStack>
-          <Spacer />
-        </HStack>
-
-        <SwipeableScrollableMenu />
-        {/* Avatar and checkbox section */}
-        <VStack>
-          <HStack flexWrap="wrap" space="1" alignSelf="center">
-            {participants.map((participant) => {
-              return (
-                <Pressable
-                  key={uuid.v4()}
-                  onPress={() => {
-                    let newData = [...participants];
-                    newData[newData.indexOf(participant)].selected =
-                      !newData[newData.indexOf(participant)].selected;
-                    setParticipants(newData);
-                  }}
-                >
-                  {participant.selected === true ? (
-                    <ZStack>
-                      <AntDesign name="checkcircle" size={50} color="green" />
-                      <Text alignSelf="center" color="white">
-                        {participant.initials}
-                      </Text>
-                    </ZStack>
-                  ) : (
-                    <Avatar key={participant.name} bg={participant.avatarColor}>
-                      {participant.initials}
-                    </Avatar>
-                  )}
-                </Pressable>
-              );
-            })}
-            <Avatar bg="violet.800">
-              <VStack alignItems="center">
-                <MaterialCommunityIcons
-                  name="account-group"
-                  size={24}
-                  color="violet.800"
-                />
-                <Text color="white">All</Text>
-              </VStack>
-            </Avatar>
-            <Avatar bg="violet.800">+</Avatar>
+    <VStack bgColor="white" h="100%">
+      <HStack mt="5" mb="5">
+        <Spacer />
+        <VStack alignSelf="center">
+          <Heading alignSelf="center" size="lg" mb="5">
+            Items
+          </Heading>
+          <HStack space="5">
+            <AddItemManually />
+            <Button
+              bg="violet.800"
+              onPress={() => {
+                addItemsData(userId, listData, uuid);
+                navigation.navigate("Summary", {
+                  participants: participants,
+                });
+              }}
+            >
+              Confirm
+            </Button>
           </HStack>
         </VStack>
+        <Spacer />
+      </HStack>
+
+      <SwipeableScrollableMenu />
+      {/* Avatar section */}
+      <VStack>
+        <HStack flexWrap="wrap" space="1" alignSelf="center">
+          {participants.map((participant) => {
+            return (
+              <Pressable
+                key={uuid.v4()}
+                onPress={() => {
+                  let newData = [...participants];
+                  newData[newData.indexOf(participant)].selected =
+                    !newData[newData.indexOf(participant)].selected;
+                  setParticipants(newData);
+                }}
+              >
+                {participant.selected === true ? (
+                  <ZStack>
+                    <AntDesign name="checkcircle" size={50} color="green" />
+                    <Text alignSelf="center" color="white">
+                      {participant.initials}
+                    </Text>
+                  </ZStack>
+                ) : (
+                  <Avatar key={participant.name} bg={participant.avatarColor}>
+                    {participant.initials}
+                  </Avatar>
+                )}
+              </Pressable>
+            );
+          })}
+          {/* These have no functionality at the moment
+            <Avatar bg='violet.800'>
+							<VStack alignItems='center'>
+								<MaterialCommunityIcons name='account-group' size={24} color='violet.800' />
+								<Text color='white'>All</Text>
+							</VStack>
+						</Avatar>
+						<Avatar bg='violet.800'>+</Avatar> */}
+        </HStack>
       </VStack>
-    </>
+    </VStack>
   );
 }

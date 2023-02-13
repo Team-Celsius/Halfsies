@@ -1,4 +1,11 @@
-import { Input, Pressable, Text, Modal, Button, ScrollView } from "native-base";
+import {
+  Input,
+  KeyboardAvoidingView,
+  Text,
+  Modal,
+  Button,
+  ScrollView,
+} from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -29,12 +36,10 @@ export default function LoginForm() {
   const onSubmit = (data) => {
     signInWithEmailAndPassword(auth, data.email.trim(), data.password)
       .then((userCredential) => {
-        const user = userCredential.user;
         navigation.navigate("Camera");
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
         console.log(errorCode);
         setErrorText(errorTextCreator(errorCode));
         setModalVisible(true);
@@ -43,11 +48,11 @@ export default function LoginForm() {
 
   function errorTextCreator(errorCode) {
     if (errorCode === "auth/invalid-email") {
-      return "Email invalid";
+      return "Email is invalid.";
     } else if (errorCode === "auth/user-not-found") {
-      return "Sorry User not found please try again";
+      return "User not found, please try again.";
     } else if (errorCode === "auth/wrong-password") {
-      return "Wrong password please try again";
+      return "Wrong password, please try again.";
     }
   }
 
@@ -66,7 +71,7 @@ export default function LoginForm() {
             <Modal.Footer>
               <Button.Group space={2}>
                 <Button
-                  backgroundColor="violet.900"
+                  backgroundColor="violet.800"
                   onPress={() => {
                     setModalVisible(false);
                   }}
@@ -82,7 +87,7 @@ export default function LoginForm() {
   }
 
   return (
-    <View>
+    <KeyboardAvoidingView behavior="padding">
       <LogInError />
       <Controller
         control={control}
@@ -94,10 +99,10 @@ export default function LoginForm() {
           <Input
             textAlign="center"
             borderWidth="3"
-            borderColor="violet.900"
+            borderColor="violet.800"
             variant="rounded"
             backgroundColor="white"
-            color="violet.900"
+            color="violet.800"
             p="5"
             m="2"
             placeholder="Email"
@@ -107,8 +112,8 @@ export default function LoginForm() {
         )}
         name="email"
       />
-      {errors.email && <Text>Email is required.</Text>}
-      <View style={{ width: "100%", alignItems: "center" }}>
+      {errors.email && <Text textAlign="center">Email is required.</Text>}
+      <View w="100%" alignItems="center">
         <Controller
           control={control}
           rules={{
@@ -120,10 +125,10 @@ export default function LoginForm() {
             <Input
               textAlign="center"
               borderWidth="3"
-              borderColor="violet.900"
+              borderColor="violet.800"
               variant="rounded"
               backgroundColor="white"
-              color="violet.900"
+              color="violet.800"
               p="5"
               m="2"
               placeholder="Password"
@@ -133,12 +138,9 @@ export default function LoginForm() {
               InputRightElement={
                 <Button
                   size="xs"
-                  rounded="none"
-                  w="20"
-                  h="full"
                   backgroundColor="white"
                   onPress={handleClick}
-                  style={{ marginLeft: "-23%" }}
+                  ml="-15%"
                 >
                   {show ? (
                     <Feather name="eye-off" size={24} color="gray" />
@@ -154,21 +156,18 @@ export default function LoginForm() {
         {errors.password && <Text>Please enter password</Text>}
       </View>
 
-      <Pressable
-        textAlign="center"
-        borderWidth="3"
-        borderColor="violet.900"
-        variant="rounded"
-        backgroundColor="violet.900"
-        color="violet.900"
+      <Button
+        w="93%"
+        alignSelf="center"
+        backgroundColor="violet.800"
         p="5"
         m="2"
         onPress={handleSubmit(onSubmit)}
       >
-        <Text textAlign="center" color="white">
+        <Text alignSelf="center" color="white">
           Log In
         </Text>
-      </Pressable>
-    </View>
+      </Button>
+    </KeyboardAvoidingView>
   );
 }
