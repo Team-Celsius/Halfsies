@@ -6,8 +6,8 @@ import { useState, useEffect } from 'react'
 import uuid from 'react-native-uuid'
 
 export default function Summary() {
-	const [bgColorUnpaid, setBgColorUnpaid] = useState('green.800')
-	const [bgColorPaid, setBgColorPaid] = useState('violet.800')
+	const [bgColorUnpaid, setBgColorUnpaid] = useState('violet.800')
+	const [bgColorPaid, setBgColorPaid] = useState('grey')
 	const [renderPaid, setRenderPaid] = useState(false)
 	const [newFriends, setNewFriends] = useState([])
 	const [favorites, setFavorites] = useState([])
@@ -30,44 +30,46 @@ export default function Summary() {
 
 	function PaidButton() {
 		return (
-			<VStack space={8} alignItems='center'>
-				<Button
-					bg={bgColorPaid}
-					onPress={() => {
-						if (renderPaid === true) {
-							setRenderPaid(false)
-							setBgColorUnpaid('green.800')
-							setBgColorPaid('violet.800')
-						} else {
-							setRenderPaid(true)
-							setBgColorUnpaid('violet.800')
-							setBgColorPaid('green.800')
-						}
-					}}>
-					Paid
-				</Button>
-			</VStack>
+			<Button
+				w='50%'
+				h='100%'
+				rounded='false'
+				bg={bgColorPaid}
+				onPress={() => {
+					if (renderPaid === true) {
+						setRenderPaid(false)
+						setBgColorUnpaid('violet.800')
+						setBgColorPaid('grey')
+					} else {
+						setRenderPaid(true)
+						setBgColorUnpaid('grey')
+						setBgColorPaid('violet.800')
+					}
+				}}>
+				Paid
+			</Button>
 		)
 	}
 	function UnpaidButton() {
 		return (
-			<VStack space={8} alignItems='center'>
-				<Button
-					bg={bgColorUnpaid}
-					onPress={() => {
-						if (renderPaid === false) {
-							setRenderPaid(true)
-							setBgColorUnpaid('violet.800')
-							setBgColorPaid('green.800')
-						} else {
-							setRenderPaid(false)
-							setBgColorUnpaid('green.800')
-							setBgColorPaid('violet.800')
-						}
-					}}>
-					Unpaid
-				</Button>
-			</VStack>
+			<Button
+				w='50%'
+				h='100%'
+				rounded='false'
+				bg={bgColorUnpaid}
+				onPress={() => {
+					if (renderPaid === false) {
+						setRenderPaid(true)
+						setBgColorUnpaid('grey')
+						setBgColorPaid('violet.800')
+					} else {
+						setRenderPaid(false)
+						setBgColorUnpaid('violet.800')
+						setBgColorPaid('grey')
+					}
+				}}>
+				Unpaid
+			</Button>
 		)
 	}
 
@@ -392,19 +394,18 @@ export default function Summary() {
 
 	return (
 		<>
-			<VStack flex={1} space='3' pt='5'>
-				<HStack>
-					<Spacer />
+			<VStack flex={1}>
+				<HStack w='100%' h='60'>
 					<UnpaidButton />
-					<Spacer />
+
 					<PaidButton />
-					<Spacer />
 				</HStack>
 				<HStack flex={1}>
 					<ScrollView>
 						<VStack space='4' pl='3'>
 							{newFriends.length > 0 ? (
 								<Box>
+									<Text mt='3'>Favorites</Text>
 									<FavoriteFriendsSection friends={newFriends} />
 									<AlphabeticalFriendsSection alphabet={alphabet} friends={newFriends} />
 								</Box>

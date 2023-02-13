@@ -92,19 +92,19 @@ export default function Participants(props) {
 
 	function ConfirmButton() {
 		return (
-			<VStack space={8} alignItems='center'>
-				<Button
-					bg='violet.800'
-					onPress={() => {
-						unselectUsers(participants)
-						navigation.navigate('AssignItems', {
-							participants: participants,
-							ocrResults: ocrResults,
-						})
-					}}>
-					Confirm Selections
-				</Button>
-			</VStack>
+			<Button
+				w='100%'
+				h='70'
+				bg='violet.800'
+				onPress={() => {
+					unselectUsers(participants)
+					navigation.navigate('AssignItems', {
+						participants: participants,
+						ocrResults: ocrResults,
+					})
+				}}>
+				Confirm
+			</Button>
 		)
 	}
 
@@ -211,15 +211,14 @@ export default function Participants(props) {
 					<Spacer />
 					<Spacer />
 				</Modal>
-				<VStack space={8} alignItems='center'>
-					<Button
-						bg='violet.800'
-						onPress={() => {
-							setModalVisible(!modalVisible)
-						}}>
-						Add New Friend
-					</Button>
-				</VStack>
+
+				<Button
+					bgColor='transparent'
+					onPress={() => {
+						setModalVisible(!modalVisible)
+					}}>
+					<AntDesign name='adduser' size={47} color='#5B21B6' />
+				</Button>
 			</>
 		)
 	}
@@ -346,26 +345,31 @@ export default function Participants(props) {
 
 	return (
 		<>
-			<VStack flex={1} space='3' pt='5'>
+			<VStack flex={1} pt='5'>
+				<ScrollView>
+					<VStack pl='3'>
+						<HStack flex={1} alignItems='center'>
+							<Spacer />
+							<Spacer />
+							<AddFriendForm />
+							<Text>Add a friend!</Text>
+							<Spacer />
+							<Spacer />
+							<Spacer />
+						</HStack>
+						<Text>Favorites</Text>
+						{newFriends.length > 0 ? (
+							<Box>
+								<FavoriteFriendsSection friends={newFriends} />
+								<AlphabeticalFriendsSection alphabet={alphabet} friends={newFriends} />
+							</Box>
+						) : null}
+					</VStack>
+				</ScrollView>
 				<HStack>
-					<Spacer />
-					<AddFriendForm />
 					<Spacer />
 					<ConfirmButton participants={participants} />
 					<Spacer />
-				</HStack>
-				<HStack flex={1}>
-					<ScrollView>
-						<VStack space='4' pl='3'>
-							<Text>Favorites</Text>
-							{newFriends.length > 0 ? (
-								<Box>
-									<FavoriteFriendsSection friends={newFriends} />
-									<AlphabeticalFriendsSection alphabet={alphabet} friends={newFriends} />
-								</Box>
-							) : null}
-						</VStack>
-					</ScrollView>
 				</HStack>
 			</VStack>
 		</>

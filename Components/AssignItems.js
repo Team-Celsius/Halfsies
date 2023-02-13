@@ -282,19 +282,7 @@ export default function AssignItems(props) {
 					<Heading alignSelf='center' size='lg' mb='5'>
 						Items
 					</Heading>
-					<HStack space='5'>
-						<AddItemManually />
-						<Button
-							bg='violet.800'
-							onPress={() => {
-								addItemsData(userId, listData, uuid)
-								navigation.navigate('Summary', {
-									participants: participants,
-								})
-							}}>
-							Confirm
-						</Button>
-					</HStack>
+					<AddItemManually />
 				</VStack>
 				<Spacer />
 			</HStack>
@@ -302,7 +290,7 @@ export default function AssignItems(props) {
 			<SwipeableScrollableMenu />
 			{/* Avatar section */}
 			<VStack>
-				<HStack flexWrap='wrap' space='1' alignSelf='center'>
+				<HStack flexWrap='wrap' space='1' mb='3' alignSelf='center'>
 					{participants.map((participant) => {
 						return (
 							<Pressable
@@ -336,6 +324,18 @@ export default function AssignItems(props) {
 						</Avatar>
 						<Avatar bg='violet.800'>+</Avatar> */}
 				</HStack>
+				<Button
+					w='100%'
+					h='70'
+					bg='violet.800'
+					onPress={() => {
+						addItemsData(userId, listData, uuid)
+						navigation.navigate('Summary', {
+							participants: participants,
+						})
+					}}>
+					Confirm
+				</Button>
 			</VStack>
 		</VStack>
 	)
