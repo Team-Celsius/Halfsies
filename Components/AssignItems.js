@@ -81,7 +81,7 @@ export default function AssignItems(props) {
 			const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 			return (
 				<Select
-					selectedValue={inputQty}
+					selectedValue={inputQty.toString()}
 					// this was being toString'ed, but the validate function is making sure it's a number
 					// so validation should have permanently failed qty
 					_selectedItem={{
@@ -315,6 +315,7 @@ export default function AssignItems(props) {
 					{/* These have no functionality at the moment
             <Avatar bg='violet.800'>
 							<VStack alignItems='center'>
+								<MaterialCommunityIcons name='account-group' size={24} color='violet.800' />
 								<MaterialCommunityIcons name='account-group' size={24} color='violet.800' />
 								<Text color='white'>All</Text>
 							</VStack>
