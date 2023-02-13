@@ -43,8 +43,6 @@ async function processOcrRequest(image) {
 
   let results = parser(json, userUploadedStatus);
 
-  // ternary: if result[0] ? returnTheListOfOrganizedStuff : return -1;
-
   if (results.items[0]) {
     return results;
   }

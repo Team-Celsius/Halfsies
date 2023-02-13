@@ -23,7 +23,6 @@ let badWords = [
   "change",
   "service",
 ];
-// badwords - potential adds: credit card, saved, gratuity/tip??,
 
 const getPrice = (item) => {
   let matches = item.match(/[0-9]+\.[0-9]{2}/);
@@ -55,7 +54,7 @@ const itemizeList = (list) => {
       continue;
     }
 
-    let itemDetails = item.replace(/[0-9.,()@]+/g, " "); // Converts line to text-only.
+    let itemDetails = item.replace(/[0-9.,()$@#"]+/g, " "); // Converts line to text-only.
     itemDetails = itemDetails.trim();
 
     // Checks if a bad read/faulty line. -- Is this needed, or can be implemented cleaner?
@@ -64,6 +63,7 @@ const itemizeList = (list) => {
     }
 
     let qty = getQuantity(item);
+    if (!qty) qty = 1;
     let price = getPrice(item);
 
     if (parseInt(qty) === parseInt(price)) {
@@ -124,11 +124,6 @@ const parser = (json, isUserUploaded) => {
 
   // if json.fullTextAnnotation.pages[0].confidence is less than .95, decrease threshold by 5.
 
-  // PARSER STEP BY STEP:
-  // This loop sorts through the JSON, storing info line-by-line into obj.
-  // The values of 'obj' are passed through removeLinesWithoutPrice, results are stored onto 'results' variable.
-  // 'RESULTS' is returned.
-
   for (let i = 1; i < array.length; i++) {
     // start at 1 to avoid all-text/all-coords element
     let char = array[i].description;
@@ -140,7 +135,7 @@ const parser = (json, isUserUploaded) => {
       obj[checkCoordvalue] = "";
     }
     obj[checkCoordvalue] += char + " ";
-  } // ******* Somewhere around here, sort the list by X-val so all words are in order. Is this even needed still? Regex handles all of this.
+  }
 
   const parsedResults = removeLinesWithoutPrice(Object.values(obj));
   let results = itemizeList(parsedResults);
