@@ -329,6 +329,7 @@ export default function AssignItems(props) {
 					w='100%'
 					h='70'
 					bg='violet.800'
+					rounded='false'
 					onPress={() => {
 						addItemsData(userId, listData, uuid)
 						navigation.navigate('Summary', {
