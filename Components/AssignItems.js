@@ -79,7 +79,7 @@ export default function AssignItems(props) {
     const [inputDescription, setInputDescription] = useState();
     const [inputPrice, setInputPrice] = useState();
     const [errors, setErrors] = useState(false);
-    const [buttonColor, setButtonColor] = useState("violet.900");
+    const [buttonColor, setButtonColor] = useState("violet.800");
     const validate = () => {
       const inputPriceAsFloat = parseFloat(inputPrice);
       if (isNaN(inputPriceAsFloat)) {
@@ -113,7 +113,7 @@ export default function AssignItems(props) {
           // this was being toString'ed, but the validate function is making sure it's a number
           // so validation should have permanently failed qty
           _selectedItem={{
-            bgColor: "violet.900",
+            bgColor: "violet.800",
             endIcon: <CheckIcon size="5" />,
           }}
           mt={1}
@@ -178,7 +178,7 @@ export default function AssignItems(props) {
                   if (validate()) {
                     setButtonColor("green.500");
                     setTimeout(() => {
-                      setButtonColor("violet.900");
+                      setButtonColor("violet.800");
                       setListData([
                         ...listData,
                         {
@@ -309,7 +309,7 @@ export default function AssignItems(props) {
                   }
                 })}
               </HStack>
-              <Divider bgColor="violet.900" />
+              <Divider bgColor="violet.800" />
             </VStack>
           </Pressable>
         </Box>
@@ -363,7 +363,20 @@ export default function AssignItems(props) {
           <Heading alignSelf="center" size="lg" mb="5">
             Items
           </Heading>
-          <AddItemManually />
+          <HStack space="5">
+            <AddItemManually />
+            <Button
+              bg="violet.800"
+              onPress={() => {
+                addItemsData(userId, listData, uuid);
+                navigation.navigate("Summary", {
+                  participants: participants,
+                });
+              }}
+            >
+              Confirm
+            </Button>
+          </HStack>
         </VStack>
         <Spacer />
       </HStack>
@@ -371,7 +384,7 @@ export default function AssignItems(props) {
       <SwipeableScrollableMenu />
       {/* Avatar section */}
       <VStack>
-        <HStack flexWrap="wrap" space="1" mb="3" alignSelf="center">
+        <HStack flexWrap="wrap" space="1" alignSelf="center">
           {participants.map((participant) => {
             return (
               <Pressable
@@ -399,27 +412,14 @@ export default function AssignItems(props) {
             );
           })}
           {/* These have no functionality at the moment
-            <Avatar bg='violet.900'>
+            <Avatar bg='violet.800'>
 							<VStack alignItems='center'>
-								<MaterialCommunityIcons name='account-group' size={24} color='violet.900' />
+								<MaterialCommunityIcons name='account-group' size={24} color='violet.800' />
 								<Text color='white'>All</Text>
 							</VStack>
 						</Avatar>
-						<Avatar bg='violet.900'>+</Avatar> */}
+						<Avatar bg='violet.800'>+</Avatar> */}
         </HStack>
-        <Button
-          w="100%"
-          h="70"
-          bg="violet.900"
-          onPress={() => {
-            addItemsData(userId, listData, uuid);
-            navigation.navigate("Summary", {
-              participants: participants,
-            });
-          }}
-        >
-          Confirm
-        </Button>
       </VStack>
     </VStack>
   );
