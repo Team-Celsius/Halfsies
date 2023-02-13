@@ -10,7 +10,6 @@ import { useNavigation } from '@react-navigation/native'
 export default function Participants(props) {
 	const [participants, setParticipants] = useState([])
 	const navigation = useNavigation()
-	//let ocrResults = null;
 	const [ocrResults, setOcrResults] = useState({})
 
 	useEffect(() => {
@@ -82,7 +81,7 @@ export default function Participants(props) {
 			}
 		})
 	}
-
+	addUserToParticipants(newFriends)
 	const unselectUsers = (userArr) => {
 		userArr.forEach((user) => {
 			if (user.selected === true) {
@@ -95,7 +94,7 @@ export default function Participants(props) {
 		return (
 			<VStack space={8} alignItems='center'>
 				<Button
-					bg='violet.900'
+					bg='violet.800'
 					onPress={() => {
 						unselectUsers(participants)
 						navigation.navigate('AssignItems', {
@@ -214,7 +213,7 @@ export default function Participants(props) {
 				</Modal>
 				<VStack space={8} alignItems='center'>
 					<Button
-						bg='violet.900'
+						bg='violet.800'
 						onPress={() => {
 							setModalVisible(!modalVisible)
 						}}>
