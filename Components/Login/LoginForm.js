@@ -71,7 +71,7 @@ export default function LoginForm() {
             <Modal.Footer>
               <Button.Group space={2}>
                 <Button
-                  backgroundColor="violet.800"
+                  backgroundColor="violet.900"
                   onPress={() => {
                     setModalVisible(false);
                   }}
@@ -99,10 +99,10 @@ export default function LoginForm() {
           <Input
             textAlign="center"
             borderWidth="3"
-            borderColor="violet.800"
+            borderColor="violet.900"
             variant="rounded"
             backgroundColor="white"
-            color="violet.800"
+            color="violet.900"
             p="5"
             m="2"
             placeholder="Email"
@@ -125,10 +125,10 @@ export default function LoginForm() {
             <Input
               textAlign="center"
               borderWidth="3"
-              borderColor="violet.800"
+              borderColor="violet.900"
               variant="rounded"
               backgroundColor="white"
-              color="violet.800"
+              color="violet.900"
               p="5"
               m="2"
               placeholder="Password"
@@ -159,7 +159,7 @@ export default function LoginForm() {
       <Button
         w="93%"
         alignSelf="center"
-        backgroundColor="violet.800"
+        backgroundColor="violet.900"
         p="5"
         m="2"
         onPress={handleSubmit(onSubmit)}
