@@ -114,10 +114,10 @@ export default function Participants(props) {
       initials: initials,
       name: fullName,
       phone: phone,
+      bill: "test",
       numPaymentRequests: 0,
       avatarColor: randomColor(),
       selected: false,
-      balance: [],
     });
   }
 
@@ -259,11 +259,12 @@ export default function Participants(props) {
                 />
                 <FormControl.Label>Phone Number</FormControl.Label>
                 <Input
+                  keyboardType={"number-pad"}
+                  type="tel"
+                  maxLength={10}
                   placeholder="XXX-XXX-XXXX"
+                  value={newFriendPhone}
                   onChangeText={(phone) => {
-                    if (phone.includes("-")) {
-                      phone = phone.replace("-", "");
-                    }
                     setNewFriendPhone(phone);
                   }}
                 />
