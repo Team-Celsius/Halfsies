@@ -81,7 +81,7 @@ export default function Participants(props) {
 			}
 		})
 	}
-
+	addUserToParticipants(newFriends)
 	const unselectUsers = (userArr) => {
 		userArr.forEach((user) => {
 			if (user.selected === true) {
