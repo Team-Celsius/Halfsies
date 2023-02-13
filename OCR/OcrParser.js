@@ -33,7 +33,7 @@ const getPrice = (item) => {
 
 const getQuantity = (item) => {
   // ^[^\.d]*(\d+)[^\d\$] other regex that /might/ work better, but it works for now so who cares lol
-  let matches = item.match(/^[^\d#"]*(?:\d+(?:[^#"\d]|$))+/);
+  let matches = item.match(/^[^\d]*(\d+)/);
   if (matches === null) return 1;
   return matches[1];
 };
@@ -55,7 +55,7 @@ const itemizeList = (list) => {
       continue;
     }
 
-    let itemDetails = item.replace(/[0-9.,()$@#"]+/g, " "); // Converts line to text-only.
+    let itemDetails = item.replace(/[0-9.,()$@]+/g, " "); // Converts line to text-only.
     itemDetails = itemDetails.trim();
 
     // Checks if a bad read/faulty line. -- Is this needed, or can be implemented cleaner?
