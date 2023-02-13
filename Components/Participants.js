@@ -341,8 +341,6 @@ export default function Participants(props) {
                     if (isPressed) {
                       favorite.selected = !favorite.selected;
 
-                      //Bug issue here is that when i populate from favorites, which populates from friends db, it doesnt have balance property on each friend
-                      //Jason added the balance property so when he implements that, it should fix this i believe.
                       if (
                         !participants.includes(favorite) &&
                         favorite.selected
@@ -408,6 +406,9 @@ export default function Participants(props) {
                       <HStack space="3" m="1">
                         <Pressable>
                           {({ isPressed }) => {
+                            if (isPressed) {
+                              friend.selected = !friend.selected;
+                            }
                             return (
                               <>
                                 {friend.selected ? (
