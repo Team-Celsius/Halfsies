@@ -1,13 +1,6 @@
 import { Spacer, IconButton, Factory, HStack, Alert, Text, VStack, ZStack, Image, Flex, View } from 'native-base'
 import { MaterialCommunityIcons, Feather, FontAwesome5, SimpleLineIcons } from '@expo/vector-icons'
-import { Spacer, IconButton, Factory, HStack, Alert, Text, VStack, ZStack, Image, Flex, View } from 'native-base'
-import { MaterialCommunityIcons, Feather, FontAwesome5, SimpleLineIcons } from '@expo/vector-icons'
 
-import * as ImagePicker from 'expo-image-picker'
-import { useState, useRef } from 'react'
-import { Camera } from 'expo-camera'
-import { useNavigation } from '@react-navigation/native'
-import processOcrRequest from '../../OCR/GCV.js'
 import * as ImagePicker from 'expo-image-picker'
 import { useState, useRef } from 'react'
 import { Camera } from 'expo-camera'

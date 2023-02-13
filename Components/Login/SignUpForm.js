@@ -174,8 +174,8 @@ export default function SignUpForm() {
 					<Foundation name='alert' size={20} color='maroon' /> Please enter a password.
 				</Text>
 			)}
-			<Text textAlign='center' color='white'>
-				Password must at least 7 characters.
+			<Text textAlign='center' color='black'>
+				Password must be at least 7 characters.
 			</Text>
 
 			<Pressable textAlign='center' borderWidth='3' borderColor='violet.800' variant='rounded' backgroundColor='violet.800' color='violet.800' p='5' m='2' onPress={handleSubmit(onSubmit)}>
