@@ -1,6 +1,13 @@
 import { Spacer, IconButton, Factory, HStack, Alert, Text, VStack, ZStack, Image, Flex, View } from 'native-base'
 import { MaterialCommunityIcons, Feather, FontAwesome5, SimpleLineIcons } from '@expo/vector-icons'
+import { Spacer, IconButton, Factory, HStack, Alert, Text, VStack, ZStack, Image, Flex, View } from 'native-base'
+import { MaterialCommunityIcons, Feather, FontAwesome5, SimpleLineIcons } from '@expo/vector-icons'
 
+import * as ImagePicker from 'expo-image-picker'
+import { useState, useRef } from 'react'
+import { Camera } from 'expo-camera'
+import { useNavigation } from '@react-navigation/native'
+import processOcrRequest from '../../OCR/GCV.js'
 import * as ImagePicker from 'expo-image-picker'
 import { useState, useRef } from 'react'
 import { Camera } from 'expo-camera'
@@ -48,7 +55,18 @@ export default function CameraView() {
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			base64: true,
 		})
+		async function pickImage() {
+			let result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				base64: true,
+			})
 
+			if (!result.canceled) {
+				result.isUserTaken = true
+				setCapturedImage(result)
+				setUserUploaded = true
+			}
+		}
 		if (!result.canceled) {
 			result.isUserTaken = true
 			setCapturedImage(result)
@@ -73,7 +91,7 @@ export default function CameraView() {
 		<>
 			<ZStack>
 				<>
-					<Image source={{ uri: capturedImage.uri }} height='100%' w='100%' alt='Image captured' />
+					<Image source={{ uri: capturedImage.uri }} h='100%' w='100%' alt='Image captured' />
 				</>
 				<VStack flex={1} w='100%' h='100%'>
 					<Spacer />
