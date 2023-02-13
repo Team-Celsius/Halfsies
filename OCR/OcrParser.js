@@ -86,7 +86,7 @@ const itemizeList = (list) => {
   }
 
   for (let i = 0; i < order.items.length; i++) {
-    order.items[i].key = i;
+    order.items[i].key = i + 1;
   }
   return order;
 };
