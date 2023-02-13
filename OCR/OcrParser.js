@@ -55,7 +55,7 @@ const itemizeList = (list) => {
       continue;
     }
 
-    let itemDetails = item.replace(/[0-9.,()@]+/g, " "); // Converts line to text-only.
+    let itemDetails = item.replace(/[0-9.,()$@]+/g, " "); // Converts line to text-only.
     itemDetails = itemDetails.trim();
 
     // Checks if a bad read/faulty line. -- Is this needed, or can be implemented cleaner?
