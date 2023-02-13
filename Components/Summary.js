@@ -33,7 +33,7 @@ export default function Summary() {
 			<Button
 				w='50%'
 				h='100%'
-				rounded='false'
+				rounded='none'
 				bg={bgColorPaid}
 				onPress={() => {
 					if (renderPaid === true) {
@@ -55,7 +55,7 @@ export default function Summary() {
 			<Button
 				w='50%'
 				h='100%'
-				rounded='false'
+				rounded='none'
 				bg={bgColorUnpaid}
 				onPress={() => {
 					if (renderPaid === false) {
