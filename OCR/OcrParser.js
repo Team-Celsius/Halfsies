@@ -63,6 +63,7 @@ const itemizeList = (list) => {
     }
 
     let qty = getQuantity(item);
+    if (!qty) qty = 1;
     let price = getPrice(item);
 
     if (parseInt(qty) === parseInt(price)) {
