@@ -81,7 +81,7 @@ export default function AssignItems(props) {
 			const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 			return (
 				<Select
-					selectedValue={inputQty}
+					selectedValue={inputQty.toString()}
 					// this was being toString'ed, but the validate function is making sure it's a number
 					// so validation should have permanently failed qty
 					_selectedItem={{
@@ -141,7 +141,7 @@ export default function AssignItems(props) {
 									} else {
 										setButtonColor('red.500')
 										setTimeout(() => {
-											setButtonColor('violet.800')
+											setButtonColor('violet.900')
 										}, 1000)
 									}
 								}}>
@@ -154,7 +154,7 @@ export default function AssignItems(props) {
 					<Spacer />
 				</Modal>
 				<VStack alignSelf='center' space='1'>
-					<Avatar bg='violet.800'>
+					<Avatar bg='violet.900'>
 						<Button
 							bg='transparent'
 							onPress={() => {
@@ -191,6 +191,7 @@ export default function AssignItems(props) {
 						bgColor='white'
 						onPress={() => {
 							participants.map((participant) => {
+								//press an item and toggle if it is selected
 								newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected
 
 								if (participant.selected === true && !item.users.includes(participant)) {

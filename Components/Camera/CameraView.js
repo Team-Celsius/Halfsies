@@ -73,41 +73,15 @@ export default function CameraView() {
 		<>
 			<ZStack>
 				<>
-					<Image source={{ uri: capturedImage.uri }} style={{ height: '100%', width: '100%' }} alt='Image captured' />
+					<Image source={{ uri: capturedImage.uri }} height='100%' w='100%' alt='Image captured' />
 				</>
-				<VStack w='100%' h='100%'>
+				<VStack flex={1} w='100%' h='100%'>
 					<Spacer />
 					<HStack alignSelf='center' mb='10'>
 						<Spacer />
-						<View>
-							<FontAwesome5 name='redo' size={56} color='white' />
-							<FontAwesome5
-								onPress={retake}
-								name='redo'
-								size={52}
-								color='red'
-								style={{
-									position: 'absolute',
-									transform: [{ translateX: 2 }, { translateY: 2 }],
-								}}
-							/>
-						</View>
+						<FontAwesome5 onPress={retake} name='redo' size={52} color='red' />
 						<Spacer />
-						<View>
-							<FontAwesome5 name='check' size={56} color='white' />
-							{/* sets a white icon behind the colored, was pretty unreadable
-              previously, could be a transparent bar behind both icons or something tho */}
-							<FontAwesome5
-								onPress={confirmPhoto}
-								name='check'
-								size={52}
-								color='green'
-								style={{
-									position: 'absolute',
-									transform: [{ translateX: 2 }, { translateY: 2 }],
-								}}
-							/>
-						</View>
+						<FontAwesome5 onPress={confirmPhoto} name='check' size={52} color='green' />
 						<Spacer />
 					</HStack>
 				</VStack>
