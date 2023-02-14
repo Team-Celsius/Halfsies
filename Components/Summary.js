@@ -75,7 +75,9 @@ export default function Summary() {
 
 	function FavoriteFriendsSection(props) {
 		const [selected, setSelected] = useState(false)
+		const [render, setRender] = useState(false)
 		const friends = props.friends
+
 		const createFavorites = (friends) => {
 			const sortedFriends = friends.sort((a, b) => b.numPaymentRequests - a.numPaymentRequests)
 
@@ -107,7 +109,6 @@ export default function Summary() {
 								<VStack flex={1}>
 									<HStack alignItems='center' mb='3' mr='3'>
 										<Button
-											// alignSelf='center'
 											bgColor='transparent'
 											onPress={() => {
 												let newFavorites = [...favorites]
@@ -138,11 +139,12 @@ export default function Summary() {
 														bgColor='transparent'
 														size='md'
 														onPress={() => {
-															setSelected(id)
-															setTimeout(() => {
-																//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
-																item.payed = true
-															}, 2000)
+                              setSelected(id)
+                              setTimeout(() => {
+                                item.payed = true
+                                // 	//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
+                                setRender(!render)
+                              }, 1000)
 														}}>
 														<AntDesign name='checkcircleo' size={24} color='black' />
 													</Button>
@@ -190,12 +192,13 @@ export default function Summary() {
 															bgColor='transparent'
 															size='md'
 															onPress={() => {
-																setSelected(id)
-																setTimeout(() => {
-																	//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
-																	item.payed = false
-																}, 2000)
-															}}>
+                                setSelected(id)
+                                setTimeout(() => {
+                                  item.payed = false
+                                  // 	//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
+                                  setRender(!render)
+                                }, 1000)
+                              }}>
 															<AntDesign name='checkcircleo' size={24} color='green' />
 														</Button>
 														<Text ml='3' mr='3' textDecorationLine={id === selected ? 'line-through' : null}>
@@ -292,12 +295,13 @@ export default function Summary() {
 																	bgColor='transparent'
 																	size='md'
 																	onPress={() => {
-																		setSelected(id)
-																		setTimeout(() => {
-																			//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
-																			item.payed = true
-																		}, 2000)
-																	}}>
+                                    setSelected(id)
+                                    setTimeout(() => {
+                                      item.payed = false
+                                      // 	//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
+                                      setRender(!render)
+                                    }, 1000)
+                                  }}>
 																	<AntDesign name='checkcircleo' size={24} color='black' />
 																</Button>
 																<Text textDecorationLine={id === selected ? 'line-through' : null}>{item.qty}</Text>
@@ -345,12 +349,13 @@ export default function Summary() {
 																	bgColor='transparent'
 																	size='md'
 																	onPress={() => {
-																		setSelected(id)
-																		setTimeout(() => {
-																			//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
-																			item.payed = true
-																		}, 2000)
-																	}}>
+                                    setSelected(id)
+                                    setTimeout(() => {
+                                      item.payed = false
+                                      // 	//jasonnnnnnnnnnnnnnn, right here is where we need to update item.payed in DB so it rerenders like you were talking about
+                                      setRender(!render)
+                                    }, 1000)
+                                  }}>
 																	<AntDesign name='checkcircleo' size={24} color='black' />
 																</Button>
 																<Text textDecorationLine={id === selected ? 'line-through' : null}>{item.qty}</Text>

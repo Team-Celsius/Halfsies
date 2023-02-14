@@ -361,10 +361,10 @@ async function sendBills (participants) {
 					onPress={ async () => {
 						addItemsData(userId, listData, uuid)
             sendBills(participants)
-						// {participants.map( (participant) =>  {  onComposeSms(participant)})}
-						// navigation.navigate('Summary', {
-						// 	participants: participants,
-						// })
+						{participants.map( (participant) =>  {  onComposeSms(participant)})}
+						navigation.navigate('Summary', {
+							participants: participants,
+						})
 					}}>
 					Confirm
 				</Button>
