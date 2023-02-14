@@ -1,20 +1,52 @@
 import { Avatar, HStack, VStack, Text, Input, Spacer, Divider, Box, Heading, Pressable, Icon, Modal, FormControl, Button, Select, CheckIcon, ZStack } from 'native-base'
-import { MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons'
+import { AntDesign, Feather } from '@expo/vector-icons'
 import { SwipeListView } from 'react-native-swipe-list-view'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { ref, set, push } from 'firebase/database'
 import { auth, db } from '../Firebase/firebaseConfig'
 import uuid from 'react-native-uuid'
+import * as React from 'react'
+import * as SMS from 'expo-sms'
 
 export default function AssignItems(props) {
+	const [smsAvailable, setSmsAvailable] = useState(false)
+	const [participants, setParticipants] = useState(props.route.params.participants)
+
+async function sendBills (participants) {
+  for(let i = 0; i < participants.length; ++i) {
+    await onComposeSms(participants[i])
+  }
+}
+
+	const onComposeSms = React.useCallback(
+    async (participant) => {
+				if (smsAvailable) {
+					await SMS.sendSMSAsync(
+						'8025950578',
+						`${participant.bill.map((item) => {
+              return Object.entries(item)
+              .map(([name, value]) => `${name}: ${value} \n`).toString().replace(',' , ' ')
+						}).join('')}`.replace(',' , ' ')
+					)
+				}
+			},
+				[smsAvailable]
+	)
+
+  
 	const navigation = useNavigation()
 	const userId = auth.currentUser.uid
-
-	let [participants, setParticipants] = useState(props.route.params.participants)
-
+  
 	const data = props.route.params.ocrResults.items
 	const [listData, setListData] = useState(data)
+  
+	useEffect(() => {
+    SMS.isAvailableAsync().then(setSmsAvailable)
+		participants.forEach((participant) => {
+			participant.bill = []
+		})
+	}, [])
 
 	const splitQuantity = (qty, userArr) => {
 		const length = Object.keys(userArr).length
@@ -194,13 +226,9 @@ export default function AssignItems(props) {
 								newData[newData.indexOf(item)].selected = !newData[newData.indexOf(item)].selected
 
 								if (participant.selected === true && !item.users.includes(participant)) {
-									newData[newData.indexOf(item)].users.push(participant)
 									setListData(newData)
-									newParticipants[newParticipants.indexOf(participant)].selected = false
-									setParticipants(newParticipants)
-								} else if (participant.selected === true && item.users.includes(participant)) {
-									let newParticipants = [...participants]
-									newParticipants[newParticipants.indexOf(participant)].selected = false
+									newData[newData.indexOf(item)].users.push(participant)
+									newParticipants[newParticipants.indexOf(participant)].bill.push({ description: item.description, price: item.price })
 									setParticipants(newParticipants)
 								}
 							})
@@ -208,8 +236,8 @@ export default function AssignItems(props) {
 						<VStack m='4'>
 							<HStack p='3'>
 								<Text>{item.qty}</Text>
-								<Spacer />
-								<Text>{item.description}</Text>
+							
+								<Text ml="10">{item.description}</Text>
 								<Spacer />
 								<Text>
 									{new Intl.NumberFormat('en-US', {
@@ -218,18 +246,21 @@ export default function AssignItems(props) {
 									}).format(item.price)}
 								</Text>
 							</HStack>
-							<HStack flexWrap='wrap' space='1' alignSelf='center'>
+							<HStack flexWrap='wrap' space='1' ml="10" pl="4">
 								{participants.map((participant) => {
 									if (item.users.includes(participant)) {
 										return (
 											<Pressable
+
 												key={uuid.v4()}
 												onPress={() => {
 													newData = [...listData]
 													newData[newData.indexOf(item)].users.splice(item.users.indexOf(participant), 1)
 													setListData(newData)
+													newParticipants[newParticipants.indexOf(participant)].bill.splice(newParticipants[newParticipants.indexOf(participant)].bill.indexOf(item), 1)
+													setParticipants(newParticipants)
 												}}>
-												<Avatar size='sm' bg={participant.avatarColor}>
+												<Avatar size={50} bg={participant.avatarColor}>
 													{participant.initials}
 												</Avatar>
 											</Pressable>
@@ -327,11 +358,13 @@ export default function AssignItems(props) {
 					h='70'
 					bg='violet.800'
 					rounded='none'
-					onPress={() => {
+					onPress={ async () => {
 						addItemsData(userId, listData, uuid)
-						navigation.navigate('Summary', {
-							participants: participants,
-						})
+            sendBills(participants)
+						// {participants.map( (participant) =>  {  onComposeSms(participant)})}
+						// navigation.navigate('Summary', {
+						// 	participants: participants,
+						// })
 					}}>
 					Confirm
 				</Button>

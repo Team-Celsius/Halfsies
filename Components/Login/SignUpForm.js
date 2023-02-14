@@ -65,6 +65,7 @@ export default function SignUpForm() {
 			avatarColor: randomColor(),
 			selected: true,
 			user: true,
+			bill: 'test',
 		})
 	}
 
