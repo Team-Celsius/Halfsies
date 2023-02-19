@@ -5,6 +5,7 @@ import {
   Modal,
   Button,
   ScrollView,
+  NativeBaseProvider,
 } from "native-base";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";

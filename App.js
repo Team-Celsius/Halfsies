@@ -15,6 +15,11 @@ import "react-native-gesture-handler";
 import { useState } from "react";
 import { LogBox } from "react-native";
 
+const inset = {
+  frame: { x: 0, y: 0, width: 0, height: 0 },
+  insets: { top: 0, left: 0, right: 0, bottom: 0 },
+};
+
 //This hides all the yellow warnings
 LogBox.ignoreAllLogs();
 
@@ -33,8 +38,8 @@ export default function App() {
   });
 
   return (
-    <NavigationContainer>
-      <NativeBaseProvider>
+    <NativeBaseProvider initialWindowMetrics={inset}>
+      <NavigationContainer>
         <Stack.Navigator initialRouteName="LogIn">
           <Stack.Screen
             name="LogIn"
@@ -119,7 +124,7 @@ export default function App() {
             })}
           />
         </Stack.Navigator>
-      </NativeBaseProvider>
-    </NavigationContainer>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 }
