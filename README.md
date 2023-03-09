@@ -1,8 +1,13 @@
 ![halfsies-readme-splash](https://user-images.githubusercontent.com/47122570/218942061-27223d7b-251b-4672-8642-adaedd4c55b9.png)
 # Halfsies
 
+![image](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![image](https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white)
+![image](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
+![image](https://img.shields.io/badge/firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
 
-<p>     by <a href='https://github.com/sking11'>Steven King</a>, <a href='https://github.com/Jasonp1992'>Jason Potvin</a>, <a href='https://github.com/michaeltimo'>Michael Timo</a> and <a href='https://github.com/justintricate'>Justin Wooley</a> </p>
+
+<p> by <a href='https://github.com/sking11'>Steven King</a>, <a href='https://github.com/Jasonp1992'>Jason Potvin</a>, <a href='https://github.com/michaeltimo'>Michael Timo</a> and <a href='https://github.com/justintricate'>Justin Wooley</a> </p>
 
 LinkedIn:
 <a href='https://www.linkedin.com/in/steventhomasking/'>Steven King</a> | 
